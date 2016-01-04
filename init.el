@@ -83,4 +83,4 @@
 	       ac-source-functions
 	       ))
 (add-hook 'org-mode-hook 'auto-complete-mode)
-(add-hook 'matlab-mode-hook 'auto-complete-mode)
+;; (add-hook 'matlab-mode-hook 'auto-complete-mode)

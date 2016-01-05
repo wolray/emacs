@@ -1,0 +1,139 @@
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(ansi-color-faces-vector
+   [default default default italic underline success warning error])
+ '(ansi-color-names-vector
+   ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#333366" "#ccaa8f" "#f6f3e8"])
+ '(custom-enabled-themes (quote (wheatgrass))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
+;; startup
+
+(setq default-directory "d:/sync/emacs/")
+(load "d:/sync/emacs/kbd.el")
+(setq inhibit-startup-message t)
+(setq make-backup-files nil)
+(setq ring-bell-function 'ignore)
+(setq initial-scratch-message nil)
+(setq default-frame-alist '((height . 30)))
+(setq search-whitespace-regexp ".*?")
+(setq frame-title-format "")
+(tool-bar-mode 0)
+(menu-bar-mode 0)
+
+;;  frame
+
+(setq frame-title-format "")
+(tool-bar-mode 0)
+(menu-bar-mode 0)
+
+;; windows
+
+(column-number-mode 1)
+(line-number-mode 1)
+(scroll-bar-mode 0)
+(winner-mode 1)
+(require 'linum)
+(global-linum-mode 1)
+
+;; editor
+
+(show-paren-mode 1)
+(delete-selection-mode 1)
+(setq-default indent-tabs-mode t)
+(setq x-select-enable-clipboard t)
+
+;; font
+
+(set-default-font "monaco-11")
+(set-fontset-font "fontset-default" 'gb18030 "kaiti-13")
+
+;; language
+
+(set-language-environment 'chinese-gbk)
+(set-keyboard-coding-system 'chinese-gbk-dos)
+(set-buffer-file-coding-system 'chinese-gbk-dos)
+
+;; org-mode
+
+(setq org-startup-indented t)
+(setq org-support-shift-select t)
+(defun org-summary-todo (n-done n-not-done)
+  "Switch entry to DONE when all subentries are done, to TODO otherwise."
+  (let (org-log-done org-log-states)   ; turn off logging
+    (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
+(add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
+
+;; package
+
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.org/packages/"))
+(package-initialize)
+
+;; auto-complete
+
+(global-auto-complete-mode t)
+(ac-linum-workaround)
+(setq ac-auto-start nil)
+(ac-set-trigger-key "<tab>")
+(setq-default ac-sources
+	      '(
+		ac-source-words-in-same-mode-buffers ;default
+		ac-source-files-in-current-dir
+		))
+(add-hook 'org-mode-hook 'auto-complete-mode)
+(add-hook 'matlab-mode-hook 'auto-complete-mode)
+
+;; my--hook
+
+(defun my-package-menu-mode-hook ()
+  (local-set-key (kbd "]") 'next-line)
+  (local-unset-key (kbd "n")))
+(add-hook 'package-menu-mode-hook 'my-package-menu-mode-hook)
+
+(defun my-magit-mode-hook ()
+  (local-set-key (kbd "]") 'magit-section-forward)
+  (local-unset-key (kbd "n")))
+(add-hook 'magit-mode-hook 'my-magit-mode-hook)
+
+(defun my-magit-status-sections-hook ()
+	(magit-insert-status-headers)
+	(magit-insert-merge-log)
+	(magit-insert-rebase-sequence)
+	(magit-insert-am-sequence)
+	(magit-insert-sequencer-sequence)
+	(magit-insert-bisect-output)
+	(magit-insert-bisect-rest)
+	(magit-insert-bisect-log)
+	;; (magit-insert-untracked-files)
+	(magit-insert-tracked-files)		;add-hook
+	(magit-insert-unstaged-changes)
+	(magit-insert-staged-changes)
+	(magit-insert-stashes)
+	;; (magit-insert-unpulled-from-upstream)
+	;; (magit-insert-unpulled-from-pushremote)
+	;; (magit-insert-unpushed-to-upstream)
+	;; (magit-insert-unpushed-to-pushremote)
+	)
+(add-hook 'magit-status-sections-hook 'my-magit-status-sections-hook)
+
+(defun my-magit-status-headers-hook ()
+	(magit-insert-error-header)
+	(magit-insert-diff-filter-header)
+	(magit-insert-head-branch-header)
+	(magit-insert-repo-header)
+	;; (magit-insert-upstream-branch-header)
+	;; (magit-insert-push-branch-header)
+	(magit-insert-tags-header)
+	)
+(add-hook 'magit-status-headers-hook 'my-magit-status-headers-hook)

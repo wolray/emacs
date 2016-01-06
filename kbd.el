@@ -41,8 +41,6 @@
 (global-unset-key (kbd "C-/"))
 (global-set-key (kbd "C-`") 'universal-argument)
 (global-unset-key (kbd "C-u"))
-(global-set-key (kbd "C-|") 'auto-complete-mode)
-;; (global-unset-key nil)
 
 ;;
 
@@ -162,6 +160,8 @@
 
 (global-set-key (kbd "C-x C-x") 'set-mark-command)
 (global-unset-key (kbd "C-@"))
+(global-set-key (kbd "C-x C-\\") 'auto-complete-mode)
+;; (global-unset-key nil)
 
 ;; 
 

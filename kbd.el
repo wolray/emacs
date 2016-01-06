@@ -28,7 +28,6 @@
 (define-key key-translation-map (kbd "M-u") (kbd "DEL"))
 (define-key key-translation-map (kbd "M-o") (kbd "<deletechar>"))
 
-(define-key key-translation-map (kbd "M-9") (kbd "M-("))
 (define-key key-translation-map (kbd "M-h") (kbd "C-h"))
 (define-key key-translation-map (kbd "M-n") (kbd "C-x o"))
 (define-key key-translation-map (kbd "M-,") (kbd "C-/"))
@@ -298,12 +297,19 @@
 ;; unset-key
 
 (global-unset-key (kbd "C-0"))
+
+(define-key key-translation-map (kbd "C-o") (kbd "C-0"))
+(define-key key-translation-map (kbd "C-l") (kbd "C-0"))
+(define-key key-translation-map (kbd "C-,") (kbd "C-0"))
+(define-key key-translation-map (kbd "C-.") (kbd "C-0"))
+
 (define-key key-translation-map (kbd "M-a") (kbd "C-0"))
 (define-key key-translation-map (kbd "M-e") (kbd "C-0"))
 (define-key key-translation-map (kbd "M-f") (kbd "C-0"))
 (define-key key-translation-map (kbd "M-r") (kbd "C-0"))
 (define-key key-translation-map (kbd "M-s") (kbd "C-0"))
 (define-key key-translation-map (kbd "M-q") (kbd "C-0"))
+
 (define-key key-translation-map (kbd "C-x C-b") (kbd "C-0"))
 (define-key key-translation-map (kbd "C-x C-d") (kbd "C-0"))
 (define-key key-translation-map (kbd "C-x DEL") (kbd "C-0"))

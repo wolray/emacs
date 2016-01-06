@@ -26,9 +26,6 @@
 (setq initial-scratch-message nil)
 (setq default-frame-alist '((height . 30)))
 (setq search-whitespace-regexp ".*?")
-(setq frame-title-format "")
-(tool-bar-mode 0)
-(menu-bar-mode 0)
 
 ;; frame
 

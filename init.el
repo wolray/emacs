@@ -73,7 +73,7 @@
     (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
 (add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
 
-;; package
+;; package-initialize
 
 (require 'package)
 (add-to-list 'package-archives

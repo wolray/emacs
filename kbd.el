@@ -141,16 +141,6 @@
 		   (forward-paragraph 1)
 		   (if (eobp) (next-line 1) (transpose-paragraphs 1))))
 
-(global-set-key (kbd "M-_")
-		'(lambda ()
-		   (interactive)
-		   (backward-sexp 2)
-		   (forward-sexp 2)
-		   (transpose-sexps -1)
-		   (backward-sexp 1)))
-(global-set-key (kbd "M-+") 'transpose-sexps)
-(global-unset-key (kbd "C-M-t"))
-
 ;; buffer
 
 (global-set-key (kbd "C-_") 'previous-buffer)

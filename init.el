@@ -108,7 +108,7 @@
 (defun my-magit-status-sections-hook ()
 	(magit-insert-status-headers)
 	(magit-insert-merge-log)
-	(magit-insert-rebase-sequence)
+	;; (magit-insert-rebase-sequence)
 	(magit-insert-am-sequence)
 	(magit-insert-sequencer-sequence)
 	(magit-insert-bisect-output)

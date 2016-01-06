@@ -1,50 +1,11 @@
 
-(define-key key-translation-map (kbd "C-a") (kbd "C-k"))
-(define-key key-translation-map (kbd "C-e") (kbd "C-y"))
-(define-key key-translation-map (kbd "C-M-w") (kbd "M-h"))
-(global-set-key (kbd "C-d") 'kill-word)
-(global-unset-key (kbd "M-d"))
-(global-set-key (kbd "C-f") 'kill-sexp)
-(global-unset-key (kbd "C-M-k"))
-(global-set-key (kbd "C-t") 'kill-paragraph)
-;; (global-unset-key nil)
-(global-set-key (kbd "C-<backspace>") 'backward-kill-word)
-(global-unset-key (kbd "M-DEL"))
-(global-set-key (kbd "C-M-<backspace>") 'backward-kill-sexp)
-(global-unset-key (kbd "ESC <C-backspace>"))
-(global-set-key (kbd "M-<backspace>") 'backward-kill-paragraph)
-;; (global-unset-key nil)
-(global-set-key (kbd "M-'") 'comment-kill)
-;; (global-unset-key nil)
+;; C-
 
-(global-set-key (kbd "C-w")
-		'(lambda ()
-		   (interactive)
-		   (if (region-active-p)
-		       (kill-region (region-beginning) (region-end))
-		     (kill-whole-line 1))))
-
-(global-set-key (kbd "M-w")
-		'(lambda ()
-		   (interactive)
-		   (if (region-active-p)
-		       (kill-ring-save
-			(region-beginning) (region-end))
-		     (kill-ring-save
-		      (line-beginning-position) (line-end-position)))))
-
-;;
-
-(define-key key-translation-map (kbd "C-o") (kbd "C-h"))
 (global-set-key (kbd "C-v") 'open-line)
-;; (global-unset-key (kbd "C-o"))
-(global-set-key (kbd "C-z") 'undo)
-(global-unset-key (kbd "C-/"))
+(global-unset-key (kbd "C-o"))
+(define-key key-translation-map (kbd "C-z") (kbd "C-/"))
 (global-set-key (kbd "C-`") 'universal-argument)
 (global-unset-key (kbd "C-u"))
-
-;;
-
 (define-key key-translation-map (kbd "C-<tab>") (kbd "C-x o"))
 (global-set-key (kbd "C-\\") 'delete-indentation)
 ;; (global-unset-key nil)
@@ -55,34 +16,62 @@
 		   (forward-paragraph 1)
 		   (newline 2)
 		   (previous-line 1)))
-
 (define-key key-translation-map (kbd "M-RET") (kbd "C-j"))
 
-;; 
+;; M-
 
-(global-set-key (kbd "C-p")
+(define-key key-translation-map (kbd "M-j") (kbd "<left>"))
+(define-key key-translation-map (kbd "M-l") (kbd "<right>"))
+(define-key key-translation-map (kbd "M-i") (kbd "<up>"))
+(define-key key-translation-map (kbd "M-k") (kbd "<down>"))
+
+(define-key key-translation-map (kbd "M-u") (kbd "DEL"))
+(define-key key-translation-map (kbd "M-o") (kbd "<deletechar>"))
+
+(define-key key-translation-map (kbd "M-9") (kbd "M-("))
+(define-key key-translation-map (kbd "M-h") (kbd "C-h"))
+(define-key key-translation-map (kbd "M-n") (kbd "C-x o"))
+(define-key key-translation-map (kbd "M-,") (kbd "C-/"))
+(define-key key-translation-map (kbd "M-.") (kbd "C-g"))
+
+;; kill
+
+(define-key key-translation-map (kbd "C-a") (kbd "C-k"))
+(define-key key-translation-map (kbd "C-e") (kbd "C-y"))
+
+(global-set-key (kbd "C-d") 'kill-word)
+(global-unset-key (kbd "M-d"))
+(global-set-key (kbd "C-f") 'kill-sexp)
+(global-unset-key (kbd "C-M-k"))
+(global-set-key (kbd "C-t") 'kill-paragraph)
+;; (global-unset-key nil)
+
+(global-set-key (kbd "C-<backspace>") 'backward-kill-word)
+(global-unset-key (kbd "M-DEL"))
+(global-set-key (kbd "C-M-<backspace>") 'backward-kill-sexp)
+(global-unset-key (kbd "ESC <C-backspace>"))
+(global-set-key (kbd "M-<backspace>") 'backward-kill-paragraph)
+;; (global-unset-key nil)
+
+(global-set-key (kbd "C-w")
 		'(lambda ()
 		   (interactive)
-		   (move-beginning-of-line (if (bolp) 0 1))))
-
-(global-set-key (kbd "C-]")
+		   (if (region-active-p)
+		       (kill-region (region-beginning) (region-end))
+		     (kill-whole-line 1))))
+(global-set-key (kbd "M-w")
 		'(lambda ()
 		   (interactive)
-		   (move-end-of-line (if (eolp) 2 1))))
+		   (if (region-active-p)
+		       (kill-ring-save
+			(region-beginning) (region-end))
+		     (kill-ring-save
+		      (line-beginning-position) (line-end-position)))))
 
-(global-set-key (kbd "C--") 'left-word)
-;; (global-unset-key (kbd "C-<left>"))
-(global-set-key (kbd "C-=") 'right-word)
-;; (global-unset-key (kbd "C-<right>"))
+;; comment
 
-(global-set-key (kbd "M-p")
-		'(lambda ()
-		   (previous-line 1)
-		   (next-line 1)
-		   (interactive)
-		   (transpose-lines 1)
-		   (previous-line 2)))
-
+(global-set-key (kbd "M-'") 'comment-kill)
+;; (global-unset-key nil)
 (defun my-comment (beg end)
   (interactive (if (use-region-p)
 		   (list (region-beginning) (region-end))
@@ -91,6 +80,49 @@
   (comment-or-uncomment-region beg end))
 (global-set-key (kbd "M-[") 'my-comment)
 
+;; cursor
+
+(global-set-key (kbd "C-p")
+		'(lambda ()
+		   (interactive)
+		   (move-beginning-of-line (if (bolp) 0 1))))
+(global-set-key (kbd "C-]")
+		'(lambda ()
+		   (interactive)
+		   (move-end-of-line (if (eolp) 2 1))))
+
+(global-set-key (kbd "C--") 'left-word)
+;; (global-unset-key (kbd "C-<left>"))
+;; (global-unset-key (kbd "M-<left>"))
+(global-set-key (kbd "C-=") 'right-word)
+;; (global-unset-key (kbd "C-<right>"))
+;; (global-unset-key (kbd "M-<right>"))
+
+(global-set-key (kbd "C-M-p") 'backward-paragraph)
+(global-unset-key (kbd "M-{"))
+(global-set-key (kbd "C-M-]") 'forward-paragraph)
+(global-unset-key (kbd "M-}"))
+
+(global-set-key (kbd "C-M--") 'backward-sexp)
+(global-unset-key (kbd "C-M-b"))
+(global-set-key (kbd "C-M-=") 'forward-sexp)
+(global-unset-key (kbd "C-M-f"))
+
+;; region
+
+(global-set-key (kbd "C-x C-x") 'set-mark-command)
+(global-unset-key (kbd "C-@"))
+(define-key key-translation-map (kbd "C-M-[") (kbd "M-h"))
+
+;; transpose
+
+(global-set-key (kbd "M-p")
+		'(lambda ()
+		   (previous-line 1)
+		   (next-line 1)
+		   (interactive)
+		   (transpose-lines 1)
+		   (previous-line 2)))
 (global-set-key (kbd "M-]")
 		'(lambda ()
 		   (interactive)
@@ -103,7 +135,6 @@
 		   (interactive)
 		   (transpose-paragraphs -1)
 		   (backward-paragraph 1)))
-
 (global-set-key (kbd "M-=")
 		'(lambda ()
 		   (interactive)
@@ -111,60 +142,41 @@
 		   (forward-paragraph 1)
 		   (if (eobp) (next-line 1) (transpose-paragraphs 1))))
 
-(global-set-key (kbd "C-M-p") 'backward-paragraph)
-(global-unset-key (kbd "M-{"))
-(define-key key-translation-map (kbd "C-M-[") (kbd "M-h"))
-(global-set-key (kbd "C-M-]") 'forward-paragraph)
-(global-unset-key (kbd "M-}"))
-(global-set-key (kbd "C-M--") 'backward-sexp)
-;; (global-unset-key (kbd "C-M-p"))
-(global-set-key (kbd "C-M-=") 'forward-sexp)
-(global-unset-key (kbd "C-M-n"))
-(global-set-key (kbd "C-S-p") 'scroll-down-command)
-(global-unset-key (kbd "M-v"))
-(global-set-key (kbd "C-{") 'recenter-top-bottom)
-(global-unset-key (kbd "C-l"))
-(global-set-key (kbd "C-}") 'scroll-up-command)
-;; (global-unset-key (kbd "C-v"))
+(global-set-key (kbd "M-_")
+		'(lambda ()
+		   (interactive)
+		   (backward-sexp 2)
+		   (forward-sexp 2)
+		   (transpose-sexps -1)
+		   (backward-sexp 1)))
+(global-set-key (kbd "M-+") 'transpose-sexps)
+(global-unset-key (kbd "C-M-t"))
+
+;; buffer
+
 (global-set-key (kbd "C-_") 'previous-buffer)
 (global-unset-key (kbd "C-x <left>"))
 (global-unset-key (kbd "C-x C-<left>"))
 (global-set-key (kbd "C-+") 'next-buffer)
 (global-unset-key (kbd "C-x <right>"))
 (global-unset-key (kbd "C-x C-<right>"))
-(global-set-key (kbd "C-M-<up>") 'enlarge-window)
-(global-unset-key (kbd "C-x ^"))
-(global-set-key (kbd "C-M-<down>") 'shrink-window)
-;; (global-unset-key nil)
-(global-set-key (kbd "C-M-<left>") 'shrink-window-horizontally)
-(global-unset-key (kbd "C-x {"))
-(global-set-key (kbd "C-M-<right>") 'enlarge-window-horizontally)
-(global-unset-key (kbd "C-x }"))
 
-;; 
+(global-set-key (kbd "C-x C-p") 'beginning-of-buffer)
+(global-unset-key (kbd "M-<"))
+(global-set-key (kbd "C-x C-]") 'end-of-buffer)
+(global-unset-key (kbd "M->"))
 
 (global-set-key (kbd "C-x a") 'mark-whole-buffer)
 (global-unset-key (kbd "C-x h"))
 (global-set-key (kbd "C-x c") 'kill-buffer)
 (global-unset-key (kbd "C-x k"))
-(global-set-key (kbd "C-x g") 'magit-status)
-;; (global-unset-key nil)
-(global-set-key (kbd "C-x q") 'query-replace)
-(global-unset-key (kbd "M-%"))
-(global-set-key (kbd "C-x r") 'query-replace-regexp)
-(global-unset-key (kbd "M-%"))
 
 (global-set-key (kbd "C-x '")
 		'(lambda ()
 		   (interactive)
 		   (switch-to-buffer "*scratch*")))
 
-(global-set-key (kbd "C-x C-x") 'set-mark-command)
-(global-unset-key (kbd "C-@"))
-(global-set-key (kbd "C-x C-\\") 'auto-complete-mode)
-;; (global-unset-key nil)
-
-;; 
+;; window
 
 (global-set-key (kbd "C-x -") 'delete-window)
 ;; (global-unset-key (kbd "C-x 0"))
@@ -175,23 +187,49 @@
 (global-set-key (kbd "C-x ]") 'split-window-right)
 (global-unset-key (kbd "C-x 3"))
 (define-key key-translation-map (kbd "C-x [") (kbd "C-c <left>"))
-(global-set-key (kbd "C-x C-p") 'beginning-of-buffer)
-(global-unset-key (kbd "M-<"))
-(global-set-key (kbd "C-x C-]") 'end-of-buffer)
-(global-unset-key (kbd "M->"))
+
+(global-set-key (kbd "C-S-p") 'scroll-down-command)
+(global-unset-key (kbd "M-v"))
+(global-set-key (kbd "C-{") 'recenter-top-bottom)
+(global-unset-key (kbd "C-l"))
+(global-set-key (kbd "C-}") 'scroll-up-command)
+;; (global-unset-key (kbd "C-v"))
 (global-set-key (kbd "C-x C-=") 'scroll-other-window)
 (global-unset-key (kbd "C-M-v"))
 (global-set-key (kbd "C-x C--") 'scroll-other-window-down)
 (global-unset-key (kbd "C-M-S-v"))
 
-;; 
+(global-set-key (kbd "C-M-i") 'enlarge-window)
+(global-unset-key (kbd "C-x ^"))
+(global-set-key (kbd "C-M-k") 'shrink-window)
+;; (global-unset-key nil)
+(global-set-key (kbd "C-M-j") 'shrink-window-horizontally)
+(global-unset-key (kbd "C-x {"))
+(global-set-key (kbd "C-M-l") 'enlarge-window-horizontally)
+(global-unset-key (kbd "C-x }"))
 
+;; C-x
+
+(global-set-key (kbd "C-x g") 'magit-status)
+;; (global-unset-key nil)
+(global-set-key (kbd "C-x q") 'query-replace)
+(global-unset-key (kbd "M-%"))
+(global-set-key (kbd "C-x r") 'query-replace-regexp)
+(global-unset-key (kbd "M-%"))
+
+(global-set-key (kbd "C-x C-\\") 'auto-complete-mode)
+;; (global-unset-key nil)
+
+;; C-c
+
+(define-key key-translation-map (kbd "C-c ;") (kbd "C-c }"))
 (define-key key-translation-map (kbd "C-c C-s") (kbd "C-c ^"))
 (define-key key-translation-map (kbd "C-c C-d") (kbd "C-c /"))
-(define-key key-translation-map (kbd "C-c ;") (kbd "C-c }"))
+
 (define-key key-translation-map (kbd "C-c [") (kbd "C-c C-u"))
 (define-key key-translation-map (kbd "C-c C-p") (kbd "C-c C-b"))
 (define-key key-translation-map (kbd "C-c C-]") (kbd "C-c C-f"))
+
 (define-key key-translation-map (kbd "C-c C-M-p") (kbd "C-c C-x C-i"))
 (define-key key-translation-map (kbd "C-c M-ESC") (kbd "C-c C-x C-q"))
 (define-key key-translation-map (kbd "C-c C-M-]") (kbd "C-c C-x C-o"))
@@ -253,12 +291,11 @@
        (if align (org-table-align))
        (message "Time difference inserted")))))
 (global-set-key (kbd "C-c C--") 'my-org-evaluate-time-range)
-
 (define-key key-translation-map (kbd "C-c C-=") (kbd "C-c ."))
 (define-key key-translation-map (kbd "C-c C-M-=") (kbd "C-c C-s"))
 (define-key key-translation-map (kbd "C-c C-M--") (kbd "C-c C-d"))
 
-;; 
+;; unset-key
 
 (global-unset-key (kbd "C-0"))
 (define-key key-translation-map (kbd "M-a") (kbd "C-0"))

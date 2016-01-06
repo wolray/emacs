@@ -30,7 +30,7 @@
 (tool-bar-mode 0)
 (menu-bar-mode 0)
 
-;;  frame
+;; frame
 
 (setq frame-title-format "")
 (tool-bar-mode 0)

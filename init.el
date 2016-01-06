@@ -77,7 +77,12 @@
              '("melpa" . "http://melpa.org/packages/"))
 (package-initialize)
 
-;; auto-complete
+(defun my-package-menu-mode-hook ()
+  (local-set-key (kbd "]") 'next-line)
+  (local-unset-key (kbd "n")))
+(add-hook 'package-menu-mode-hook 'my-package-menu-mode-hook)
+
+;; package (auto-complete)
 
 (global-auto-complete-mode t)
 (ac-linum-workaround)
@@ -91,12 +96,9 @@
 (add-hook 'org-mode-hook 'auto-complete-mode)
 (add-hook 'matlab-mode-hook 'auto-complete-mode)
 
-;; my--hook
+;; package (magit)
 
-(defun my-package-menu-mode-hook ()
-  (local-set-key (kbd "]") 'next-line)
-  (local-unset-key (kbd "n")))
-(add-hook 'package-menu-mode-hook 'my-package-menu-mode-hook)
+(setenv "GIT_ASKPASS" "git-gui--askpass")
 
 (defun my-magit-mode-hook ()
   (local-set-key (kbd "]") 'magit-section-forward)

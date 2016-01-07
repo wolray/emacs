@@ -33,7 +33,7 @@
 (tool-bar-mode 0)
 (menu-bar-mode 0)
 
-;; windows
+;; window
 
 (column-number-mode 1)
 (line-number-mode 1)
@@ -42,13 +42,14 @@
 (require 'linum)
 (global-linum-mode 1)
 
-;; editor
+;; buffer
 
 (show-paren-mode 1)
 (electric-pair-mode 1)
 (delete-selection-mode 1)
 (setq-default indent-tabs-mode t)
 (setq x-select-enable-clipboard t)
+(fset 'yes-or-no-p 'y-or-n-p)
 
 ;; font
 

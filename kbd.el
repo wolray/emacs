@@ -28,10 +28,12 @@
 (define-key key-translation-map (kbd "M-u") (kbd "DEL"))
 (define-key key-translation-map (kbd "M-o") (kbd "<deletechar>"))
 
-(define-key key-translation-map (kbd "M-h") (kbd "C-h"))
-(define-key key-translation-map (kbd "M-n") (kbd "C-x o"))
+(define-key key-translation-map (kbd "M-m") (kbd "C-@"))
 (define-key key-translation-map (kbd "M-,") (kbd "C-/"))
 (define-key key-translation-map (kbd "M-.") (kbd "C-g"))
+
+(define-key key-translation-map (kbd "M-h") (kbd "C-h"))
+(define-key key-translation-map (kbd "M-n") (kbd "C-x C-x"))
 
 ;; kill
 
@@ -109,8 +111,7 @@
 
 ;; region
 
-(global-set-key (kbd "C-x C-x") 'set-mark-command)
-(global-unset-key (kbd "C-@"))
+(define-key key-translation-map (kbd "C-x C-x") (kbd "C-@"))
 (define-key key-translation-map (kbd "C-M-[") (kbd "M-h"))
 
 ;; transpose
@@ -205,7 +206,6 @@
 (global-unset-key (kbd "M-%"))
 (global-set-key (kbd "C-x r") 'query-replace-regexp)
 (global-unset-key (kbd "M-%"))
-
 (global-set-key (kbd "C-x C-\\") 'auto-complete-mode)
 ;; (global-unset-key nil)
 

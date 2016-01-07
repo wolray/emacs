@@ -45,6 +45,7 @@
 ;; editor
 
 (show-paren-mode 1)
+(electric-pair-mode 1)
 (delete-selection-mode 1)
 (setq-default indent-tabs-mode t)
 (setq x-select-enable-clipboard t)

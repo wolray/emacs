@@ -18,9 +18,66 @@
 ;; M-
 
 (define-key key-translation-map (kbd "M-h") (kbd "C-h"))
-(define-key key-translation-map (kbd "M-j") (kbd "C-g"))
-(define-key key-translation-map (kbd "M-k") (kbd "C-/"))
+(define-key key-translation-map (kbd "M-n") (kbd "C-g"))
+
+(define-key key-translation-map (kbd "M-j") (kbd "<left>"))
 (define-key key-translation-map (kbd "M-l") (kbd "<right>"))
+(define-key key-translation-map (kbd "M-k") (kbd "DEL"))
+
+(global-set-key (kbd "M-u")
+		'(lambda ()
+		   (interactive)
+		   (left-word 1)
+		   (upcase-word 1)))
+(global-set-key (kbd "M-o")
+		'(lambda ()
+		   (interactive)
+		   (left-word 1)
+		   (capitalize-word 1)))
+(global-set-key (kbd "M-i")
+		'(lambda ()
+		   (interactive)
+		   (left-word 1)
+		   (downcase-word 1)))
+
+;; transpose
+
+(global-set-key (kbd "M-p")
+		'(lambda ()
+		   (interactive)
+		   (move-beginning-of-line 1)
+		   (unless (bobp)
+		     (progn (next-line 1)
+			    (transpose-lines -1)
+			    (previous-line 2)))
+		   (move-end-of-line 1)))
+(global-set-key (kbd "M-]")
+		'(lambda ()
+		   (interactive)
+		   (move-end-of-line 1)
+		   (unless (eobp)
+		     (progn
+		       (next-line 1)
+		       (unless (eobp) (transpose-lines 1))
+		       (previous-line 1)
+		       (move-end-of-line 1)))))
+
+(global-set-key (kbd "M--")
+		'(lambda ()
+		   (interactive)
+		   (backward-paragraph 1)
+		   (unless (bobp)
+		     (progn
+		       (forward-paragraph 1)
+		       (transpose-paragraphs -1)
+		       (backward-paragraph 2)))
+		   (forward-paragraph 1)))
+(global-set-key (kbd "M-=")
+		'(lambda ()
+		   (interactive)
+		   (backward-paragraph 1)
+		   (forward-paragraph 1)
+		   (unless (eobp) (transpose-paragraphs 1))))
 
 ;; kill
 
@@ -89,44 +146,6 @@
 (define-key key-translation-map (kbd "C-x C-x") (kbd "C-@"))
 (define-key key-translation-map (kbd "C-M-[") (kbd "M-h"))
 (define-key key-translation-map (kbd "C-{") (kbd "C-M-@"))
-
-;; transpose
-
-(global-set-key (kbd "M-p")
-		'(lambda ()
-		   (previous-line 1)
-		   (next-line 1)
-		   (interactive)
-		   (transpose-lines 1)
-		   (previous-line 2)))
-(global-set-key (kbd "M-]")
-		'(lambda ()
-		   (interactive)
-		   (next-line 1)
-		   (if (eobp) (next-line 1)
-		     (progn (transpose-lines 1) (previous-line 1)))))
-
-(global-set-key (kbd "M--")
-		'(lambda ()
-		   (interactive)
-		   (transpose-paragraphs -1)
-		   (backward-paragraph 1)))
-(global-set-key (kbd "M-=")
-		'(lambda ()
-		   (backward-paragraph 1)
-		   (interactive)
-		   (forward-paragraph 1)
-		   (if (eobp) (next-line 1) (transpose-paragraphs 1))))
-
-(global-set-key (kbd "M-_")
-		'(lambda ()
-		   (interactive)
-		   (backward-sexp 2)
-		   (forward-sexp 2)
-		   (transpose-sexps -1)
-		   (backward-sexp 2)
-		   (forward-sexp 1)))
-(define-key key-translation-map (kbd "M-+") (kbd "C-M-t"))
 
 ;; buffer
 
@@ -245,8 +264,8 @@
        (message "Time difference inserted")))))
 (global-set-key (kbd "C-c C--") 'my-org-evaluate-time-range)
 (define-key key-translation-map (kbd "C-c C-=") (kbd "C-c ."))
-(define-key key-translation-map (kbd "C-c C-M-=") (kbd "C-c C-s"))
 (define-key key-translation-map (kbd "C-c C-M--") (kbd "C-c C-d"))
+(define-key key-translation-map (kbd "C-c C-M-=") (kbd "C-c C-s"))
 
 ;; unset-key
 
@@ -261,11 +280,13 @@
 (define-key key-translation-map (kbd "C-M-0") (kbd "C-0"))
 
 (define-key key-translation-map (kbd "M-a") (kbd "C-0"))
+(define-key key-translation-map (kbd "M-c") (kbd "C-0"))
 (define-key key-translation-map (kbd "M-e") (kbd "C-0"))
 (define-key key-translation-map (kbd "M-f") (kbd "C-0"))
+(define-key key-translation-map (kbd "M-q") (kbd "C-0"))
 (define-key key-translation-map (kbd "M-r") (kbd "C-0"))
 (define-key key-translation-map (kbd "M-s") (kbd "C-0"))
-(define-key key-translation-map (kbd "M-q") (kbd "C-0"))
+(define-key key-translation-map (kbd "M-t") (kbd "C-0"))
 (define-key key-translation-map (kbd "M-{") (kbd "C-0"))
 (define-key key-translation-map (kbd "M-}") (kbd "C-0"))
 (define-key key-translation-map (kbd "M-DEL") (kbd "C-0"))

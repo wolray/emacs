@@ -136,6 +136,7 @@
 (define-key key-translation-map (kbd "C-c C-M-]") (kbd "C-c C-x C-o"))
 
 (global-set-key (kbd "C-c C--") 'my-org-evaluate-time-range)
+(define-key key-translation-map (kbd "C-c C--") (kbd "C-c C--"))
 (define-key key-translation-map (kbd "C-c C-=") (kbd "C-c ."))
 (define-key key-translation-map (kbd "C-c C-M--") (kbd "C-c C-d"))
 (define-key key-translation-map (kbd "C-c C-M-=") (kbd "C-c C-s"))

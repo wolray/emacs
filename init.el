@@ -19,7 +19,10 @@
 ;; startup
 
 (setq default-directory "d:/sync/emacs/")
-(load "d:/sync/emacs/kbd.el")
+(add-to-list 'load-path "d:/sync/emacs/")
+(load "my-defun.el")
+(load "kbd.el")
+
 (setq inhibit-startup-message t)
 (setq make-backup-files nil)
 (setq ring-bell-function 'ignore)

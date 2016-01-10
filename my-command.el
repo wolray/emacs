@@ -8,10 +8,10 @@
   (if search-whitespace-regexp
       (progn
 	(setq search-whitespace-regexp nil)
-	(message "my-search-whitespace-regexp nil"))
+	(message "search-whitespace-regexp nil"))
     (progn
       (setq search-whitespace-regexp ".*?")
-      (message "my-search-whitespace-regexp .*?"))))
+      (message "search-whitespace-regexp \".*?\""))))
 
 (defun my-ac-sources ()
   (interactive)

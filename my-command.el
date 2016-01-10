@@ -1,15 +1,14 @@
 
-(defun my-load-file ()
-  (interactive)
-  (load-file buffer-file-name))
-
-(defun my-delete-trailing-whitespace ()
+(defun my-buffer-head ()
   (interactive)
   (save-excursion
     (beginning-of-buffer)
     (open-line 2)
-    (delete-blank-lines)
-    (delete-trailing-whitespace)))
+    (delete-blank-lines)))
+
+(defun my-load-file ()
+  (interactive)
+  (load-file buffer-file-name))
 
 (defun my-search-whitespace-regexp ()
   (interactive)

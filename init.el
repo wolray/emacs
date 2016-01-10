@@ -29,6 +29,10 @@
 (setq initial-scratch-message nil)
 (setq default-frame-alist '((height . 30)))
 
+;; save
+
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
 ;; frame
 
 (setq frame-title-format "")

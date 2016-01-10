@@ -105,7 +105,7 @@
 (define-key key-translation-map (kbd "C-x c") (kbd "C-x k"))
 (global-set-key (kbd "C-x DEL") 'revert-buffer)
 (global-set-key (kbd "C-x '") 'my-switch-to-buffer-scratch)
-(global-set-key (kbd "C-x \\") 'my-delete-trailing-whitespace)
+(global-set-key (kbd "C-x \\") 'my-buffer-head)
 (define-key key-translation-map (kbd "C-x C-\\") (kbd "C-x C-0"))
 
 ;; window

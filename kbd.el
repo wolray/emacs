@@ -1,7 +1,7 @@
 
 ;; C-
 
-(global-set-key (kbd "C-f") 'delete-pair)
+(global-set-key (kbd "C-d") 'delete-pair)
 (define-key key-translation-map (kbd "C-v") (kbd "C-o"))
 (define-key key-translation-map (kbd "C-z") (kbd "C-/"))
 (define-key key-translation-map (kbd "C-`") (kbd "C-u"))
@@ -11,7 +11,7 @@
 (global-set-key (kbd "C-<return>") 'my-insert-paragraph)
 (define-key key-translation-map (kbd "M-RET") (kbd "C-j"))
 
-(define-key key-translation-map (kbd "C-d") (kbd "C-0"))
+(define-key key-translation-map (kbd "C-f") (kbd "C-0"))
 (define-key key-translation-map (kbd "C-t") (kbd "C-0"))
 
 ;; kill
@@ -20,8 +20,8 @@
 (define-key key-translation-map (kbd "C-e") (kbd "C-y"))
 
 (global-set-key (kbd "C-<backspace>") 'backward-kill-word)
-(define-key key-translation-map (kbd "C-S-<backspace>") (kbd "ESC <C-backspace>"))
-(global-set-key (kbd "C-M-<backspace>") 'backward-kill-paragraph)
+(define-key key-translation-map (kbd "C-M-<backspace>") (kbd "ESC <C-backspace>"))
+(global-set-key (kbd "C-S-<backspace>") 'backward-kill-paragraph)
 
 (global-set-key (kbd "C-w") 'my-kill-region)
 (global-set-key (kbd "M-w") 'my-kill-ring-save)

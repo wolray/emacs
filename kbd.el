@@ -45,8 +45,6 @@
 
 (global-set-key (kbd "M-DEL") 'my-delete-blank-lines)
 
-(global-set-key (kbd "M-s") 'my-search-whitespace-regexp)
-
 ;; comment
 
 (global-set-key (kbd "M-'") 'comment-kill)
@@ -94,9 +92,12 @@
 
 ;; buffer
 
-(define-key key-translation-map (kbd "M-+") (kbd "M->"))
+(define-key key-translation-map (kbd "M-P") (kbd "M-<"))
 (define-key key-translation-map (kbd "M-{") (kbd "C-x h"))
-(define-key key-translation-map (kbd "M-_") (kbd "M-<"))
+(define-key key-translation-map (kbd "M-}") (kbd "M->"))
+
+(define-key key-translation-map (kbd "M-_") (kbd "M-<begin>"))
+(define-key key-translation-map (kbd "M-+") (kbd "ESC <end>"))
 
 (define-key key-translation-map (kbd "C-x c") (kbd "C-x k"))
 (global-set-key (kbd "C-x DEL") 'revert-buffer)
@@ -184,5 +185,4 @@
 (define-key key-translation-map (kbd "M-v") (kbd "C-0"))
 (define-key key-translation-map (kbd "M-b") (kbd "C-0"))
 
-(define-key key-translation-map (kbd "M-}") (kbd "C-0"))
 (define-key key-translation-map (kbd "M-/") (kbd "C-0"))

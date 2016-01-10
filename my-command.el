@@ -8,10 +8,10 @@
   (if search-whitespace-regexp
       (progn
 	(setq search-whitespace-regexp nil)
-	(message "nil"))
+	(message "my-search-whitespace-regexp nil"))
     (progn
       (setq search-whitespace-regexp ".*?")
-      (message ".*?"))))
+      (message "my-search-whitespace-regexp .*?"))))
 
 (defun my-ac-sources ()
   (interactive)
@@ -25,14 +25,14 @@
 				ac-source-functions
 				ac-source-variables
 				)))
-	(message "%d" (length ac-sources)))
+	(message "(length ac-sources) %d" (length ac-sources)))
     (progn
       (setq-default ac-sources
 		    '(
 		      ac-source-words-in-same-mode-buffers ;default
 		      ac-source-files-in-current-dir
 		      ))
-      (message "2"))))
+      (message "(length ac-sources) 2"))))
 
 (defun my-delete-forward-char ()
   (interactive)

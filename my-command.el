@@ -15,7 +15,7 @@
 
 (defun my-ac-sources ()
   (interactive)
-  (unless (auto-complete-mode) (auto-complete-mode))
+  (unless auto-complete-mode (auto-complete-mode))
   (if (= (length ac-sources) 2)
       (progn
 	(setq-default ac-sources
@@ -39,27 +39,16 @@
   (delete-forward-char 1)
   (just-one-space))
 
-(defun my-delete-blank-lines ()
-  (interactive)
-  (if (bobp) (progn (delete-blank-lines) (end-of-paragraph-text))
-    (progn
-      (backward-paragraph 1)
-      (end-of-paragraph-text)
-      (delete-blank-lines))))
-
 (defun my-insert-paragraph ()
   (interactive)
-  (move-end-of-line 1)
-  (if (bobp) (progn (newline 1) (open-line 1))
-    (progn
-      (newline 1)
-      (my-delete-blank-lines)
-      (newline 2)
-      (forward-paragraph 1)
-      (if (eobp) (previous-line 1)
-	(progn 
-	  (backward-paragraph 1)
-	  (open-line 1))))))
+  (cond ((bobp) (newline 1) (open-line 1))
+	((eobp) (newline 1))
+	((not (or (bobp) (eobp)))
+	 (left-char 1)
+	 (move-end-of-line 1)
+	 (delete-blank-lines)
+	 (newline 2)
+	 (open-line 1))))
 
 (defun my-kill-region ()
   (interactive)
@@ -135,11 +124,11 @@
        (re-search-forward org-tsr-regexp (point-at-eol) t))
      (if (not (org-at-timestamp-p))
 	 (user-error "")))
-   (let ((ts1 (match-string 0))
-	 (time1 (org-time-string-to-time ts1))
-	 (t1 (time-to-days time1))
-	 (t2 (time-to-days (current-time)))
-	 (diff (- t2 t1)))
+   (let* ((ts1 (match-string 0))
+	  (time1 (org-time-string-to-time ts1))
+	  (t1 (time-to-days time1))
+	  (t2 (time-to-days (current-time)))
+	  (diff (- t2 t1)))
      (message "%s" (my-org-make-tdiff-string diff)))))
 
 (defun my-transpose-lines-up ()

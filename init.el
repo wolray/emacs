@@ -28,7 +28,6 @@
 (setq ring-bell-function 'ignore)
 (setq initial-scratch-message nil)
 (setq default-frame-alist '((height . 30)))
-(setq search-whitespace-regexp ".*?")
 
 ;; frame
 

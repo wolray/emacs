@@ -20,7 +20,7 @@
 
 (setq default-directory "d:/sync/emacs/")
 (add-to-list 'load-path "d:/sync/emacs/")
-(load "my-defun.el")
+(load "my-command.el")
 (load "kbd.el")
 
 (setq inhibit-startup-message t)
@@ -93,11 +93,6 @@
 (ac-linum-workaround)
 (setq ac-auto-start nil)
 (ac-set-trigger-key "<tab>")
-(setq-default ac-sources
-	      '(
-		ac-source-words-in-same-mode-buffers ;default
-		ac-source-files-in-current-dir
-		))
 (add-hook 'org-mode-hook 'auto-complete-mode)
 (add-hook 'matlab-mode-hook 'auto-complete-mode)
 

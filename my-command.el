@@ -3,6 +3,14 @@
   (interactive)
   (load-file buffer-file-name))
 
+(defun my-delete-trailing-whitespace ()
+  (interactive)
+  (save-excursion
+    (beginning-of-buffer)
+    (open-line 2)
+    (delete-blank-lines)
+    (delete-trailing-whitespace)))
+
 (defun my-search-whitespace-regexp ()
   (interactive)
   (if search-whitespace-regexp

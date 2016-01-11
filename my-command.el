@@ -3,8 +3,10 @@
   (interactive)
   (save-excursion
     (beginning-of-buffer)
-    (open-line 2)
-    (delete-blank-lines)))
+    (start-of-paragraph-text)
+    (unless (= (line-number-at-pos) 2)
+      (open-line 2)
+      (delete-blank-lines))))
 
 (defun my-load-file ()
   (interactive)

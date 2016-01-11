@@ -6,7 +6,9 @@
 (define-key key-translation-map (kbd "C-z") (kbd "C-/"))
 (define-key key-translation-map (kbd "C-`") (kbd "C-u"))
 (define-key key-translation-map (kbd "C-<tab>") (kbd "C-x o"))
+
 (global-set-key (kbd "C-\\") 'delete-indentation)
+(global-set-key (kbd "C-M-\\") 'delete-blank-lines)
 
 (global-set-key (kbd "C-<return>") 'my-insert-paragraph)
 (define-key key-translation-map (kbd "M-RET") (kbd "C-j"))
@@ -45,8 +47,6 @@
 (global-set-key (kbd "M-O") 'my-capitalize-word)
 (global-set-key (kbd "M-I") 'my-downcase-word)
 (global-set-key (kbd "M-U") 'my-upcase-word)
-
-(global-set-key (kbd "M-DEL") 'delete-blank-lines)
 
 ;; comment
 
@@ -192,3 +192,5 @@
 (define-key key-translation-map (kbd "M-,") (kbd "C-0"))
 (define-key key-translation-map (kbd "M-.") (kbd "C-0"))
 (define-key key-translation-map (kbd "M-/") (kbd "C-0"))
+
+(define-key key-translation-map (kbd "M-DEL") (kbd "C-0"))

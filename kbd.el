@@ -22,8 +22,8 @@
 (define-key key-translation-map (kbd "C-e") (kbd "C-y"))
 
 (global-set-key (kbd "C-<backspace>") 'backward-kill-word)
-(define-key key-translation-map (kbd "C-M-<backspace>") (kbd "ESC <C-backspace>"))
-(global-set-key (kbd "C-S-<backspace>") 'backward-kill-paragraph)
+(global-set-key (kbd "C-M-<backspace>") 'backward-kill-paragraph)
+(define-key key-translation-map (kbd "C-S-<backspace>") (kbd "ESC <C-backspace>"))
 
 (global-set-key (kbd "C-w") 'my-kill-region)
 (global-set-key (kbd "M-w") 'my-kill-ring-save)
@@ -34,13 +34,13 @@
 (define-key key-translation-map (kbd "M-n") (kbd "C-g"))
 
 (define-key key-translation-map (kbd "M-j") (kbd "<left>"))
-(define-key key-translation-map (kbd "M-J") (kbd "<up>"))
+(define-key key-translation-map (kbd "M-J") (kbd "C-<left>"))
 (define-key key-translation-map (kbd "M-l") (kbd "<right>"))
-(define-key key-translation-map (kbd "M-L") (kbd "<down>"))
+(define-key key-translation-map (kbd "M-L") (kbd "C-<right>"))
 (define-key key-translation-map (kbd "M-k") (kbd "DEL"))
-(define-key key-translation-map (kbd "M-K") (kbd "<deletechar>"))
+(define-key key-translation-map (kbd "M-K") (kbd "C-<backspace>"))
 
-(global-set-key (kbd "M-u") 'my-delete-forward-char)
+(define-key key-translation-map (kbd "M-u") (kbd "<deletechar>"))
 (define-key key-translation-map (kbd "M-i") (kbd "C-/"))
 (define-key key-translation-map (kbd "M-o") (kbd "RET"))
 
@@ -65,11 +65,11 @@
 (global-set-key (kbd "C-p") 'my-move-beginning-of-line)
 (global-set-key (kbd "C-]") 'my-move-end-of-line)
 
-(define-key key-translation-map (kbd "C-S-p") (kbd "M-{"))
-(define-key key-translation-map (kbd "C-}") (kbd "M-}"))
+(define-key key-translation-map (kbd "C-M-p") (kbd "M-{"))
+(define-key key-translation-map (kbd "C-M-]") (kbd "M-}"))
 
-(define-key key-translation-map (kbd "C-M-p") (kbd "C-M-b"))
-(define-key key-translation-map (kbd "C-M-]") (kbd "C-M-f"))
+(define-key key-translation-map (kbd "C-S-p") (kbd "C-M-b"))
+(define-key key-translation-map (kbd "C-}") (kbd "C-M-f"))
 
 (global-set-key (kbd "C-M-S-p") 'backward-up-list)
 (global-set-key (kbd "C-M-{") 'down-list)
@@ -78,11 +78,11 @@
 (define-key key-translation-map (kbd "C--") (kbd "C-<left>"))
 (define-key key-translation-map (kbd "C-=") (kbd "C-<right>"))
 
-(define-key key-translation-map (kbd "C-M--") (kbd "<left>"))
-(define-key key-translation-map (kbd "C-M-=") (kbd "<right>"))
+(define-key key-translation-map (kbd "C-M--") (kbd "<up>"))
+(define-key key-translation-map (kbd "C-M-=") (kbd "<down>"))
 
-(define-key key-translation-map (kbd "C-_") (kbd "<up>"))
-(define-key key-translation-map (kbd "C-+") (kbd "<down>"))
+(define-key key-translation-map (kbd "C-_") (kbd "<left>"))
+(define-key key-translation-map (kbd "C-+") (kbd "<right>"))
 
 (define-key key-translation-map (kbd "C-M-_") (kbd "C-x <left>"))
 (define-key key-translation-map (kbd "C-M-+") (kbd "C-x <right>"))
@@ -96,13 +96,14 @@
 
 (define-key key-translation-map (kbd "C-x C-a") (kbd "C-x h"))
 (define-key key-translation-map (kbd "C-x C-x") (kbd "C-@"))
-(define-key key-translation-map (kbd "C-{") (kbd "M-h"))
-(define-key key-translation-map (kbd "C-M-[") (kbd "C-M-@"))
+(define-key key-translation-map (kbd "C-M-[") (kbd "M-h"))
+(define-key key-translation-map (kbd "C-{") (kbd "C-M-@"))
 
 ;; buffer
 
-(define-key key-translation-map (kbd "C-x C-b") (kbd "C-x b"))
 (define-key key-translation-map (kbd "C-x c") (kbd "C-x k"))
+(define-key key-translation-map (kbd "C-x C-b") (kbd "C-x b"))
+(global-set-key (kbd "C-x v") 'my-switch-to-minibuffer)
 (global-set-key (kbd "C-x DEL") 'revert-buffer)
 (global-set-key (kbd "C-x '") 'my-switch-to-buffer-scratch)
 (global-set-key (kbd "C-x \\") 'my-buffer-head)

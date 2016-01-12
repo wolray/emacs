@@ -12,15 +12,20 @@
   (interactive)
   (load-file buffer-file-name))
 
+(defun my-switch-to-minibuffer ()
+  (interactive)
+  (when (active-minibuffer-window)
+    (select-window (active-minibuffer-window))))
+
 (defun my-search-whitespace-regexp ()
   (interactive)
-  (if search-whitespace-regexp
+  (if (equal search-whitespace-regexp "\\s-+")
       (progn
-	(setq search-whitespace-regexp nil)
-	(message "search-whitespace-regexp nil"))
+	(setq search-whitespace-regexp ".*?")
+	(message "search-whitespace-regexp \".*?\""))
     (progn
-      (setq search-whitespace-regexp ".*?")
-      (message "search-whitespace-regexp \".*?\""))))
+      (setq search-whitespace-regexp "\\s-+")
+      (message "search-whitespace-regexp \"\\\\s-+\""))))
 
 (defun my-ac-sources ()
   (interactive)

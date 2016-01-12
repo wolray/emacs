@@ -19,7 +19,7 @@
 ;; startup
 
 (setq default-directory "d:/sync/emacs/")
-(add-to-list 'load-path "d:/sync/emacs/")
+(add-to-list 'load-path "d:/sync/emacs/emacs.d/")
 (load "my-command.el")
 (load "kbd.el")
 

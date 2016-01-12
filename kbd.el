@@ -94,10 +94,10 @@
 (define-key key-translation-map (kbd "M-_") (kbd "M-<"))
 (define-key key-translation-map (kbd "M-+") (kbd "M->"))
 
-(define-key key-translation-map (kbd "C-x C-a") (kbd "C-x h"))
-(define-key key-translation-map (kbd "C-x C-x") (kbd "C-@"))
+(define-key key-translation-map (kbd "C-f") (kbd "C-@"))
 (define-key key-translation-map (kbd "C-M-[") (kbd "M-h"))
 (define-key key-translation-map (kbd "C-{") (kbd "C-M-@"))
+(define-key key-translation-map (kbd "C-x C-a") (kbd "C-x h"))
 
 ;; buffer
 

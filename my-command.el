@@ -48,11 +48,6 @@
 		      ))
       (message "(length ac-sources) 2"))))
 
-(defun my-delete-forward-char ()
-  (interactive)
-  (delete-forward-char 1)
-  (just-one-space))
-
 (defun my-insert-paragraph ()
   (interactive)
   (cond ((bobp) (newline 1) (open-line 1))

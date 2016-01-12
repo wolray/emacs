@@ -142,6 +142,7 @@
 (define-key key-translation-map (kbd "C-c ;") (kbd "C-c }"))
 (define-key key-translation-map (kbd "C-c C-s") (kbd "C-c ^"))
 (define-key key-translation-map (kbd "C-c C-d") (kbd "C-c /"))
+(define-key key-translation-map (kbd "C-c C-z") (kbd "C-c C-z"))
 
 (define-key key-translation-map (kbd "C-c [") (kbd "C-c C-u"))
 (define-key key-translation-map (kbd "C-c C-p") (kbd "C-c C-b"))

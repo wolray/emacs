@@ -19,7 +19,7 @@
 (delete-selection-mode 1)
 (setq-default indent-tabs-mode t)
 (setq x-select-enable-clipboard t)
-;; (fset 'yes-or-no-p 'y-or-n-p)
+(fset 'yes-or-no-p 'y-or-n-p)
 
 ;; org-mode
 

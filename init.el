@@ -22,7 +22,7 @@
 (add-to-list 'load-path "d:/sync/emacs/emacs.d/")
 (load "config.el")
 (load "my-command.el")
-(load "kbd.el")
+(load "ahk.el")
 
 ;; frame
 

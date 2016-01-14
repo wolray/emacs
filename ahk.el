@@ -174,6 +174,11 @@
 (define-key key-translation-map (kbd "C-`") (kbd "C-u"))
 (define-key key-translation-map (kbd "C-<tab>") (kbd "C-x o"))
 
+;; C-1/2/3
+
+(global-set-key (kbd "C-1") 'my-ac-sources)
+(global-set-key (kbd "C-2") 'my-search-whitespace-regexp)
+
 ;; C-x
 
 (global-set-key (kbd "C-x g") 'magit-status)

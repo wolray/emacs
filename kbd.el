@@ -184,7 +184,7 @@
 
 (define-key key-translation-map (kbd "C-x C-a") (kbd "C-x h"))
 (define-key key-translation-map (kbd "C-x C-f") (kbd "C-x C-f"))
-(global-set-key (kbd "C-x C-d") 'my-load-file)
+(global-set-key (kbd "C-x C-d") 'eval-buffer)
 (define-key key-translation-map (kbd "C-x C-d") (kbd "C-x C-d"))
 (define-key key-translation-map (kbd "C-x C-e") (kbd "C-x C-e"))
 (global-set-key (kbd "C-x C-v") 'my-switch-to-minibuffer)

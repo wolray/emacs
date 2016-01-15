@@ -8,10 +8,6 @@
       (open-line 2)
       (delete-blank-lines))))
 
-(defun my-load-file ()
-  (interactive)
-  (load-file buffer-file-name))
-
 (defun my-switch-to-minibuffer ()
   (interactive)
   (when (active-minibuffer-window)
@@ -35,10 +31,9 @@
 	(setq-default ac-sources
 		      (append ac-sources
 			      '(
-				ac-source-words-in-all-buffer
+				ac-source-files-in-current-dir
 				ac-source-functions
 				ac-source-variables
-				ac-source-files-in-current-dir
 				)))
 	(message "(length ac-sources) %d" (length ac-sources)))
     (progn

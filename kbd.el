@@ -92,8 +92,8 @@
 (global-set-key (kbd "C-S-<return>") 'my-insert-paragraph)
 (define-key key-translation-map (kbd "C-M-<return>") (kbd "C-0"))
 
-(define-key key-translation-map (kbd "C-;") (kbd "C-x <left>"))
-(define-key key-translation-map (kbd "C-'") (kbd "C-x <right>"))
+(define-key key-translation-map (kbd "C-;") (kbd "C-0"))
+(define-key key-translation-map (kbd "C-'") (kbd "C-0"))
 (define-key key-translation-map (kbd "M-;") (kbd "M-;"))
 (global-set-key (kbd "M-'") 'comment-kill)
 (define-key key-translation-map (kbd "C-M-;") (kbd "M-;"))
@@ -146,25 +146,25 @@
 
 ;; C-
 
-(global-set-key (kbd "C-f") 'ace-jump-buffer)
-(global-set-key (kbd "C-S-f") 'ace-jump-buffer-other-window)
-
-(global-set-key (kbd "C-w") 'my-kill-region)
-(global-set-key (kbd "M-w") 'my-kill-ring-save)
-(global-set-key (kbd "C-M-w") 'my-kill-ring-save)
-
 (define-key key-translation-map (kbd "C-M-<up>") (kbd "C-x ^"))
 (global-set-key (kbd "C-M-<down>") 'shrink-window)
 (define-key key-translation-map (kbd "C-M-<left>") (kbd "C-x {"))
 (define-key key-translation-map (kbd "C-M-<right>") (kbd "C-x }"))
 
 (define-key key-translation-map (kbd "C-a") (kbd "C-k"))
+(define-key key-translation-map (kbd "C-b") (kbd "C-x <left>"))
+(define-key key-translation-map (kbd "C-S-b") (kbd "C-x <right>"))
 (define-key key-translation-map (kbd "C-d") (kbd "C-@"))
 (define-key key-translation-map (kbd "C-e") (kbd "C-y"))
+(global-set-key (kbd "C-f") 'ace-jump-buffer)
+(global-set-key (kbd "C-S-f") 'ace-jump-buffer-other-window)
 (define-key key-translation-map (kbd "C-h") (kbd "C-0"))
 (define-key key-translation-map (kbd "C-n") (kbd "n"))
 (global-set-key (kbd "C-t") 'delete-pair)
 (define-key key-translation-map (kbd "C-v") (kbd "C-o"))
+(global-set-key (kbd "C-w") 'my-kill-region)
+(global-set-key (kbd "M-w") 'my-kill-ring-save)
+(global-set-key (kbd "C-M-w") 'my-kill-ring-save)
 (define-key key-translation-map (kbd "C-y") (kbd "y"))
 (define-key key-translation-map (kbd "C-z") (kbd "C-/"))
 
@@ -211,6 +211,7 @@
 
 (define-key key-translation-map (kbd "M-a") (kbd "C-0"))
 (define-key key-translation-map (kbd "M-s") (kbd "C-0"))
+(define-key key-translation-map (kbd "M-d") (kbd "C-0"))
 (define-key key-translation-map (kbd "M-f") (kbd "C-0"))
 (define-key key-translation-map (kbd "M-g") (kbd "C-0"))
 

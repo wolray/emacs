@@ -41,12 +41,18 @@
              '("melpa" . "http://melpa.org/packages/"))
 (package-initialize)
 
+(package-install 'auto-complete)
+(package-install 'magit)
+(package-install 'matlab-mode)
+(package-install 'ace-jump-mode)
+(package-install 'ace-jump-buffer)
+
 (defun my-package-menu-mode-hook ()
   (local-set-key (kbd "]") 'next-line)
   (local-unset-key (kbd "n")))
 (add-hook 'package-menu-mode-hook 'my-package-menu-mode-hook)
 
-;; installed-package (auto-complete)
+;; auto-complete
 
 (global-auto-complete-mode t)
 (ac-linum-workaround)
@@ -55,7 +61,7 @@
 (add-hook 'org-mode-hook 'auto-complete-mode)
 (add-hook 'matlab-mode-hook 'auto-complete-mode)
 
-;; installed-package (magit)
+;; magit
 
 (setenv "GIT_ASKPASS" "git-gui--askpass")
 

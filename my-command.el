@@ -30,7 +30,7 @@
 (defun my-ac-sources ()
   (interactive)
   (unless auto-complete-mode (auto-complete-mode))
-  (if (= (length ac-sources) 2)
+  (if (= (length ac-sources) 1)
       (progn
 	(setq-default ac-sources
 		      (append ac-sources
@@ -38,15 +38,19 @@
 				ac-source-words-in-all-buffer
 				ac-source-functions
 				ac-source-variables
+				ac-source-files-in-current-dir
 				)))
 	(message "(length ac-sources) %d" (length ac-sources)))
     (progn
       (setq-default ac-sources
 		    '(
 		      ac-source-words-in-same-mode-buffers ;default
-		      ac-source-files-in-current-dir
 		      ))
-      (message "(length ac-sources) 2"))))
+	(message "(length ac-sources) %d" (length ac-sources)))))
+
+(defun my-beginning-and-end-of-buffer ()
+  (interactive)
+  (if (bobp) (end-of-buffer) (beginning-of-buffer)))
 
 (defun my-insert-paragraph ()
   (interactive)

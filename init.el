@@ -17,7 +17,6 @@
  )
 
 ;; load
-
 (setq default-directory "d:/sync/emacs/")
 (add-to-list 'load-path "d:/sync/emacs/emacs.d/")
 (load "config.el")
@@ -25,26 +24,22 @@
 (load "kbd.el")
 
 ;; frame
-
 (setq frame-title-format "")
 (tool-bar-mode 0)
 (menu-bar-mode 0)
 (setq default-frame-alist '((height . 30)))
 
 ;; startup
-
 (setq inhibit-startup-message t)
 (setq make-backup-files nil)
 (setq ring-bell-function 'ignore)
 (setq initial-scratch-message nil)
 
 ;; language
-
 (set-language-environment 'chinese-gbk)
 (set-keyboard-coding-system 'chinese-gbk-dos)
 (set-buffer-file-coding-system 'chinese-gbk-dos)
 
 ;; font
-
 (set-default-font "monaco-11")
 (set-fontset-font "fontset-default" 'gb18030 "kaiti-13")

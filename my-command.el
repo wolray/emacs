@@ -20,16 +20,6 @@
   (when (active-minibuffer-window)
     (select-window (active-minibuffer-window))))
 
-(defun my-search-whitespace-regexp ()
-  (interactive)
-  (if (equal search-whitespace-regexp "\\s-+")
-      (progn
-	(setq search-whitespace-regexp ".*?")
-	(message "search-whitespace-regexp \".*?\""))
-    (progn
-      (setq search-whitespace-regexp "\\s-+")
-      (message "search-whitespace-regexp \"\\\\s-+\""))))
-
 (defun my-ac-sources ()
   (interactive)
   (unless auto-complete-mode (auto-complete-mode))

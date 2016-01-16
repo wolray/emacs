@@ -1,12 +1,14 @@
 
 (defun my-buffer-paragraph-style ()
   (interactive)
-  (save-excursion
-    (beginning-of-buffer)
-    (while (not (eobp))
-      (open-line 2)
-      (delete-blank-lines)
-      (forward-paragraph 1))))
+  (unless
+      (not (y-or-n-p (format "my-buffer-paragraph-style?")))
+    (save-excursion
+      (beginning-of-buffer)
+      (while (not (eobp))
+	(open-line 2)
+	(delete-blank-lines)
+	(forward-paragraph 1)))))
 
 (defun my-page-up ()
   (interactive)

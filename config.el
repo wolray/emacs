@@ -18,10 +18,12 @@
 (setq x-select-enable-clipboard t)
 (fset 'yes-or-no-p 'y-or-n-p)
 
-;; my-major-mode
-(defun my-local-unset-key ()
+;; my-major-mode-hook
+(defun my-major-mode-hook ()
+  (auto-complete-mode)
   (local-unset-key (kbd "M-p"))
-  (local-unset-key (kbd "M-n")))
+  (local-unset-key (kbd "M-n"))
+  )
 
 ;; package-initialize
 (require 'package)
@@ -36,36 +38,22 @@
 (defun my-package-menu-mode-hook ()
   (local-set-key (kbd "]") 'next-line)
   (local-unset-key (kbd "n"))
-  (my-local-unset-key))
+  (my-major-mode-hook)
+  )
 (add-hook 'package-menu-mode-hook 'my-package-menu-mode-hook)
-
-;; org-mode
-(setq org-startup-indented t)
-(defun org-summary-todo (n-done n-not-done)
-  "Switch entry to DONE when all subentries are done, to TODO otherwise."
-  (let (org-log-done org-log-states)   ; turn off logging
-    (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
-(add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
-(defun my-org-mode-hook ()
-  (my-local-unset-key))
-(add-hook 'org-mode-hook 'my-org-mode-hook)
-
-;; python-mode
-(setq python-indent-offset 4)
 
 ;; auto-complete
 (global-auto-complete-mode t)
 (ac-linum-workaround)
 (setq ac-auto-start nil)
 (ac-set-trigger-key "<tab>")
-(add-hook 'matlab-mode-hook 'auto-complete-mode)
 
 ;; magit
 (setenv "GIT_ASKPASS" "git-gui--askpass")
 (defun my-magit-mode-hook ()
-  (auto-complete-mode)
   (local-set-key (kbd "]") 'magit-section-forward)
-  (my-local-unset-key))
+  (my-major-mode-hook)
+  )
 (add-hook 'magit-mode-hook 'my-magit-mode-hook)
 (defun my-magit-status-sections-hook ()
 	(magit-insert-status-headers)
@@ -99,7 +87,20 @@
 (add-hook 'magit-status-headers-hook 'my-magit-status-headers-hook)
 
 ;; markdown-mode
-(defun my-markdown-mode-hook ()
-  (auto-complete-mode)
-  (my-local-unset-key))
-(add-hook 'markdown-mode-hook 'my-markdown-mode-hook)
+(add-hook 'markdown-mode-hook 'my-major-mode-hook)
+
+;; matlab-mode
+(add-hook 'matlab-mode-hook 'my-major-mode-hook)
+
+;; org-mode
+(setq org-startup-indented t)
+(defun org-summary-todo (n-done n-not-done)
+  "Switch entry to DONE when all subentries are done, to TODO otherwise."
+  (let (org-log-done org-log-states)   ; turn off logging
+    (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
+(add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
+(add-hook 'org-mode-hook 'my-major-mode-hook)
+
+;; python-mode
+(setq python-indent-offset 4)
+(add-hook 'python-mode-hook 'my-major-mode-hook)

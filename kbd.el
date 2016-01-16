@@ -75,11 +75,11 @@
 (global-set-key (kbd "C-x \\") 'my-buffer-paragraph-style)
 (define-key key-translation-map (kbd "C-x C-\\") (kbd "C-x k"))
 
-;; <retrun
+;; <return>
 (global-set-key (kbd "C-<return>") 'newline)
 (define-key key-translation-map (kbd "C-M-<return>") (kbd "M-0"))
 (define-key key-translation-map (kbd "C-S-<return>") (kbd "M-0"))
-(global-set-key (kbd "M-RET") 'my-insert-paragraph)
+(global-set-key (kbd "M-RET") 'eval-last-sexp)
 
 ;; ;
 (define-key key-translation-map (kbd "C-;") (kbd "M-0"))
@@ -161,7 +161,7 @@
 (define-key key-translation-map (kbd "C-e") (kbd "C-y"))
 (define-key key-translation-map (kbd "M-e") (kbd "C-y"))
 (define-key key-translation-map (kbd "C-M-e") (kbd "M-0"))
-(define-key key-translation-map (kbd "C-x C-e") (kbd "C-x C-e"))
+(define-key key-translation-map (kbd "C-x C-e") (kbd "M-0"))
 
 ;; r
 (define-key key-translation-map (kbd "C-r") (kbd "C-M-r"))

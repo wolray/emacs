@@ -1,12 +1,19 @@
 
-(defun my-buffer-head ()
+(defun my-buffer-paragraph-style ()
   (interactive)
   (save-excursion
     (beginning-of-buffer)
-    (start-of-paragraph-text)
-    (unless (= (line-number-at-pos) 2)
+    (while (not (eobp))
       (open-line 2)
-      (delete-blank-lines))))
+      (delete-blank-lines)
+      (forward-paragraph 1))))
+
+(defun my-page-up ()
+  (interactive)
+  (move-beginning-of-line -9))
+(defun my-page-down ()
+  (interactive)
+  (move-beginning-of-line 11))
 
 (defun my-switch-to-minibuffer ()
   (interactive)

@@ -42,10 +42,9 @@
 (package-initialize)
 
 (package-install 'auto-complete)
+(package-install 'avy)
 (package-install 'magit)
 (package-install 'matlab-mode)
-(package-install 'ace-jump-mode)
-(package-install 'ace-jump-buffer)
 
 (defun my-package-menu-mode-hook ()
   (local-set-key (kbd "]") 'next-line)

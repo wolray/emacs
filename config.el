@@ -28,7 +28,7 @@
 ;; package-initialize
 (require 'package)
 (add-to-list 'package-archives
-             '("melpa" . "https://melpa.org/packages/"))
+             '("melpa" . "http://melpa.org/packages/"))
 (package-initialize)
 (package-install 'auto-complete)
 (package-install 'avy)

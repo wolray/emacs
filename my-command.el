@@ -46,17 +46,6 @@
   (interactive)
   (if (bobp) (end-of-buffer) (beginning-of-buffer)))
 
-(defun my-insert-paragraph ()
-  (interactive)
-  (cond ((bobp) (newline 1) (open-line 1))
-	((eobp) (newline 1))
-	((not (or (bobp) (eobp)))
-	 (left-char 1)
-	 (move-end-of-line 1)
-	 (delete-blank-lines)
-	 (newline 2)
-	 (open-line 1))))
-
 (defun my-kill-region ()
   (interactive)
   (if (region-active-p)
@@ -93,10 +82,6 @@
 (defun my-move-end-of-line ()
   (interactive)
   (move-end-of-line (if (eolp) 2 1)))
-
-(defun my-switch-to-buffer-scratch ()
-  (interactive)
-  (switch-to-buffer "*scratch*"))
 
 (defun my-org-make-tdiff-string (diff)
   (let ((y (floor (/ diff 365)))

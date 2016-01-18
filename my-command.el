@@ -10,12 +10,30 @@
 	(delete-blank-lines)
 	(forward-paragraph 1)))))
 
+(defvar my-page-jump-range 5)
+(make-variable-buffer-local 'my-page-jump-range)
+(defun my-page-jump-minus ()
+  (interactive)
+  (cond ((= my-page-jump-range 5) nil)
+	((= my-page-jump-range 10) (setq my-page-jump-range 5))
+	((= my-page-jump-range 20) (setq my-page-jump-range 10))
+	((= my-page-jump-range 50) (setq my-page-jump-range 20))
+	((= my-page-jump-range 100) (setq my-page-jump-range 50)))
+  (message (format "my-page-jump-range %d" my-page-jump-range)))
+(defun my-page-jump-plus ()
+  (interactive)
+  (cond ((= my-page-jump-range 5) (setq my-page-jump-range 10))
+	((= my-page-jump-range 10) (setq my-page-jump-range 20))
+	((= my-page-jump-range 20) (setq my-page-jump-range 50))
+	((= my-page-jump-range 50) (setq my-page-jump-range 100))
+	((= my-page-jump-range 100) nil))
+  (message (format "my-page-jump-range %d" my-page-jump-range)))
 (defun my-page-up ()
   (interactive)
-  (move-beginning-of-line -9))
+  (move-beginning-of-line (- (1- my-page-jump-range))))
 (defun my-page-down ()
   (interactive)
-  (move-beginning-of-line 11))
+  (move-beginning-of-line (1+ my-page-jump-range)))
 
 (defun my-switch-to-minibuffer ()
   (interactive)
@@ -27,20 +45,20 @@
   (unless auto-complete-mode (auto-complete-mode))
   (if (= (length ac-sources) 1)
       (progn
-	(setq-default ac-sources
-		      (append ac-sources
-			      '(
-				ac-source-files-in-current-dir
-				ac-source-functions
-				ac-source-variables
-				)))
+	(setq ac-sources
+	      (append ac-sources
+		      '(
+			ac-source-files-in-current-dir
+			ac-source-functions
+			ac-source-variables
+			)))
 	(message "(length ac-sources) %d" (length ac-sources)))
     (progn
-      (setq-default ac-sources
-		    '(
-		      ac-source-words-in-same-mode-buffers ;default
-		      ))
-	(message "(length ac-sources) %d" (length ac-sources)))))
+      (setq ac-sources
+	    '(
+	      ac-source-words-in-same-mode-buffers ;default
+	      ))
+      (message "(length ac-sources) %d" (length ac-sources)))))
 
 (defun my-beginning-and-end-of-buffer ()
   (interactive)

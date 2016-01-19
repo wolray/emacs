@@ -17,7 +17,8 @@
 	((= page-range 10) (setq page-range 5))
 	((= page-range 20) (setq page-range 10))
 	((= page-range 50) (setq page-range 20))
-	((= page-range 100) (setq page-range 50)))
+	((= page-range 100) (setq page-range 50))
+	(t (setq page-range 5)))
   (message (format "page-range %d" page-range)))
 (defun my-page-jump-plus ()
   (interactive)
@@ -25,7 +26,8 @@
 	((= page-range 10) (setq page-range 20))
 	((= page-range 20) (setq page-range 50))
 	((= page-range 50) (setq page-range 100))
-	((= page-range 100) nil))
+	((= page-range 100) nil)
+	(t (setq page-range 5)))
   (message (format "page-range %d" page-range)))
 (defun my-page-up ()
   (interactive)
@@ -42,7 +44,7 @@
 (defun my-ac-sources ()
   (interactive)
   (unless auto-complete-mode (auto-complete-mode))
-  (if (= (length ac-sources) 1)
+  (if (<= (length ac-sources) 2)
       (progn
 	(setq ac-sources
 	      (append ac-sources
@@ -53,10 +55,7 @@
 			)))
 	(message "(length ac-sources) %d" (length ac-sources)))
     (progn
-      (setq ac-sources
-	    '(
-	      ac-source-words-in-same-mode-buffers ;default
-	      ))
+      (nbutlast ac-sources 3)
       (message "(length ac-sources) %d" (length ac-sources)))))
 
 (defun my-search-whitespace-regexp ()
@@ -68,10 +67,6 @@
     (progn
       (setq search-whitespace-regexp "\\s-+")
       (message "search-whitespace-regexp \"\\\\s-+\""))))
-
-(defun my-beginning-and-end-of-buffer ()
-  (interactive)
-  (if (bobp) (end-of-buffer) (beginning-of-buffer)))
 
 (defun my-kill-region ()
   (interactive)
@@ -138,7 +133,7 @@
      (unless (org-at-timestamp-p)
        (goto-char (point-at-bol))
        (re-search-forward org-tsr-regexp (point-at-eol) t))
-     (if (not (org-at-timestamp-p))
+     (unless (org-at-timestamp-p)
 	 (user-error "")))
    (let* ((ts1 (match-string 0))
 	  (time1 (org-time-string-to-time ts1))

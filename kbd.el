@@ -165,11 +165,11 @@
 (define-key key-translation-map (kbd "C-e") (kbd "C-y"))
 (define-key key-translation-map (kbd "M-e") (kbd "C-y"))
 (define-key key-translation-map (kbd "C-M-e") (kbd "M-0"))
-(define-key key-translation-map (kbd "C-x C-e") (kbd "M-0"))
+(global-set-key (kbd "C-x C-e") 'eval-buffer)
+(define-key key-translation-map (kbd "C-x C-e") (kbd "C-x C-e"))
 
 ;; r
-(define-key key-translation-map (kbd "C-r") (kbd "C-M-r"))
-(define-key key-translation-map (kbd "M-r") (kbd "C-M-r"))
+(define-key key-translation-map (kbd "M-r") (kbd "M-0"))
 (define-key key-translation-map (kbd "C-M-r") (kbd "M-0"))
 
 ;; t
@@ -192,8 +192,7 @@
 ;; d
 (global-set-key (kbd "C-d") 'delete-pair)
 (define-key key-translation-map (kbd "M-d") (kbd "C-d"))
-(global-set-key (kbd "C-x C-d") 'eval-buffer)
-(define-key key-translation-map (kbd "C-x C-d") (kbd "C-x C-d"))
+(define-key key-translation-map (kbd "C-x C-d") (kbd "M-0"))
 (define-key key-translation-map (kbd "C-c C-d") (kbd "C-c /"))
 
 ;; f
@@ -233,7 +232,7 @@
 ;; 2
 (global-set-key (kbd "C-2") 'my-search-whitespace-regexp)
 
-;; arrow
+;; <arrow>
 (define-key key-translation-map (kbd "C-M-<up>") (kbd "C-x ^"))
 (global-set-key (kbd "C-M-<down>") 'shrink-window)
 (define-key key-translation-map (kbd "C-M-<left>") (kbd "C-x {"))

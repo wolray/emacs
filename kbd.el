@@ -185,7 +185,6 @@
 
 ;; s
 (define-key key-translation-map (kbd "M-s") (kbd "C-M-s"))
-(define-key key-translation-map (kbd "C-s") (kbd "C-M-s"))
 (define-key key-translation-map (kbd "C-M-s") (kbd "M-0"))
 (define-key key-translation-map (kbd "C-x C-s") (kbd "C-x C-s"))
 (define-key key-translation-map (kbd "C-c C-s") (kbd "C-c ^"))
@@ -230,6 +229,9 @@
 
 ;; 1
 (global-set-key (kbd "C-1") 'my-ac-sources)
+
+;; 2
+(global-set-key (kbd "C-2") 'my-search-whitespace-regexp)
 
 ;; arrow
 (define-key key-translation-map (kbd "C-M-<up>") (kbd "C-x ^"))

@@ -61,20 +61,20 @@
 (define-key key-translation-map (kbd "C-c C-M-=") (kbd "C-c C-s"))
 
 ;; <backspace>
-(define-key key-translation-map (kbd "C-<backspace>") (kbd "M-DEL"))
+(global-set-key (kbd "C-<backspace>") 'backward-kill-word)
 (global-set-key (kbd "C-M-<backspace>") 'backward-kill-paragraph)
 (define-key key-translation-map (kbd "C-S-<backspace>") (kbd "ESC C-<backspace>"))
 (define-key key-translation-map (kbd "C-M-S-<backspace>") (kbd "M-0"))
-(define-key key-translation-map (kbd "M-DEL") (kbd "M-0"))
-(define-key key-translation-map (kbd "C-x DEL") (kbd "M-0"))
+(global-set-key (kbd "M-DEL") 'delete-indentation)
+(global-set-key (kbd "C-x DEL") 'my-buffer-paragraph-style)
 (global-set-key (kbd "C-x C-<backspace>") 'revert-buffer)
 (define-key key-translation-map (kbd "C-x C-<backspace>") (kbd "C-x C-<backspace>"))
 
 ;; \\
-(global-set-key (kbd "C-\\") 'delete-indentation)
-(global-set-key (kbd "C-M-\\") 'delete-blank-lines)
-(define-key key-translation-map (kbd "C-|") (kbd "M-0"))
-(global-set-key (kbd "C-x \\") 'my-buffer-paragraph-style)
+(define-key key-translation-map (kbd "C-\\") (kbd "C-<delete>"))
+(global-set-key (kbd "C-M-\\") 'kill-paragraph)
+(define-key key-translation-map (kbd "C-|") (kbd "C-M-k"))
+(define-key key-translation-map (kbd "C-x \\") (kbd "C-x C-o"))
 (define-key key-translation-map (kbd "C-x C-\\") (kbd "C-x k"))
 
 ;; <return>
@@ -199,7 +199,7 @@
 
 ;; f
 (define-key key-translation-map (kbd "C-f") (kbd "C-@"))
-(define-key key-translation-map (kbd "M-f") (kbd "C-@"))
+(define-key key-translation-map (kbd "M-f") (kbd "M-0"))
 (define-key key-translation-map (kbd "C-x C-f") (kbd "C-x C-f"))
 
 ;; g

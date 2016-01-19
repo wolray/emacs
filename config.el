@@ -23,6 +23,7 @@
   (auto-complete-mode)
   (local-unset-key (kbd "M-p"))
   (local-unset-key (kbd "M-n"))
+  (local-unset-key (kbd "M-i"))
   )
 
 ;; package-initialize
@@ -47,6 +48,9 @@
 (ac-linum-workaround)
 (setq ac-auto-start nil)
 (ac-set-trigger-key "<tab>")
+
+;; avy
+(setq avy-keys '(?a ?b ?c ?d ?e ?f ?g ?h ?i ?j ?k ?l ?m ?n ?o ?p ?q ?r ?s ?t ?u ?v ?w ?x ?y ?z ?, ?.))
 
 ;; magit
 (setenv "GIT_ASKPASS" "git-gui--askpass")

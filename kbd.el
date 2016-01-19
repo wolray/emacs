@@ -106,7 +106,7 @@
 (global-set-key (kbd "M-U") 'my-upcase-word)
 
 ;; i
-(define-key key-translation-map (kbd "M-i") (kbd "M-DEL"))
+(define-key key-translation-map (kbd "M-i") (kbd "C-@"))
 (global-set-key (kbd "M-I") 'my-downcase-word)
 
 ;; o
@@ -138,7 +138,7 @@
 (define-key key-translation-map (kbd "M-n") (kbd "C-g"))
 
 ;; m
-(global-set-key (kbd "M-m") 'avy-goto-char-in-line)
+(define-key key-translation-map (kbd "M-m") (kbd "M-0"))
 
 ;; ,
 (global-set-key (kbd "M-,") 'avy-goto-char)

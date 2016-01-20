@@ -18,14 +18,6 @@
 (setq x-select-enable-clipboard t)
 (fset 'yes-or-no-p 'y-or-n-p)
 
-;; my-major-mode-hook
-(defun my-major-mode-hook ()
-  (auto-complete-mode)
-  (local-unset-key (kbd "M-p"))
-  (local-unset-key (kbd "M-n"))
-  (local-unset-key (kbd "M-i"))
-  )
-
 ;; package-initialize
 (require 'package)
 (add-to-list 'package-archives
@@ -39,7 +31,7 @@
 (defun my-package-menu-mode-hook ()
   (local-set-key (kbd "]") 'next-line)
   (local-unset-key (kbd "n"))
-  (my-major-mode-hook)
+  (auto-complete-mode)
   )
 (add-hook 'package-menu-mode-hook 'my-package-menu-mode-hook)
 
@@ -56,7 +48,7 @@
 (setenv "GIT_ASKPASS" "git-gui--askpass")
 (defun my-magit-mode-hook ()
   (local-set-key (kbd "]") 'magit-section-forward)
-  (my-major-mode-hook)
+  (auto-complete-mode)
   )
 (add-hook 'magit-mode-hook 'my-magit-mode-hook)
 (defun my-magit-status-sections-hook ()
@@ -91,10 +83,10 @@
 (add-hook 'magit-status-headers-hook 'my-magit-status-headers-hook)
 
 ;; markdown-mode
-(add-hook 'markdown-mode-hook 'my-major-mode-hook)
+(add-hook 'markdown-mode-hook 'auto-complete-mode)
 
 ;; matlab-mode
-(add-hook 'matlab-mode-hook 'my-major-mode-hook)
+(add-hook 'matlab-mode-hook 'auto-complete-mode)
 
 ;; org-mode
 (setq org-startup-indented t)
@@ -103,7 +95,7 @@
   (let (org-log-done org-log-states)   ; turn off logging
     (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
 (add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
-(add-hook 'org-mode-hook 'my-major-mode-hook)
+(add-hook 'org-mode-hook 'auto-complete-mode)
 
 ;; python-mode
-(add-hook 'python-mode-hook 'my-major-mode-hook)
+(add-hook 'python-mode-hook 'auto-complete-mode)

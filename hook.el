@@ -18,7 +18,7 @@
 (setq x-select-enable-clipboard t)
 (fset 'yes-or-no-p 'y-or-n-p)
 
-;; package-initialize
+;; package-menu-mode
 (require 'package)
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.org/packages/"))

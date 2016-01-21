@@ -19,8 +19,8 @@
 ;; load
 (setq default-directory "d:/sync/emacs/")
 (add-to-list 'load-path "d:/sync/emacs/emacs.d/")
-(load "config.el")
-(load "my-command.el")
+(load "hook.el")
+(load "command.el")
 (load "kbd.el")
 
 ;; frame
@@ -37,8 +37,8 @@
 
 ;; language
 (set-language-environment 'chinese-gbk)
-(set-keyboard-coding-system 'chinese-gbk-dos)
-(set-buffer-file-coding-system 'chinese-gbk-dos)
+(set-keyboard-coding-system 'chinese-gbk)
+(set-buffer-file-coding-system 'chinese-gbk)
 
 ;; font
 (set-default-font "monaco-11")

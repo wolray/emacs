@@ -186,6 +186,8 @@
 (global-set-key (kbd "M-g M-w") 'my-kill-ring-save)
 (define-key key-translation-map (kbd "M-w") (kbd "M-g M-w"))
 (define-key key-translation-map (kbd "C-M-w") (kbd "M-0"))
+(global-set-key (kbd "M-g C-x C-w") 'my-copy-buffer)
+(define-key key-translation-map (kbd "C-x C-w") (kbd "M-g C-x C-w"))
 
 ;; e
 (define-key key-translation-map (kbd "C-e") (kbd "C-y"))

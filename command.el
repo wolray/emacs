@@ -5,7 +5,7 @@
     (save-excursion
       (beginning-of-buffer)
       (while (not (eobp))
-	(open-line 2)
+	(open-line 1)
 	(delete-blank-lines)
 	(forward-paragraph 1)))))
 
@@ -80,6 +80,13 @@
        (region-beginning) (region-end))
     (kill-ring-save
      (line-beginning-position) (line-end-position))))
+
+(defun my-copy-buffer ()
+  (interactive)
+  (save-excursion
+    (mark-whole-buffer)
+    (kill-ring-save
+     (region-beginning) (region-end))))
 
 (defun my-upcase-word ()
   (interactive)

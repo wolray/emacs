@@ -68,6 +68,12 @@
       (setq search-whitespace-regexp "\\s-+")
       (message "search-whitespace-regexp \"\\\\s-+\""))))
 
+(defun my-backward-kill-line ()
+  (interactive)
+  (kill-region
+   (line-beginning-position) (point))
+  (indent-for-tab-command))
+
 (defun my-kill-region ()
   (interactive)
   (if (region-active-p)
@@ -83,10 +89,9 @@
 
 (defun my-copy-buffer ()
   (interactive)
-  (save-excursion
-    (mark-whole-buffer)
-    (kill-ring-save
-     (region-beginning) (region-end))))
+  (kill-ring-save
+   (point-min) (point-max))
+  (message "my-copy-buffer"))
 
 (defun my-upcase-word ()
   (interactive)
@@ -141,7 +146,7 @@
        (goto-char (point-at-bol))
        (re-search-forward org-tsr-regexp (point-at-eol) t))
      (unless (org-at-timestamp-p)
-	 (user-error "")))
+       (user-error "")))
    (let* ((ts1 (match-string 0))
 	  (time1 (org-time-string-to-time ts1))
 	  (t1 (time-to-days time1))

@@ -16,24 +16,17 @@
  ;; If there is more than one, they won't work right.
  )
 
-;; load
-(setq default-directory "d:/sync/emacs/")
-(add-to-list 'load-path "d:/sync/emacs/emacs.d/")
-(load "hook.el")
-(load "command.el")
-(load "kbd.el")
-
-;; frame
-(setq frame-title-format "")
-(tool-bar-mode 0)
-(menu-bar-mode 0)
-(setq default-frame-alist '((height . 30)))
-
 ;; startup
 (setq inhibit-startup-message t)
 (setq make-backup-files nil)
 (setq ring-bell-function 'ignore)
 (setq initial-scratch-message nil)
+
+;; frame
+(menu-bar-mode 0)
+(tool-bar-mode 0)
+(setq frame-title-format "")
+(setq default-frame-alist '((height . 30)))
 
 ;; language
 (set-language-environment 'chinese-gbk)
@@ -43,3 +36,10 @@
 ;; font
 (set-default-font "monaco-11")
 (set-fontset-font "fontset-default" 'gb18030 "kaiti-13")
+
+;; load
+(setq default-directory "d:/sync/emacs/")
+(add-to-list 'load-path "d:/sync/emacs/emacs.d/")
+(load "hook.el")
+(load "command.el")
+(load "kbd.el")

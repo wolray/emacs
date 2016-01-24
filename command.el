@@ -36,10 +36,9 @@
   (interactive)
   (move-beginning-of-line (1+ page-range)))
 
-(defun my-switch-to-minibuffer ()
+(defun my-switch-to-buffer-scratch ()
   (interactive)
-  (when (active-minibuffer-window)
-    (select-window (active-minibuffer-window))))
+  (switch-to-buffer "*scratch*"))
 
 (defun my-ac-sources ()
   (interactive)

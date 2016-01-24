@@ -49,7 +49,9 @@
 
 ;; bs-mode
 (defun my-bs-mode ()
-  (local-set-key (kbd "[") 'bs-select-other-window)
+  (local-set-key (kbd "[") 'bs-select)
+  (local-unset-key (kbd "RET"))
+  (local-set-key (kbd "f") 'bs-select-other-window)
   (local-unset-key (kbd "o"))
   (local-set-key (kbd "]") 'bs-down)
   (local-unset-key (kbd "n"))
@@ -66,7 +68,6 @@
   (local-unset-key (kbd "M"))
   (local-unset-key (kbd "t"))
   (local-unset-key (kbd "S"))
-  (local-unset-key (kbd "f"))
   (local-unset-key (kbd "C"))
   (local-unset-key (kbd "b"))
   (local-unset-key (kbd "~"))

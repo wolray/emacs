@@ -93,7 +93,7 @@
 (global-set-key (kbd "M-g C-|") 'my-buffer-paragraph-style)
 (define-key key-translation-map (kbd "C-|") (kbd "M-g C-|"))
 (define-key key-translation-map (kbd "C-x \\") (kbd "M-0"))
-(define-key key-translation-map (kbd "C-x C-\\") (kbd "C-x k"))
+(define-key key-translation-map (kbd "C-x C-\\") (kbd "M-0"))
 
 ;; <return>
 (global-set-key (kbd "M-g C-<return>") 'newline)
@@ -175,7 +175,7 @@
 (define-key key-translation-map (kbd "M-/") (kbd "C-/"))
 
 ;; <tab>
-(define-key key-translation-map (kbd "C-<tab>") (kbd "C-x o"))
+(define-key key-translation-map (kbd "C-<tab>") (kbd "M-0"))
 
 ;; q
 (define-key key-translation-map (kbd "M-q") (kbd "M-0"))
@@ -216,6 +216,8 @@
 ;; s
 (define-key key-translation-map (kbd "M-s") (kbd "C-M-s"))
 (define-key key-translation-map (kbd "C-M-s") (kbd "M-0"))
+(global-set-key (kbd "M-g C-x s") 'my-switch-to-buffer-scratch)
+(define-key key-translation-map (kbd "C-x s") (kbd "M-g C-x s"))
 (define-key key-translation-map (kbd "C-x C-s") (kbd "C-x C-s"))
 (define-key key-translation-map (kbd "C-c C-s") (kbd "C-c ^"))
 
@@ -227,7 +229,7 @@
 (define-key key-translation-map (kbd "C-c C-d") (kbd "C-c /"))
 
 ;; f
-(define-key key-translation-map (kbd "C-f") (kbd "C-@"))
+(define-key key-translation-map (kbd "C-f") (kbd "C-x o"))
 (define-key key-translation-map (kbd "M-f") (kbd "M-0"))
 (define-key key-translation-map (kbd "C-x C-f") (kbd "C-x C-f"))
 

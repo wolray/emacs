@@ -33,6 +33,7 @@
 (package-install 'markdown-mode)
 (package-install 'matlab-mode)
 (defun my-package-menu-mode ()
+  (local-set-key (kbd "[") 'package-menu-describe-package)
   (local-set-key (kbd "]") 'next-line)
   (local-unset-key (kbd "n"))
   (auto-complete-mode))
@@ -50,7 +51,6 @@
 ;; bs-mode
 (defun my-bs-mode ()
   (local-set-key (kbd "[") 'bs-select)
-  (local-unset-key (kbd "RET"))
   (local-set-key (kbd "f") 'bs-select-other-window)
   (local-unset-key (kbd "o"))
   (local-set-key (kbd "]") 'bs-down)
@@ -80,6 +80,8 @@
 ;; magit-mode
 (setenv "GIT_ASKPASS" "git-gui--askpass")
 (defun my-magit-mode ()
+  (local-set-key (kbd "[") 'magit-section-toggle)
+  (local-unset-key (kbd "TAB"))
   (local-set-key (kbd "]") 'magit-section-forward)
   (local-unset-key (kbd "n"))
   (auto-complete-mode))

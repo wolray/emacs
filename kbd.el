@@ -249,8 +249,7 @@
 ;; v
 (define-key key-translation-map (kbd "C-v") (kbd "C-o"))
 (define-key key-translation-map (kbd "M-v") (kbd "M-0"))
-(global-set-key (kbd "M-g C-x C-v") 'my-switch-to-minibuffer)
-(define-key key-translation-map (kbd "C-x C-v") (kbd "M-g C-x C-v"))
+(define-key key-translation-map (kbd "C-x C-v") (kbd "M-0"))
 
 ;; b
 (define-key key-translation-map (kbd "M-b") (kbd "M-0"))

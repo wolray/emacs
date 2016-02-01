@@ -1,9 +1,7 @@
 
 ;; save
 (defun my-before-save ()
-  (delete-trailing-whitespace)
-  (indent-region
-   (point-min) (point-max)))
+  (delete-trailing-whitespace))
 (add-hook 'before-save-hook 'my-before-save)
 
 ;; window
@@ -24,8 +22,8 @@
 
 ;; package-menu-mode
 (require 'package)
-(add-to-list 'package-archives
-             '("melpa" . "http://melpa.org/packages/"))
+;; (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+(setq package-archives '(("melpa" . "http://melpa.org/packages/")))
 (package-initialize)
 (package-install 'auto-complete)
 (package-install 'avy)
@@ -40,7 +38,7 @@
 (add-hook 'package-menu-mode-hook 'my-package-menu-mode)
 
 ;; auto-complete
-(global-auto-complete-mode t)
+(require 'auto-complete)
 (ac-linum-workaround)
 (setq ac-auto-start nil)
 (ac-set-trigger-key "TAB")
@@ -73,6 +71,12 @@
   (local-unset-key (kbd "%"))
   )
 (add-hook 'bs-mode-hook 'my-bs-mode)
+
+;; emacs-lisp-mode
+(defun my-emacs-lisp-mode ()
+  (setq skip-chars " \t;")
+  (auto-complete-mode))
+(add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode)
 
 ;; html-mode
 (add-hook 'html-mode-hook 'auto-complete-mode)
@@ -118,10 +122,16 @@
 (add-hook 'magit-status-headers-hook 'my-magit-status-headers)
 
 ;; markdown-mode
-(add-hook 'markdown-mode-hook 'auto-complete-mode)
+(defun my-markdown-mode ()
+  (setq skip-chars " \t#")
+  (auto-complete-mode))
+(add-hook 'markdown-mode-hook 'my-markdown-mode)
 
 ;; matlab-mode
-(add-hook 'matlab-mode-hook 'auto-complete-mode)
+(defun my-matlab-mode ()
+  (setq skip-chars " \t%")
+  (auto-complete-mode))
+(add-hook 'matlab-mode-hook 'my-matlab-mode)
 
 ;; org-mode
 (setq org-startup-indented t)
@@ -132,10 +142,12 @@
 (add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
 (defun my-org-mode ()
   (local-set-key (kbd "C-c C--") 'my-org-evaluate-time-range)
+  (setq skip-chars " \t*")
   (auto-complete-mode))
 (add-hook 'org-mode-hook 'my-org-mode)
 
 ;; python-mode
 (defun my-python-mode ()
+  (setq skip-chars " \t#")
   (auto-complete-mode))
 (add-hook 'python-mode-hook 'my-python-mode)

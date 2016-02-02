@@ -22,14 +22,15 @@
 
 ;; package-menu-mode
 (require 'package)
-;; (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 (setq package-archives '(("melpa" . "http://melpa.org/packages/")))
+;; (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 (package-initialize)
 (package-install 'auto-complete)
 (package-install 'avy)
 (package-install 'magit)
 (package-install 'markdown-mode)
 (package-install 'matlab-mode)
+(package-install 'racket-mode)
 (defun my-package-menu-mode ()
   (local-set-key (kbd "[") 'package-menu-describe-package)
   (local-set-key (kbd "]") 'next-line)
@@ -151,3 +152,12 @@
   (setq skip-chars " \t#")
   (auto-complete-mode))
 (add-hook 'python-mode-hook 'my-python-mode)
+
+;; racket-mode
+(setq racket-racket-program "racket")
+(setq racket-raco-program "raco")
+(defun my-racket-mode ()
+  (local-set-key (kbd "M-<return>") 'racket-send-last-sexp)
+  (setq skip-chars " \t;")
+  (auto-complete-mode))
+(add-hook 'racket-mode-hook 'my-racket-mode)

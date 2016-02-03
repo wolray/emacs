@@ -96,12 +96,10 @@
 (define-key key-translation-map (kbd "C-x C-\\") (kbd "M-0"))
 
 ;; <return>
-(global-set-key (kbd "M-g C-<return>") 'newline)
-(define-key key-translation-map (kbd "C-<return>") (kbd "M-g C-<return>"))
+(global-set-key (kbd "C-<return>") 'newline)
 (define-key key-translation-map (kbd "C-M-<return>") (kbd "M-0"))
 (define-key key-translation-map (kbd "C-S-<return>") (kbd "M-0"))
-(global-set-key (kbd "M-g M-RET") 'eval-last-sexp)
-(define-key key-translation-map (kbd "M-RET") (kbd "M-g M-RET"))
+(global-set-key (kbd "M-<return>") 'eval-last-sexp)
 
 ;; ;
 (define-key key-translation-map (kbd "C-;") (kbd "M-0"))
@@ -275,12 +273,16 @@
 (define-key key-translation-map (kbd "C-`") (kbd "C-u"))
 
 ;; 1
-(global-set-key (kbd "M-g C-1") 'my-ac-sources)
+(global-set-key (kbd "M-g C-1") 'my-search-whitespace-regexp)
 (define-key key-translation-map (kbd "C-1") (kbd "M-g C-1"))
 
 ;; 2
-(global-set-key (kbd "M-g C-2") 'my-search-whitespace-regexp)
+(global-set-key (kbd "M-g C-2") 'my-ac-sources-all)
 (define-key key-translation-map (kbd "C-2") (kbd "M-g C-2"))
+
+;; 3
+(global-set-key (kbd "M-g C-3") 'my-ac-sources-elisp)
+(define-key key-translation-map (kbd "C-3") (kbd "M-g C-3"))
 
 ;; <arrow>
 (define-key key-translation-map (kbd "C-M-<up>") (kbd "C-x ^"))

@@ -38,10 +38,20 @@
   (interactive)
   (switch-to-buffer "*scratch*"))
 
-(defun my-ac-sources ()
+(defun my-ac-sources-all ()
   (interactive)
   (unless auto-complete-mode (auto-complete-mode))
-  (if (<= (length ac-sources) 2)
+  (if (equal (car ac-sources) ac-source-words-in-same-mode-buffers)
+      (progn
+	(setcar ac-sources ac-source-words-in-all-buffer)
+	(message "ac-sources ~all"))
+    (progn
+      (setcar ac-sources ac-source-words-in-same-mode-buffers)
+      (message "ac-sources ~same-mode"))))
+(defun my-ac-sources-elisp ()
+  (interactive)
+  (unless auto-complete-mode (auto-complete-mode))
+  (if (< (length ac-sources) 2)
       (progn
 	(setq ac-sources
 	      (append ac-sources
@@ -50,20 +60,20 @@
 			ac-source-functions
 			ac-source-variables
 			)))
-	(message "(length ac-sources) %d" (length ac-sources)))
+	(message "ac-sources +elisp"))
     (progn
       (nbutlast ac-sources 3)
-      (message "(length ac-sources) %d" (length ac-sources)))))
+      (message "ac-sources -elisp"))))
 
 (defun my-search-whitespace-regexp ()
   (interactive)
   (if (equal search-whitespace-regexp "\\s-+")
       (progn
 	(setq search-whitespace-regexp ".*?")
-	(message "search-whitespace-regexp \".*?\""))
+	(message "search-whitespace-regexp ~\".*?\""))
     (progn
       (setq search-whitespace-regexp "\\s-+")
-      (message "search-whitespace-regexp \"\\\\s-+\""))))
+      (message "search-whitespace-regexp ~\"\\\\s-+\""))))
 
 (defun my-backward-kill-line ()
   (interactive)

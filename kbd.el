@@ -208,11 +208,12 @@
 (define-key key-translation-map (kbd "C-x C-e") (kbd "M-g C-x C-e"))
 
 ;; r
+(global-set-key (kbd "C-r") 'set-mark-command)
 (define-key key-translation-map (kbd "M-r") (kbd "M-0"))
 (define-key key-translation-map (kbd "C-M-r") (kbd "M-0"))
 
 ;; t
-(define-key key-translation-map (kbd "C-t") (kbd "C-@"))
+(define-key key-translation-map (kbd "C-t") (kbd "M-0"))
 (define-key key-translation-map (kbd "M-t") (kbd "M-0"))
 (define-key key-translation-map (kbd "C-M-t") (kbd "M-0"))
 (define-key key-translation-map (kbd "C-x C-t") (kbd "C-x C-0"))

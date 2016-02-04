@@ -44,10 +44,10 @@
   (if (equal (car ac-sources) ac-source-words-in-same-mode-buffers)
       (progn
 	(setcar ac-sources ac-source-words-in-all-buffer)
-	(message "ac-sources ~all"))
+	(message "ac-sources =all"))
     (progn
       (setcar ac-sources ac-source-words-in-same-mode-buffers)
-      (message "ac-sources ~same-mode"))))
+      (message "ac-sources =same-mode"))))
 (defun my-ac-sources-elisp ()
   (interactive)
   (unless auto-complete-mode (auto-complete-mode))
@@ -70,10 +70,10 @@
   (if (equal search-whitespace-regexp "\\s-+")
       (progn
 	(setq search-whitespace-regexp ".*?")
-	(message "search-whitespace-regexp ~\".*?\""))
+	(message "search-whitespace-regexp =\".*?\""))
     (progn
       (setq search-whitespace-regexp "\\s-+")
-      (message "search-whitespace-regexp ~\"\\\\s-+\""))))
+      (message "search-whitespace-regexp =\"\\\\s-+\""))))
 
 (defun my-backward-kill-line ()
   (interactive)

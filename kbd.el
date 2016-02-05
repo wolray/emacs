@@ -168,12 +168,13 @@
 (define-key key-translation-map (kbd "M-n") (kbd "C-g"))
 
 ;; m
-(define-key key-translation-map (kbd "M-m") (kbd "M-0"))
+(global-set-key (kbd "M-g M-m") 'avy-goto-char)
+(define-key key-translation-map (kbd "M-m") (kbd "M-g M-m"))
 
 ;; ,
 (define-key key-translation-map (kbd "C-,") (kbd "M-0"))
-(global-set-key (kbd "M-g M-,") 'avy-goto-char)
-(define-key key-translation-map (kbd "M-,") (kbd "M-g M-,"))
+(global-set-key (kbd "M-g M-,") 'completion-at-point)
+(define-key key-translation-map (kbd "M-g") (kbd "M-,"))
 
 ;; .
 (define-key key-translation-map (kbd "C-.") (kbd "M-0"))
@@ -184,7 +185,6 @@
 (define-key key-translation-map (kbd "M-/") (kbd "C-/"))
 
 ;; <tab>
-(global-set-key (kbd "TAB") 'completion-at-point)
 (define-key key-translation-map (kbd "C-<tab>") (kbd "C-l"))
 
 ;; q

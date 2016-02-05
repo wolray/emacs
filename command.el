@@ -18,7 +18,7 @@
 	((= page-range 50) (setq page-range 20))
 	((= page-range 100) (setq page-range 50))
 	(t (setq page-range 10)))
-  (message (format "page-range %d" page-range)))
+  (message (format "(page-range =%d)" page-range)))
 (defun my-page-jump-plus ()
   (interactive)
   (cond ((= page-range 10) (setq page-range 20))
@@ -26,7 +26,7 @@
 	((= page-range 50) (setq page-range 100))
 	((= page-range 100) nil)
 	(t (setq page-range 10)))
-  (message (format "page-range %d" page-range)))
+  (message (format "(page-range =%d)" page-range)))
 (defun my-page-up ()
   (interactive)
   (move-beginning-of-line (- (1- page-range))))
@@ -44,10 +44,10 @@
   (if (equal (car ac-sources) ac-source-words-in-same-mode-buffers)
       (progn
 	(setcar ac-sources ac-source-words-in-all-buffer)
-	(message "ac-sources =all"))
+	(message "(ac-sources =all)"))
     (progn
       (setcar ac-sources ac-source-words-in-same-mode-buffers)
-      (message "ac-sources =same-mode"))))
+      (message "(ac-sources =same-mode)"))))
 (defun my-ac-sources-elisp ()
   (interactive)
   (unless auto-complete-mode (auto-complete-mode))
@@ -60,20 +60,20 @@
 			ac-source-functions
 			ac-source-variables
 			)))
-	(message "ac-sources +elisp"))
+	(message "(ac-sources +elisp)"))
     (progn
       (nbutlast ac-sources 3)
-      (message "ac-sources -elisp"))))
+      (message "(ac-sources -elisp)"))))
 
 (defun my-search-whitespace-regexp ()
   (interactive)
   (if (equal search-whitespace-regexp "\\s-+")
       (progn
 	(setq search-whitespace-regexp ".*?")
-	(message "search-whitespace-regexp =\".*?\""))
+	(message "(search-whitespace-regexp =\".*?\")"))
     (progn
       (setq search-whitespace-regexp "\\s-+")
-      (message "search-whitespace-regexp =\"\\\\s-+\""))))
+      (message "(search-whitespace-regexp =\"\\\\s-+\")"))))
 
 (defun my-backward-kill-line ()
   (interactive)

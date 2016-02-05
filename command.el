@@ -1,4 +1,24 @@
 
+;; ac
+(defun my-ac-sources ()
+  (interactive)
+  (unless auto-complete-mode (auto-complete-mode))
+  (if (> (length ac-sources) 1)
+      (progn
+	(setq ac-sources '(ac-source-words-in-same-mode-buffers))
+	(message "(ac-source =same-mode)"))
+  (progn
+    (setq ac-sources '(ac-source-words-in-all-buffer ac-source-files-in-current-dir))
+    (message "(ac-source =all-and-dir)"))))
+
+;; ba
+(defun my-backward-kill-line ()
+  (interactive)
+  (kill-region
+   (line-beginning-position) (point))
+  (indent-for-tab-command))
+
+;; bu
 (defun my-buffer-paragraph-style ()
   (interactive)
   (when (y-or-n-p (format "my-buffer-paragraph-style?"))
@@ -9,78 +29,32 @@
 	(delete-blank-lines)
 	(forward-paragraph 1)))))
 
-(defvar page-range 10)
-(make-variable-buffer-local 'page-range)
-(defun my-page-jump-minus ()
+;; co
+(defun my-copy-buffer ()
   (interactive)
-  (cond ((= page-range 10) nil)
-	((= page-range 20) (setq page-range 10))
-	((= page-range 50) (setq page-range 20))
-	((= page-range 100) (setq page-range 50))
-	(t (setq page-range 10)))
-  (message (format "(page-range =%d)" page-range)))
-(defun my-page-jump-plus ()
-  (interactive)
-  (cond ((= page-range 10) (setq page-range 20))
-	((= page-range 20) (setq page-range 50))
-	((= page-range 50) (setq page-range 100))
-	((= page-range 100) nil)
-	(t (setq page-range 10)))
-  (message (format "(page-range =%d)" page-range)))
-(defun my-page-up ()
-  (interactive)
-  (move-beginning-of-line (- (1- page-range))))
-(defun my-page-down ()
-  (interactive)
-  (move-beginning-of-line (1+ page-range)))
+  (kill-ring-save
+   (point-min) (point-max))
+  (message "my-copy-buffer"))
 
-(defun my-switch-to-buffer-scratch ()
+;; cy
+(defun my-cycle-paren-shapes ()
   (interactive)
-  (switch-to-buffer "*scratch*"))
+  (save-excursion
+    (unless (looking-at-p (rx (any "([")))
+      (backward-up-list))
+    (let ((pt (point))
+          (new (cond ((looking-at-p (rx "(")) (cons "[" "]"))
+                     ((looking-at-p (rx "[")) (cons "(" ")"))
+                     (t (beep) nil))))
+      (when new
+        (forward-sexp)
+        (delete-char -1)
+        (insert (cdr new))
+        (goto-char pt)
+        (delete-char 1)
+        (insert (car new))))))
 
-(defun my-ac-sources-all ()
-  (interactive)
-  (unless auto-complete-mode (auto-complete-mode))
-  (if (equal (car ac-sources) ac-source-words-in-same-mode-buffers)
-      (progn
-	(setcar ac-sources ac-source-words-in-all-buffer)
-	(message "(ac-sources =all)"))
-    (progn
-      (setcar ac-sources ac-source-words-in-same-mode-buffers)
-      (message "(ac-sources =same-mode)"))))
-(defun my-ac-sources-elisp ()
-  (interactive)
-  (unless auto-complete-mode (auto-complete-mode))
-  (if (< (length ac-sources) 2)
-      (progn
-	(setq ac-sources
-	      (append ac-sources
-		      '(
-			ac-source-files-in-current-dir
-			ac-source-functions
-			ac-source-variables
-			)))
-	(message "(ac-sources +elisp)"))
-    (progn
-      (nbutlast ac-sources 3)
-      (message "(ac-sources -elisp)"))))
-
-(defun my-search-whitespace-regexp ()
-  (interactive)
-  (if (equal search-whitespace-regexp "\\s-+")
-      (progn
-	(setq search-whitespace-regexp ".*?")
-	(message "(search-whitespace-regexp =\".*?\")"))
-    (progn
-      (setq search-whitespace-regexp "\\s-+")
-      (message "(search-whitespace-regexp =\"\\\\s-+\")"))))
-
-(defun my-backward-kill-line ()
-  (interactive)
-  (kill-region
-   (line-beginning-position) (point))
-  (indent-for-tab-command))
-
+;; ki
 (defun my-kill-region ()
   (interactive)
   (if (region-active-p)
@@ -94,40 +68,7 @@
     (kill-ring-save
      (line-beginning-position) (line-end-position))))
 
-(defun my-copy-buffer ()
-  (interactive)
-  (kill-ring-save
-   (point-min) (point-max))
-  (message "my-copy-buffer"))
-
-(defun my-upcase-word ()
-  (interactive)
-  (upcase-word -1))
-(defun my-capitalize-word ()
-  (interactive)
-  (capitalize-word -1))
-(defun my-downcase-word ()
-  (interactive)
-  (downcase-word -1))
-
-(defun my-comment (beg end)
-  (interactive (if (use-region-p)
-		   (list (region-beginning) (region-end))
-		 (list (line-beginning-position)
-		       (line-beginning-position 2))))
-  (comment-or-uncomment-region beg end))
-
-(defvar skip-chars " \t")
-(make-variable-buffer-local 'skip-chars)
-(defun my-move-beginning-of-line ()
-  (interactive)
-  (skip-chars-backward skip-chars)
-  (move-beginning-of-line (if (bolp) 0 1))
-  (skip-chars-forward skip-chars))
-(defun my-move-end-of-line ()
-  (interactive)
-  (move-end-of-line (if (eolp) 2 1)))
-
+;; or
 (defun my-org-make-tdiff-string (diff)
   (let ((y (floor (/ diff 365)))
 	(d (mod diff 365))
@@ -154,8 +95,8 @@
    (org-clock-update-time-maybe)
    (save-excursion
      (unless (org-at-timestamp-p)
-       (goto-char (point-at-bol))
-       (re-search-forward org-tsr-regexp (point-at-eol) t))
+       (goto-char (line-beginning-position))
+       (re-search-forward org-tsr-regexp (line-end-position) t))
      (unless (org-at-timestamp-p)
        (user-error "")))
    (let* ((ts1 (match-string 0))
@@ -165,6 +106,84 @@
 	  (diff (- t2 t1)))
      (message "%s" (my-org-make-tdiff-string diff)))))
 
+;; pa
+(defvar page-range 10)
+(make-variable-buffer-local 'page-range)
+(defun my-page-jump-minus ()
+  (interactive)
+  (cond ((= page-range 10) nil)
+	((= page-range 20) (setq page-range 10))
+	((= page-range 50) (setq page-range 20))
+	((= page-range 100) (setq page-range 50))
+	(t (setq page-range 10)))
+  (message (format "(page-range =%d)" page-range)))
+(defun my-page-jump-plus ()
+  (interactive)
+  (cond ((= page-range 10) (setq page-range 20))
+	((= page-range 20) (setq page-range 50))
+	((= page-range 50) (setq page-range 100))
+	((= page-range 100) nil)
+	(t (setq page-range 10)))
+  (message (format "(page-range =%d)" page-range)))
+(defun my-page-up ()
+  (interactive)
+  (move-beginning-of-line (- (1- page-range))))
+(defun my-page-down ()
+  (interactive)
+  (move-beginning-of-line (1+ page-range)))
+
+;; py
+(defun my-python-shell-send-line ()
+  (interactive)
+  (save-excursion
+    (back-to-indentation)
+    (skip-chars-forward " #")
+    (python-shell-send-region
+     (point) (line-end-position))))
+
+;; ra
+(defun my-racket-send-buffer ()
+  (interactive)
+  (racket-send-region
+   (point-min) (point-max)))
+
+;; sw
+(defun my-switch-to-buffer-scratch ()
+  (interactive)
+  (switch-to-buffer "*scratch*"))
+
+;; se
+(defun my-search-whitespace-regexp ()
+  (interactive)
+  (if (equal search-whitespace-regexp "\\s-+")
+      (progn
+	(setq search-whitespace-regexp ".*?")
+	(message "(search-whitespace-regexp =\".*?\")"))
+    (progn
+      (setq search-whitespace-regexp "\\s-+")
+      (message "(search-whitespace-regexp =\"\\\\s-+\")"))))
+
+;; sk
+(defvar skip-chars " \t")
+(make-variable-buffer-local 'skip-chars)
+(defun my-move-beginning-of-line ()
+  (interactive)
+  (skip-chars-backward skip-chars)
+  (move-beginning-of-line (if (bolp) 0 1))
+  (skip-chars-forward skip-chars))
+(defun my-move-end-of-line ()
+  (interactive)
+  (move-end-of-line (if (eolp) 2 1)))
+
+;; to
+(defun my-toggle-comment (beg end)
+  (interactive (if (use-region-p)
+		   (list (region-beginning) (region-end))
+		 (list (line-beginning-position)
+		       (line-beginning-position 2))))
+  (comment-or-uncomment-region beg end))
+
+;; tr-l
 (defun my-transpose-lines-up ()
   (interactive)
   (move-beginning-of-line 1)
@@ -183,6 +202,7 @@
       (previous-line 1)
       (move-end-of-line 1))))
 
+;; tr-p
 (defun my-transpose-paragraphs-up ()
   (interactive)
   (backward-paragraph 1)
@@ -197,3 +217,14 @@
   (forward-paragraph 1)
   (unless (eobp)
     (transpose-paragraphs 1)))
+
+;; wo
+(defun my-upcase-word ()
+  (interactive)
+  (upcase-word -1))
+(defun my-capitalize-word ()
+  (interactive)
+  (capitalize-word -1))
+(defun my-downcase-word ()
+  (interactive)
+  (downcase-word -1))

@@ -41,8 +41,8 @@
 (define-key key-translation-map (kbd "C-M-<backspace>") (kbd "M-g C-M-<backspace>"))
 (define-key key-translation-map (kbd "C-S-<backspace>") (kbd "ESC C-<backspace>"))
 (define-key key-translation-map (kbd "C-M-S-<backspace>") (kbd "M-0"))
-(global-set-key (kbd "M-g M-DEL") 'my-backward-kill-line)
-(define-key key-translation-map (kbd "M-DEL") (kbd "M-g M-DEL"))
+(global-set-key (kbd "M-g M-<backspace>") 'my-backward-kill-line)
+(define-key key-translation-map (kbd "M-DEL") (kbd "M-g M-<backspace>"))
 (define-key key-translation-map (kbd "C-x DEL") (kbd "M-0"))
 (global-set-key (kbd "M-g C-x C-<backspace>") 'revert-buffer)
 (define-key key-translation-map (kbd "C-x C-<backspace>") (kbd "M-g C-x C-<backspace>"))
@@ -148,7 +148,6 @@
 ;; j
 (define-key key-translation-map (kbd "C-j") (kbd "M-0"))
 (global-set-key (kbd "M-g M-j") 'left-char)
-(define-key ac-complete-mode-map (kbd "M-g M-j") 'ac-previous)
 (define-key key-translation-map (kbd "M-j") (kbd "M-g M-j"))
 (define-key key-translation-map (kbd "M-J") (kbd "M-0"))
 
@@ -161,7 +160,6 @@
 ;; l
 (define-key key-translation-map (kbd "C-l") (kbd "M-0"))
 (global-set-key (kbd "M-g M-l") 'right-char)
-(define-key ac-complete-mode-map (kbd "M-g M-l") 'ac-next)
 (define-key key-translation-map (kbd "M-l") (kbd "M-g M-l"))
 (define-key key-translation-map (kbd "M-L") (kbd "M-0"))
 
@@ -170,8 +168,7 @@
 (define-key key-translation-map (kbd "M-n") (kbd "C-g"))
 
 ;; m
-(global-set-key (kbd "M-g C-m") 'completion-at-point)
-(define-key key-translation-map (kbd "M-m") (kbd "M-g C-m"))
+(define-key key-translation-map (kbd "M-m") (kbd "M-0"))
 
 ;; ,
 (define-key key-translation-map (kbd "C-,") (kbd "M-0"))
@@ -187,6 +184,7 @@
 (define-key key-translation-map (kbd "M-/") (kbd "C-/"))
 
 ;; <tab>
+(global-set-key (kbd "TAB") 'completion-at-point)
 (define-key key-translation-map (kbd "C-<tab>") (kbd "C-l"))
 
 ;; q

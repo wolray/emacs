@@ -42,7 +42,9 @@
 (require 'auto-complete)
 (ac-linum-workaround)
 (setq ac-auto-start nil)
-(ac-set-trigger-key "TAB")
+(ac-set-trigger-key "<tab>")
+(define-key ac-complete-mode-map (kbd "M-g M-j") 'ac-previous)
+(define-key ac-complete-mode-map (kbd "M-g M-l") 'ac-next)
 
 ;; avy
 (setq avy-keys '(?a ?b ?c ?d ?e ?f ?g ?h ?i ?j ?k ?l ?m ?n ?o ?p ?q ?r ?s ?t ?u ?v ?w ?x ?y ?z ?, ?.))
@@ -72,7 +74,7 @@
   )
 (add-hook 'bs-mode-hook 'my-bs-mode)
 
-;; emacs-lisp-mode
+;; elisp-mode
 (defun my-emacs-lisp-mode ()
   (setq skip-chars " \t;")
   (auto-complete-mode))
@@ -170,7 +172,6 @@
 (setq racket-racket-program "racket")
 (setq racket-raco-program "raco")
 (defun my-racket-mode ()
-  (local-set-key (kbd "C-M-{") 'racket-cycle-paren-shapes)
   (local-set-key (kbd "M-<return>") 'racket-send-last-sexp)
   (local-set-key (kbd "C-x C-e") 'my-racket-send-buffer)
   (local-unset-key (kbd "C-c C-p"))
@@ -178,3 +179,8 @@
   (auto-complete-mode))
 (add-hook 'racket-mode-hook 'my-racket-mode)
 (add-hook 'racket-repl-mode-hook 'auto-complete-mode)
+
+;; with-editor-mode
+(defun my-with-editor-mode ()
+  (auto-complete-mode))
+(add-hook 'with-editor-mode-hook 'my-with-editor-mode)

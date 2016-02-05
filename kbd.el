@@ -168,7 +168,7 @@
 (define-key key-translation-map (kbd "M-n") (kbd "C-g"))
 
 ;; m
-(define-key key-translation-map (kbd "M-m") (kbd "M-0"))
+(global-set-key (kbd "M-m") 'completion-at-point)
 
 ;; ,
 (define-key key-translation-map (kbd "C-,") (kbd "M-0"))
@@ -184,7 +184,6 @@
 (define-key key-translation-map (kbd "M-/") (kbd "C-/"))
 
 ;; <tab>
-(global-set-key (kbd "TAB") 'completion-at-point)
 (define-key key-translation-map (kbd "C-<tab>") (kbd "C-l"))
 
 ;; q

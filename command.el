@@ -144,6 +144,7 @@
 ;; ra
 (defun my-racket-send-buffer ()
   (interactive)
+  (set-mark (point))
   (racket-send-region
    (point-min) (point-max)))
 

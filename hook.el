@@ -42,7 +42,7 @@
 (require 'auto-complete)
 (ac-linum-workaround)
 (setq ac-auto-start nil)
-(ac-set-trigger-key "M-g M-,")		;sad
+(ac-set-trigger-key "M-g M-,")
 (define-key ac-complete-mode-map (kbd "M-g M-j") 'ac-previous)
 (define-key ac-complete-mode-map (kbd "M-g M-l") 'ac-next)
 

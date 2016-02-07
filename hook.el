@@ -42,9 +42,9 @@
 (require 'auto-complete)
 (ac-linum-workaround)
 (setq ac-auto-start nil)
-(ac-set-trigger-key "M-g M-,")
-(define-key ac-complete-mode-map (kbd "M-g M-j") 'ac-previous)
-(define-key ac-complete-mode-map (kbd "M-g M-l") 'ac-next)
+(ac-set-trigger-key ".")
+(define-key ac-complete-mode-map (kbd ",") 'ac-previous)
+(define-key ac-complete-mode-map (kbd ".") 'ac-next)
 
 ;; avy
 (setq avy-keys '(?a ?b ?c ?d ?e ?f ?g ?h ?i ?j ?k ?l ?m ?n ?o ?p ?q ?r ?s ?t ?u ?v ?w ?x ?y ?z ?, ?.))

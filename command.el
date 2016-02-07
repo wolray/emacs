@@ -1,16 +1,4 @@
 
-;; ac
-(defun my-ac-sources ()
-  (interactive)
-  (unless auto-complete-mode (auto-complete-mode))
-  (if (> (length ac-sources) 1)
-      (progn
-	(setq ac-sources '(ac-source-words-in-same-mode-buffers))
-	(message "(ac-source =same-mode)"))
-  (progn
-    (setq ac-sources '(ac-source-words-in-all-buffer ac-source-files-in-current-dir))
-    (message "(ac-source =all-and-dir)"))))
-
 ;; ba
 (defun my-backward-kill-line ()
   (interactive)

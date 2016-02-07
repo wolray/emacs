@@ -116,7 +116,7 @@
 
 ;; y
 (define-key key-translation-map (kbd "C-y") (kbd "M-0"))
-(define-key key-translation-map (kbd "M-y") (kbd "M-0"))
+(define-key key-translation-map (kbd "M-y") (kbd "C-g"))
 (define-key key-translation-map (kbd "M-Y") (kbd "M-0"))
 
 ;; u
@@ -162,7 +162,7 @@
 
 ;; n
 (define-key key-translation-map (kbd "C-n") (kbd "M-0"))
-(define-key key-translation-map (kbd "M-n") (kbd "C-g"))
+(define-key key-translation-map (kbd "M-n") (kbd "RET"))
 
 ;; m
 (global-set-key (kbd "M-g M-m") 'avy-goto-char)
@@ -173,18 +173,19 @@
 (define-key key-translation-map (kbd "M-,") (kbd "C-/"))
 
 ;; .
+(global-set-key (kbd ".") 'dabbrev-expand)
 (define-key key-translation-map (kbd "C-.") (kbd "M-0"))
-(define-key key-translation-map (kbd "M-.") (kbd "RET"))
+(global-set-key (kbd "M-.")
+		'(lambda () (interactive) (insert-char 46)))
 
 ;; /
 (define-key key-translation-map (kbd "C-/") (kbd "M-0"))
-(define-key key-translation-map (kbd "M-/") (kbd "M-0"))
+(define-key key-translation-map (kbd "M-/") (kbd "C-M-i"))
 
 ;; <space>
 (define-key key-translation-map (kbd "C-SPC") (kbd "M-0"))
 
 ;; <tab>
-(global-set-key (kbd "TAB") 'completion-at-point)
 (define-key key-translation-map (kbd "C-<tab>") (kbd "C-l"))
 
 ;; q
@@ -280,10 +281,6 @@
 ;; 1
 (global-set-key (kbd "M-g C-1") 'my-search-whitespace-regexp)
 (define-key key-translation-map (kbd "C-1") (kbd "M-g C-1"))
-
-;; 2
-(global-set-key (kbd "M-g C-2") 'my-ac-sources)
-(define-key key-translation-map (kbd "C-2") (kbd "M-g C-2"))
 
 ;; <arrow>
 (define-key key-translation-map (kbd "C-M-<up>") (kbd "C-x ^"))

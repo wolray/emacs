@@ -19,13 +19,15 @@
 (setq-default indent-tabs-mode t)
 (setq x-select-enable-clipboard t)
 (fset 'yes-or-no-p 'y-or-n-p)
+(defun my-dot-exchange ()
+  (local-set-key (kbd ".") 'self-insert-command)
+  (local-set-key (kbd "M-.") 'dabbrev-expand))
 
 ;; package-menu-mode
 (require 'package)
 (setq package-archives '(("melpa" . "http://melpa.org/packages/")))
 ;; (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 (package-initialize)
-(package-install 'auto-complete)
 (package-install 'avy)
 (package-install 'magit)
 (package-install 'markdown-mode)
@@ -34,20 +36,11 @@
 (defun my-package-menu-mode ()
   (local-set-key (kbd "[") 'package-menu-describe-package)
   (local-set-key (kbd "]") 'next-line)
-  (local-unset-key (kbd "n"))
-  (auto-complete-mode))
+  (local-unset-key (kbd "n")))
 (add-hook 'package-menu-mode-hook 'my-package-menu-mode)
 
-;; auto-complete
-(require 'auto-complete)
-(ac-linum-workaround)
-(setq ac-auto-start nil)
-(ac-set-trigger-key ".")
-(define-key ac-complete-mode-map (kbd ",") 'ac-previous)
-(define-key ac-complete-mode-map (kbd ".") 'ac-next)
-
 ;; avy
-(setq avy-keys '(?a ?b ?c ?d ?e ?f ?g ?h ?i ?j ?k ?l ?m ?n ?o ?p ?q ?r ?s ?t ?u ?v ?w ?x ?y ?z ?, ?.))
+(setq avy-keys '(?a ?b ?c ?d ?e ?f ?g ?h ?i ?j ?k ?l ?m ?n ?o ?p ?q ?r ?s ?t ?u ?v ?w ?x ?y ?z ?,))
 
 ;; bs-mode
 (defun my-bs-mode ()
@@ -76,8 +69,7 @@
 
 ;; elisp-mode
 (defun my-emacs-lisp-mode ()
-  (setq skip-chars " \t;")
-  (auto-complete-mode))
+  (setq skip-chars " \t;"))
 (add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode)
 
 ;; html-mode
@@ -89,8 +81,7 @@
   (local-set-key (kbd "[") 'magit-section-toggle)
   (local-unset-key (kbd "TAB"))
   (local-set-key (kbd "]") 'magit-section-forward)
-  (local-unset-key (kbd "n"))
-  (auto-complete-mode))
+  (local-unset-key (kbd "n")))
 (add-hook 'magit-mode-hook 'my-magit-mode)
 (defun my-magit-status-sections ()
   (magit-insert-status-headers)
@@ -125,14 +116,12 @@
 
 ;; markdown-mode
 (defun my-markdown-mode ()
-  (setq skip-chars " \t#")
-  (auto-complete-mode))
+  (setq skip-chars " \t#"))
 (add-hook 'markdown-mode-hook 'my-markdown-mode)
 
 ;; matlab-mode
 (defun my-matlab-mode ()
-  (setq skip-chars " \t%")
-  (auto-complete-mode))
+  (setq skip-chars " \t%"))
 (add-hook 'matlab-mode-hook 'my-matlab-mode)
 
 ;; org-mode
@@ -154,8 +143,7 @@
   (local-set-key (kbd "C-c C-M-s") 'org-schedule)
   (local-set-key (kbd "C-c C-d") 'org-sparse-tree)
   (local-set-key (kbd "C-c C-M-d") 'org-deadline)
-  (setq skip-chars " \t*")
-  (auto-complete-mode))
+  (setq skip-chars " \t*"))
 (add-hook 'org-mode-hook 'my-org-mode)
 
 ;; python-mode
@@ -164,8 +152,8 @@
   (local-set-key (kbd "C-c C-e") 'run-python)
   (local-set-key (kbd "C-c C-d") 'python-shell-send-defun)
   (local-unset-key (kbd "C-c C-p"))
-  (setq skip-chars " \t#")
-  (auto-complete-mode))
+  (my-dot-exchange)
+  (setq skip-chars " \t#"))
 (add-hook 'python-mode-hook 'my-python-mode)
 
 ;; racket-mode
@@ -175,12 +163,6 @@
   (local-set-key (kbd "M-<return>") 'racket-send-last-sexp)
   (local-set-key (kbd "C-x C-e") 'my-racket-send-buffer)
   (local-unset-key (kbd "C-c C-p"))
-  (setq skip-chars " \t;")
-  (auto-complete-mode))
+  (setq skip-chars " \t;"))
 (add-hook 'racket-mode-hook 'my-racket-mode)
 (add-hook 'racket-repl-mode-hook 'auto-complete-mode)
-
-;; with-editor-mode
-(defun my-with-editor-mode ()
-  (auto-complete-mode))
-(add-hook 'with-editor-mode-hook 'my-with-editor-mode)

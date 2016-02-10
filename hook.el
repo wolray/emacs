@@ -17,11 +17,9 @@
 (electric-pair-mode 1)
 (delete-selection-mode 1)
 (setq-default indent-tabs-mode t)
+(setq-default truncate-lines t)
 (setq x-select-enable-clipboard t)
 (fset 'yes-or-no-p 'y-or-n-p)
-(defun my-dot-exchange ()
-  (local-set-key (kbd ".") 'self-insert-command)
-  (local-set-key (kbd "M-.") 'dabbrev-expand))
 
 ;; package-menu-mode
 (require 'package)
@@ -40,7 +38,7 @@
 (add-hook 'package-menu-mode-hook 'my-package-menu-mode)
 
 ;; avy
-(setq avy-keys '(?a ?b ?c ?d ?e ?f ?g ?h ?i ?j ?k ?l ?m ?n ?o ?p ?q ?r ?s ?t ?u ?v ?w ?x ?y ?z ?,))
+(setq avy-keys '(?a ?b ?c ?d ?e ?f ?g ?h ?i ?j ?k ?l ?m ?n ?o ?p ?q ?r ?s ?t ?u ?v ?w ?x ?y ?z))
 
 ;; bs-mode
 (defun my-bs-mode ()
@@ -63,17 +61,11 @@
   (local-unset-key (kbd "C"))
   (local-unset-key (kbd "b"))
   (local-unset-key (kbd "~"))
-  (local-unset-key (kbd "%"))
-  )
+  (local-unset-key (kbd "%")))
 (add-hook 'bs-mode-hook 'my-bs-mode)
 
-;; elisp-mode
-(defun my-emacs-lisp-mode ()
-  (setq skip-chars " \t;"))
-(add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode)
-
-;; html-mode
-(add-hook 'html-mode-hook 'auto-complete-mode)
+;; lisp-mode
+(add-hook 'emacs-lisp-mode-hook 'my-dot-exchange)
 
 ;; magit-mode
 (setenv "GIT_ASKPASS" "git-gui--askpass")
@@ -100,8 +92,7 @@
   ;; (magit-insert-unpulled-from-upstream)
   (magit-insert-unpulled-from-pushremote)
   ;; (magit-insert-unpushed-to-upstream)
-  (magit-insert-unpushed-to-pushremote)
-  )
+  (magit-insert-unpushed-to-pushremote))
 (add-hook 'magit-status-sections-hook 'my-magit-status-sections)
 (defun my-magit-status-headers ()
   (magit-insert-error-header)
@@ -110,19 +101,14 @@
   (magit-insert-repo-header)
   ;; (magit-insert-upstream-branch-header)
   ;; (magit-insert-push-branch-header)
-  (magit-insert-tags-header)
-  )
+  (magit-insert-tags-header))
 (add-hook 'magit-status-headers-hook 'my-magit-status-headers)
 
 ;; markdown-mode
-(defun my-markdown-mode ()
-  (setq skip-chars " \t#"))
-(add-hook 'markdown-mode-hook 'my-markdown-mode)
+(add-hook 'markdown-mode-hook 'my-dot-exchange)
 
 ;; matlab-mode
-(defun my-matlab-mode ()
-  (setq skip-chars " \t%"))
-(add-hook 'matlab-mode-hook 'my-matlab-mode)
+(add-hook 'matlab-mode-hook 'my-dot-exchange)
 
 ;; org-mode
 (setq org-startup-indented t)
@@ -143,7 +129,7 @@
   (local-set-key (kbd "C-c C-M-s") 'org-schedule)
   (local-set-key (kbd "C-c C-d") 'org-sparse-tree)
   (local-set-key (kbd "C-c C-M-d") 'org-deadline)
-  (setq skip-chars " \t*"))
+  (my-dot-exchange))
 (add-hook 'org-mode-hook 'my-org-mode)
 
 ;; python-mode
@@ -151,9 +137,7 @@
   (local-set-key (kbd "M-<return>") 'my-python-shell-send-line)
   (local-set-key (kbd "C-c C-e") 'run-python)
   (local-set-key (kbd "C-c C-d") 'python-shell-send-defun)
-  (local-unset-key (kbd "C-c C-p"))
-  (my-dot-exchange)
-  (setq skip-chars " \t#"))
+  (local-unset-key (kbd "C-c C-p")))
 (add-hook 'python-mode-hook 'my-python-mode)
 
 ;; racket-mode
@@ -163,6 +147,5 @@
   (local-set-key (kbd "M-<return>") 'racket-send-last-sexp)
   (local-set-key (kbd "C-x C-e") 'my-racket-send-buffer)
   (local-unset-key (kbd "C-c C-p"))
-  (setq skip-chars " \t;"))
+  (my-dot-exchange))
 (add-hook 'racket-mode-hook 'my-racket-mode)
-(add-hook 'racket-repl-mode-hook 'auto-complete-mode)

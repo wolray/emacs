@@ -173,10 +173,10 @@
 (define-key key-translation-map (kbd "M-,") (kbd "C-/"))
 
 ;; .
-(global-set-key (kbd ".") 'dabbrev-expand)
 (define-key key-translation-map (kbd "C-.") (kbd "M-0"))
-(global-set-key (kbd "M-.")
-		'(lambda () (interactive) (insert-char 46)))
+(global-set-key (kbd "M-.") 'dabbrev-expand)
+(global-set-key (kbd "M-g M->") 'my-dot-exchange)
+(define-key key-translation-map (kbd "M->") (kbd "M-g M->"))
 
 ;; /
 (define-key key-translation-map (kbd "C-/") (kbd "M-0"))

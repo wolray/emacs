@@ -42,6 +42,22 @@
         (delete-char 1)
         (insert (car new))))))
 
+;; do
+(defvar dot-exchange nil)
+(make-variable-buffer-local 'dot-exchange)
+(defun my-dot-exchange ()
+  (interactive)
+  (if dot-exchange
+      (progn
+	(local-set-key (kbd ".") 'self-insert-command)
+	(local-set-key (kbd "M-.") 'dabbrev-expand)
+	(setq dot-exchange nil))
+    (progn
+      (local-set-key (kbd "M-.")
+		     '(lambda () (interactive) (insert-char 46)))
+      (local-set-key (kbd ".") 'dabbrev-expand)
+      (setq dot-exchange t))))
+
 ;; ki
 (defun my-kill-region ()
   (interactive)

@@ -34,7 +34,7 @@
 (defun my-package-menu-mode ()
   (local-set-key (kbd "[") 'package-menu-describe-package)
   (local-set-key (kbd "]") 'next-line)
-  (local-unset-key (kbd "n")))
+  (local-set-key (kbd "m") 'package-menu-describe-package))
 (add-hook 'package-menu-mode-hook 'my-package-menu-mode)
 
 ;; avy
@@ -46,15 +46,14 @@
   (local-set-key (kbd "=") 'bs-set-current-buffer-to-show-always)
   (local-set-key (kbd "[") 'bs-select)
   (local-set-key (kbd "]") 'bs-down)
+  (local-set-key (kbd "m") 'bs-select-window)
   (local-set-key (kbd "w") 'bs-toggle-readonly)
   (local-set-key (kbd "d") 'bs-delete)
   (local-set-key (kbd "f") 'bs-select-other-window)
   (local-unset-key (kbd "+"))
   (local-unset-key (kbd "u"))
   (local-unset-key (kbd "o"))
-  (local-unset-key (kbd "n"))
   (local-unset-key (kbd "k"))
-  (local-unset-key (kbd "m"))
   (local-unset-key (kbd "M"))
   (local-unset-key (kbd "t"))
   (local-unset-key (kbd "S"))
@@ -64,16 +63,13 @@
   (local-unset-key (kbd "%")))
 (add-hook 'bs-mode-hook 'my-bs-mode)
 
-;; lisp-mode
-(add-hook 'emacs-lisp-mode-hook 'my-dot-exchange)
-
 ;; magit-mode
 (setenv "GIT_ASKPASS" "git-gui--askpass")
 (defun my-magit-mode ()
   (local-set-key (kbd "[") 'magit-section-toggle)
-  (local-unset-key (kbd "TAB"))
+  (local-set-key (kbd "m") 'magit-section-toggle)
   (local-set-key (kbd "]") 'magit-section-forward)
-  (local-unset-key (kbd "n")))
+  (local-unset-key (kbd "TAB")))
 (add-hook 'magit-mode-hook 'my-magit-mode)
 (defun my-magit-status-sections ()
   (magit-insert-status-headers)
@@ -104,12 +100,6 @@
   (magit-insert-tags-header))
 (add-hook 'magit-status-headers-hook 'my-magit-status-headers)
 
-;; markdown-mode
-(add-hook 'markdown-mode-hook 'my-dot-exchange)
-
-;; matlab-mode
-(add-hook 'matlab-mode-hook 'my-dot-exchange)
-
 ;; org-mode
 (setq org-startup-indented t)
 (defun org-summary-todo (n-done n-not-done)
@@ -128,13 +118,12 @@
   (local-set-key (kbd "C-c C-s") 'org-sort)
   (local-set-key (kbd "C-c C-M-s") 'org-schedule)
   (local-set-key (kbd "C-c C-d") 'org-sparse-tree)
-  (local-set-key (kbd "C-c C-M-d") 'org-deadline)
-  (my-dot-exchange))
+  (local-set-key (kbd "C-c C-M-d") 'org-deadline))
 (add-hook 'org-mode-hook 'my-org-mode)
 
 ;; python-mode
 (defun my-python-mode ()
-  (local-set-key (kbd "M-<return>") 'my-python-shell-send-line)
+  (local-set-key (kbd "C-<return>") 'my-python-shell-send-line)
   (local-set-key (kbd "C-c C-e") 'run-python)
   (local-set-key (kbd "C-c C-d") 'python-shell-send-defun)
   (local-unset-key (kbd "C-c C-p")))
@@ -144,8 +133,7 @@
 (setq racket-racket-program "racket")
 (setq racket-raco-program "raco")
 (defun my-racket-mode ()
-  (local-set-key (kbd "M-<return>") 'racket-send-last-sexp)
+  (local-set-key (kbd "C-<return>") 'racket-send-last-sexp)
   (local-set-key (kbd "C-x C-e") 'my-racket-send-buffer)
-  (local-unset-key (kbd "C-c C-p"))
-  (my-dot-exchange))
+  (local-unset-key (kbd "C-c C-p")))
 (add-hook 'racket-mode-hook 'my-racket-mode)

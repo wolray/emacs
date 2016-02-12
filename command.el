@@ -152,18 +152,6 @@
       (setq search-whitespace-regexp "\\s-+")
       (message "(search-whitespace-regexp =\"\\\\s-+\")"))))
 
-;; sk
-(defvar skip-chars " \t")
-(make-variable-buffer-local 'skip-chars)
-(defun my-move-beginning-of-line ()
-  (interactive)
-  (skip-chars-backward skip-chars)
-  (move-beginning-of-line (if (bolp) 0 1))
-  (skip-chars-forward skip-chars))
-(defun my-move-end-of-line ()
-  (interactive)
-  (move-end-of-line (if (eolp) 2 1)))
-
 ;; to
 (defun my-toggle-comment (beg end)
   (interactive (if (use-region-p)
@@ -177,19 +165,19 @@
   (interactive)
   (move-beginning-of-line 1)
   (unless (or (bobp) (eobp))
-    (progn (next-line 1)
-	   (transpose-lines -1)
-	   (previous-line 2)))
-  (back-to-indentation))
+    (next-line 1)
+    (transpose-lines -1)
+    (previous-line 2))
+  (move-end-of-line 1))
 (defun my-transpose-lines-down ()
   (interactive)
   (move-end-of-line 1)
   (unless (eobp)
-    (progn
-      (next-line 1)
-      (unless (eobp) (transpose-lines 1))
-      (previous-line 1)
-      (move-end-of-line 1))))
+    (next-line 1)
+    (unless (eobp)
+      (transpose-lines 1)
+      (previous-line 1)))
+  (back-to-indentation))
 
 ;; tr-p
 (defun my-transpose-paragraphs-up ()

@@ -56,6 +56,17 @@
     (kill-ring-save
      (line-beginning-position) (line-end-position))))
 
+(defvar skip-chars " \t")
+(make-variable-buffer-local 'skip-chars)
+(defun my-move-beginning-of-line ()
+  (interactive)
+  (skip-chars-backward skip-chars)
+  (move-beginning-of-line (if (bolp) 0 1))
+  (skip-chars-forward skip-chars))
+(defun my-move-end-of-line ()
+  (interactive)
+  (move-end-of-line (if (eolp) 2 1)))
+
 ;; or
 (defun my-org-make-tdiff-string (diff)
   (let ((y (floor (/ diff 365)))
@@ -97,22 +108,13 @@
 ;; pa
 (defvar page-range 10)
 (make-variable-buffer-local 'page-range)
-(defun my-page-jump-minus ()
-  (interactive)
-  (cond ((= page-range 10) nil)
-	((= page-range 20) (setq page-range 10))
-	((= page-range 50) (setq page-range 20))
-	((= page-range 100) (setq page-range 50))
-	(t (setq page-range 10)))
-  (message (format "(page-range =%d)" page-range)))
-(defun my-page-jump-plus ()
+(defun my-page-range-toggle ()
   (interactive)
   (cond ((= page-range 10) (setq page-range 20))
 	((= page-range 20) (setq page-range 50))
-	((= page-range 50) (setq page-range 100))
-	((= page-range 100) nil)
+	((= page-range 50) (setq page-range 10))
 	(t (setq page-range 10)))
-  (message (format "(page-range =%d)" page-range)))
+  (message (format "(?page-range ?%d)" page-range)))
 (defun my-page-up ()
   (interactive)
   (move-beginning-of-line (- (1- page-range))))
@@ -123,11 +125,8 @@
 ;; py
 (defun my-python-shell-send-line ()
   (interactive)
-  (save-excursion
-    (back-to-indentation)
-    (skip-chars-forward " #")
-    (python-shell-send-region
-     (point) (line-end-position))))
+  (python-shell-send-region
+   (line-beginning-position) (line-end-position)))
 
 ;; ra
 (defun my-racket-send-buffer ()
@@ -136,21 +135,21 @@
   (racket-send-region
    (point-min) (point-max)))
 
-;; sw
-(defun my-switch-to-buffer-scratch ()
-  (interactive)
-  (switch-to-buffer "*scratch*"))
-
 ;; se
 (defun my-search-whitespace-regexp ()
   (interactive)
   (if (equal search-whitespace-regexp "\\s-+")
       (progn
 	(setq search-whitespace-regexp ".*?")
-	(message "(search-whitespace-regexp =\".*?\")"))
+	(message "(?search-whitespace-regexp ?\".*?\")"))
     (progn
       (setq search-whitespace-regexp "\\s-+")
-      (message "(search-whitespace-regexp =\"\\\\s-+\")"))))
+      (message "(?search-whitespace-regexp ?\"\\\\s-+\")"))))
+
+;; sw
+(defun my-switch-to-buffer-scratch ()
+  (interactive)
+  (switch-to-buffer "*scratch*"))
 
 ;; to
 (defun my-toggle-comment (beg end)
@@ -168,7 +167,7 @@
     (next-line 1)
     (transpose-lines -1)
     (previous-line 2))
-  (move-end-of-line 1))
+  (back-to-indentation))
 (defun my-transpose-lines-down ()
   (interactive)
   (move-end-of-line 1)
@@ -176,8 +175,8 @@
     (next-line 1)
     (unless (eobp)
       (transpose-lines 1)
-      (previous-line 1)))
-  (back-to-indentation))
+      (previous-line 1)
+      (move-end-of-line 1))))
 
 ;; tr-p
 (defun my-transpose-paragraphs-up ()

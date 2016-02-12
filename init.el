@@ -38,7 +38,7 @@
 (set-fontset-font "fontset-default" 'gb18030 "kaiti-13")
 
 ;; load
-(setq default-directory "d:/sync/emacs/")
+(setq default-directory "d:/sync/")
 (add-to-list 'load-path "d:/sync/emacs/emacs.d/")
 (load "hook.el")
 (load "command.el")

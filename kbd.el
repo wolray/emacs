@@ -194,7 +194,7 @@
 (define-key key-translation-map (kbd "C-c C-e") (kbd "C-c C-e"))
 
 ;; r
-(define-key key-translation-map (kbd "C-r") (kbd "C-x o"))
+(global-set-key (kbd "C-r") 'other-window)
 (define-key key-translation-map (kbd "C-M-r") (kbd "M-0"))
 (define-key key-translation-map (kbd "M-r") (kbd "M-0"))
 (define-key key-translation-map (kbd "C-x C-r") (kbd "C-x C-r"))

@@ -216,7 +216,8 @@
 
 ;; s
 (define-key key-translation-map (kbd "M-s") (kbd "C-M-s"))
-(define-key key-translation-map (kbd "C-M-s") (kbd "M-0"))
+(global-set-key (kbd "M-g C-M-s") 'my-search-whitespace-regexp)
+(define-key key-translation-map (kbd "C-M-s") (kbd "M-g C-M-s"))
 (global-set-key (kbd "M-g C-x s") 'my-switch-to-buffer-scratch)
 (define-key key-translation-map (kbd "C-x s") (kbd "M-g C-x s"))
 (define-key key-translation-map (kbd "C-x C-s") (kbd "C-x C-s"))
@@ -265,10 +266,6 @@
 
 ;; `
 (define-key key-translation-map (kbd "C-`") (kbd "C-u"))
-
-;; 1
-(global-set-key (kbd "M-g C-1") 'my-search-whitespace-regexp)
-(define-key key-translation-map (kbd "C-1") (kbd "M-g C-1"))
 
 ;; 9
 (define-key key-translation-map (kbd "C-9") (kbd "("))

@@ -1,4 +1,3 @@
-
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -16,28 +15,28 @@
  ;; If there is more than one, they won't work right.
  )
 
-;; startup
-(setq inhibit-startup-message t)
-(setq make-backup-files nil)
-(setq ring-bell-function 'ignore)
-(setq initial-scratch-message nil)
-
-;; frame
-(menu-bar-mode 0)
-(tool-bar-mode 0)
-(setq frame-title-format "")
-(setq default-frame-alist '((height . 30)))
-
-;; language
-(set-language-environment 'chinese-gbk)
-(set-keyboard-coding-system 'chinese-gbk)
-(set-buffer-file-coding-system 'chinese-gbk)
-
 ;; font
 (set-default-font "monaco-11")
 (set-fontset-font "fontset-default" 'gb18030 "kaiti-13")
 
-;; load
+;; frame
+(menu-bar-mode 0)
+(tool-bar-mode 0)
+(setq default-frame-alist '((height . 30)))
+(setq frame-title-format "")
+
+;; language
+(set-buffer-file-coding-system 'chinese-gbk)
+(set-keyboard-coding-system 'chinese-gbk)
+(set-language-environment 'chinese-gbk)
+
+;; startup
+(setq inhibit-startup-message t)
+(setq initial-scratch-message nil)
+(setq make-backup-files nil)
+(setq ring-bell-function 'ignore)
+
+;; ~load
 (setq default-directory "d:/sync/")
 (add-to-list 'load-path "d:/sync/emacs/emacs.d/")
 (load "hook.el")

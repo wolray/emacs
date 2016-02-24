@@ -1,4 +1,3 @@
-
 ;; ba
 (defun my-backward-kill-line ()
   (interactive)
@@ -55,17 +54,6 @@
        (region-beginning) (region-end))
     (kill-ring-save
      (line-beginning-position) (line-end-position))))
-
-(defvar skip-chars " \t")
-(make-variable-buffer-local 'skip-chars)
-(defun my-move-beginning-of-line ()
-  (interactive)
-  (skip-chars-backward skip-chars)
-  (move-beginning-of-line (if (bolp) 0 1))
-  (skip-chars-forward skip-chars))
-(defun my-move-end-of-line ()
-  (interactive)
-  (move-end-of-line (if (eolp) 2 1)))
 
 ;; or
 (defun my-org-make-tdiff-string (diff)
@@ -145,6 +133,27 @@
     (progn
       (setq search-whitespace-regexp "\\s-+")
       (message "(search-whitespace-regexp ?\"\\\\s-+\")"))))
+
+;; sk
+(defvar skip-chars " \t")
+(make-variable-buffer-local 'skip-chars)
+(defun my-move-beginning-of-line ()
+  (interactive)
+  (skip-chars-backward skip-chars)
+  (move-beginning-of-line (if (bolp) 0 1))
+  (skip-chars-forward skip-chars))
+(defun my-move-end-of-line ()
+  (interactive)
+  (move-end-of-line (if (eolp) 2 1)))
+
+;; so
+(defun my-sort-lines ()
+  (interactive)
+  (when (region-active-p)
+    (sort-lines nil (region-beginning) (region-end))))
+(defun my-sort-paragraphs ()
+  (interactive)
+  (sort-paragraphs nil (point-min) (point-max)))
 
 ;; sw
 (defun my-switch-to-buffer-scratch ()

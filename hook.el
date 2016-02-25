@@ -1,4 +1,4 @@
-;;   buffer
+;; !!buffer
 (delete-selection-mode 1)
 (electric-pair-mode 1)
 (show-paren-mode 1)
@@ -7,12 +7,12 @@
 (setq-default truncate-lines t)
 (fset 'yes-or-no-p 'y-or-n-p)
 
-;;   save
+;; !!save
 (defun my-before-save ()
   (delete-trailing-whitespace))
 (add-hook 'before-save-hook 'my-before-save)
 
-;;   window
+;; !!window
 (column-number-mode 1)
 (line-number-mode 1)
 (scroll-bar-mode 0)
@@ -20,7 +20,7 @@
 (require 'linum)
 (global-linum-mode 1)
 
-;;  package-menu-mode
+;; !package-menu-mode
 (require 'package)
 (setq package-archives '(("melpa" . "http://melpa.org/packages/")))
 ;; (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))

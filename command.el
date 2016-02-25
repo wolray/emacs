@@ -93,10 +93,10 @@
   (if (equal search-whitespace-regexp "\\s-+")
       (progn
 	(setq search-whitespace-regexp ".*?")
-	(message "(search-whitespace-regexp ?\".*?\")"))
+	(message "(search-whitespace-regexp =\".*?\")"))
     (progn
       (setq search-whitespace-regexp "\\s-+")
-      (message "(search-whitespace-regexp ?\"\\\\s-+\")"))))
+      (message "(search-whitespace-regexp =\"\\\\s-+\")"))))
 
 (defun my-sort-lines ()
   (interactive)
@@ -168,7 +168,7 @@
 	((= page-range 20) (setq page-range 50))
 	((= page-range 50) (setq page-range 10))
 	(t (setq page-range 10)))
-  (message (format "(page-range ?%d)" page-range)))
+  (message (format "(page-range =%d)" page-range)))
 (defun my-page-up ()
   (interactive)
   (move-beginning-of-line (- (1- page-range))))
@@ -183,6 +183,9 @@
   (skip-chars-backward skip-chars)
   (move-beginning-of-line (if (bolp) 0 1))
   (skip-chars-forward skip-chars))
+(defun my-move-beginning-of-line-origin ()
+  (interactive)
+  (move-beginning-of-line (if (bolp) 0 1)))
 (defun my-move-end-of-line ()
   (interactive)
   (move-end-of-line (if (eolp) 2 1)))

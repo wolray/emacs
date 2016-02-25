@@ -9,7 +9,8 @@
 (global-set-key (kbd "M-g C-,") 'avy-goto-char)
 (define-key key-translation-map (kbd "C-,") (kbd "M-g C-,"))
 (define-key key-translation-map (kbd "M-,") (kbd "M-0"))
-(define-key key-translation-map (kbd "C-M-,") (kbd "M-{"))
+(global-set-key (kbd "M-g C-M-,") 'avy-goto-char-2)
+(define-key key-translation-map (kbd "C-M-,") (kbd "M-g C-M-,"))
 
 ;; -
 (define-key key-translation-map (kbd "C--") (kbd "C-<left>"))
@@ -96,7 +97,7 @@
 (define-key key-translation-map (kbd "C-x [") (kbd "C-c <left>"))
 (define-key key-translation-map (kbd "C-c C-M-[") (kbd "C-c C-M-["))
 
-;; \\
+;; \
 (global-set-key (kbd "M-g C-\\") 'delete-indentation)
 (define-key key-translation-map (kbd "C-\\") (kbd "M-g C-\\"))
 (define-key key-translation-map (kbd "C-M-\\") (kbd "C-x C-o"))
@@ -178,20 +179,20 @@
 
 ;; j
 (define-key key-translation-map (kbd "C-j") (kbd "<left>"))
-(global-set-key (kbd "M-g C-M-j") 'my-upcase-word)
+(global-set-key (kbd "M-g C-M-j") 'my-capitalize-word)
 (define-key key-translation-map (kbd "C-M-j") (kbd "M-g C-M-j"))
 (define-key key-translation-map (kbd "M-j") (kbd "M-0"))
 
 ;; k
 (define-key key-translation-map (kbd "C-k") (kbd "DEL"))
-(global-set-key (kbd "M-g C-M-k") 'my-downcase-word)
+(global-set-key (kbd "M-g C-M-k") 'my-upcase-word)
 (define-key key-translation-map (kbd "C-M-k") (kbd "M-g C-M-k"))
 (define-key key-translation-map (kbd "M-k") (kbd "M-0"))
 (define-key key-translation-map (kbd "C-x k") (kbd "M-0"))
 
 ;; l
 (define-key key-translation-map (kbd "C-l") (kbd "<right>"))
-(global-set-key (kbd "M-g C-M-l") 'my-capitalize-word)
+(global-set-key (kbd "M-g C-M-l") 'my-downcase-word)
 (define-key key-translation-map (kbd "C-M-l") (kbd "M-g C-M-l"))
 (define-key key-translation-map (kbd "M-l") (kbd "M-0"))
 
@@ -220,7 +221,8 @@
 (define-key key-translation-map (kbd "M-p") (kbd "M-g M-p"))
 (define-key key-translation-map (kbd "C-x p") (kbd "M-0"))
 (define-key key-translation-map (kbd "C-x C-p") (kbd "C-x 2"))
-(define-key key-translation-map (kbd "C-c C-p") (kbd "C-c C-p"))
+(global-set-key (kbd "M-g C-c C-p") 'my-move-beginning-of-line-origin)
+(define-key key-translation-map (kbd "C-c C-p") (kbd "M-g C-c C-p"))
 (define-key key-translation-map (kbd "C-c C-M-p") (kbd "C-c C-M-p"))
 
 ;; q

@@ -44,8 +44,7 @@
 (define-key key-translation-map (kbd "C-9") (kbd "("))
 
 ;; ;
-(global-set-key (kbd "M-g C-;") 'my-toggle-comment)
-(define-key key-translation-map (kbd "C-;") (kbd "M-g C-;"))
+(define-key key-translation-map (kbd "C-;") (kbd "M-0"))
 (define-key key-translation-map (kbd "C-M-;") (kbd "M-0"))
 
 ;; =
@@ -245,10 +244,12 @@
 (define-key key-translation-map (kbd "C-x C-s") (kbd "C-x C-s"))
 
 ;; t
-(global-set-key (kbd "M-g C-t") 'my-sort-lines)
+(global-set-key (kbd "M-g C-t") 'my-toggle-comment)
 (define-key key-translation-map (kbd "C-t") (kbd "M-g C-t"))
-(global-set-key (kbd "M-g C-M-t") 'my-sort-paragraphs)
+(global-set-key (kbd "M-g C-M-t") 'my-sort-lines)
 (define-key key-translation-map (kbd "C-M-t") (kbd "M-g C-M-t"))
+(global-set-key (kbd "M-g C-x t") 'my-sort-paragraphs)
+(define-key key-translation-map (kbd "C-x t") (kbd "M-g C-x t"))
 (define-key key-translation-map (kbd "C-x C-t") (kbd "C-x C-0"))
 (define-key key-translation-map (kbd "C-c C-t") (kbd "C-c C-t"))
 

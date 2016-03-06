@@ -4,11 +4,28 @@
    (line-beginning-position) (point))
   (indent-for-tab-command))
 
+(defun my-capitalize-word ()
+  (interactive)
+  (capitalize-word -1))
+(defun my-upcase-word ()
+  (interactive)
+  (upcase-word -1))
+(defun my-cup-word ()
+  (interactive)
+  (if (eq this-command last-command)
+      (progn
+	(my-upcase-word)
+	(setq this-command nil))
+    (my-capitalize-word)))
+(defun my-downcase-word ()
+  (interactive)
+  (downcase-word -1))
+
 (defun my-copy-buffer ()
   (interactive)
   (kill-ring-save
    (point-min) (point-max))
-  (message "my-copy-buffer"))
+  (message "(my-copy-buffer)"))
 
 (defun my-cycle-paren-shapes ()
   (interactive)
@@ -93,10 +110,10 @@
   (if (equal search-whitespace-regexp "\\s-+")
       (progn
 	(setq search-whitespace-regexp ".*?")
-	(message "(search-whitespace-regexp =\".*?\")"))
+	(message "(search-whitespace-regexp (= \".*?\"))"))
     (progn
       (setq search-whitespace-regexp "\\s-+")
-      (message "(search-whitespace-regexp =\"\\\\s-+\")"))))
+      (message "(search-whitespace-regexp (= \"\\\\s-+\"))"))))
 
 (defun my-sort-lines ()
   (interactive)
@@ -104,7 +121,8 @@
     (sort-lines nil (region-beginning) (region-end))))
 (defun my-sort-paragraphs ()
   (interactive)
-  (sort-paragraphs nil (point-min) (point-max)))
+  (sort-paragraphs nil (point-min) (point-max))
+  (message "(my-sort-paragraphs)"))
 
 (defun my-switch-to-buffer-scratch ()
   (interactive)
@@ -150,16 +168,6 @@
   (unless (eobp)
     (transpose-paragraphs 1)))
 
-(defun my-upcase-word ()
-  (interactive)
-  (upcase-word -1))
-(defun my-capitalize-word ()
-  (interactive)
-  (capitalize-word -1))
-(defun my-downcase-word ()
-  (interactive)
-  (downcase-word -1))
-
 (defvar page-range 10)
 (make-variable-buffer-local 'page-range)
 (defun my-page-range-toggle ()
@@ -168,7 +176,7 @@
 	((= page-range 20) (setq page-range 50))
 	((= page-range 50) (setq page-range 10))
 	(t (setq page-range 10)))
-  (message (format "(page-range =%d)" page-range)))
+  (message (format "(page-range (= %d))" page-range)))
 (defun my-page-up ()
   (interactive)
   (move-beginning-of-line (- (1- page-range))))

@@ -92,7 +92,7 @@
 
 ;; [
 (define-key key-translation-map (kbd "C-M-[") (kbd "M-h"))
-(global-set-key (kbd "M-g C-{") 'my-page-range-toggle)
+(global-set-key (kbd "M-g C-{") 'my-toggle-page-range)
 (define-key key-translation-map (kbd "C-{") (kbd "M-g C-{"))
 (define-key key-translation-map (kbd "M-[") (kbd "C-l"))
 (define-key key-translation-map (kbd "C-x [") (kbd "C-c <left>"))
@@ -183,7 +183,7 @@
 
 ;; k
 (define-key key-translation-map (kbd "C-k") (kbd "DEL"))
-(global-set-key (kbd "M-g C-M-k") 'my-cup-word)
+(global-set-key (kbd "M-g C-M-k") 'my-toggle-word-case)
 (define-key key-translation-map (kbd "C-M-k") (kbd "M-g C-M-k"))
 (define-key key-translation-map (kbd "M-k") (kbd "M-0"))
 (define-key key-translation-map (kbd "C-x k") (kbd "M-0"))
@@ -198,8 +198,7 @@
 
 ;; n
 (define-key key-translation-map (kbd "C-n") (kbd "C-/"))
-(global-set-key (kbd "M-g C-M-n") 'my-downcase-word)
-(define-key key-translation-map (kbd "C-M-n") (kbd "M-g C-M-n"))
+(define-key key-translation-map (kbd "C-M-n") (kbd "M-0"))
 (define-key key-translation-map (kbd "M-n") (kbd "M-0"))
 
 ;; o

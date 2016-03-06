@@ -8,6 +8,9 @@
 
 ;; !!save
 (defun my-before-save ()
+  (save-excursion
+    (goto-char (point-max))
+    (newline 1))
   (delete-trailing-whitespace))
 (add-hook 'before-save-hook 'my-before-save)
 

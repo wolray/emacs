@@ -4,23 +4,6 @@
    (line-beginning-position) (point))
   (indent-for-tab-command))
 
-(defun my-capitalize-word ()
-  (interactive)
-  (capitalize-word -1))
-(defun my-upcase-word ()
-  (interactive)
-  (upcase-word -1))
-(defun my-cup-word ()
-  (interactive)
-  (if (eq this-command last-command)
-      (progn
-	(my-upcase-word)
-	(setq this-command nil))
-    (my-capitalize-word)))
-(defun my-downcase-word ()
-  (interactive)
-  (downcase-word -1))
-
 (defun my-copy-buffer ()
   (interactive)
   (kill-ring-save
@@ -170,7 +153,7 @@
 
 (defvar page-range 10)
 (make-variable-buffer-local 'page-range)
-(defun my-page-range-toggle ()
+(defun my-toggle-page-range ()
   (interactive)
   (cond ((= page-range 10) (setq page-range 20))
 	((= page-range 20) (setq page-range 50))
@@ -197,3 +180,11 @@
 (defun my-move-end-of-line ()
   (interactive)
   (move-end-of-line (if (eolp) 2 1)))
+
+(defvar word-case nil)
+(defun my-toggle-word-case ()
+  (interactive)
+  (unless (eq this-command last-command) (setq word-case nil))
+  (cond ((equal word-case nil) (capitalize-word -1) (setq word-case "c"))
+	((equal word-case "c") (upcase-word -1) (setq word-case "u"))
+	((equal word-case "u") (downcase-word -1) (setq word-case nil))))

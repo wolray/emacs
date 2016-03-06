@@ -8,7 +8,7 @@
   (interactive)
   (kill-ring-save
    (point-min) (point-max))
-  (message "my-copy-buffer"))
+  (message "(my-copy-buffer)"))
 
 (defun my-cycle-paren-shapes ()
   (interactive)
@@ -93,10 +93,10 @@
   (if (equal search-whitespace-regexp "\\s-+")
       (progn
 	(setq search-whitespace-regexp ".*?")
-	(message "(search-whitespace-regexp =\".*?\")"))
+	(message "(search-whitespace-regexp (= \".*?\"))"))
     (progn
       (setq search-whitespace-regexp "\\s-+")
-      (message "(search-whitespace-regexp =\"\\\\s-+\")"))))
+      (message "(search-whitespace-regexp (= \"\\\\s-+\"))"))))
 
 (defun my-sort-lines ()
   (interactive)
@@ -104,7 +104,8 @@
     (sort-lines nil (region-beginning) (region-end))))
 (defun my-sort-paragraphs ()
   (interactive)
-  (sort-paragraphs nil (point-min) (point-max)))
+  (sort-paragraphs nil (point-min) (point-max))
+  (message "(my-sort-paragraphs)"))
 
 (defun my-switch-to-buffer-scratch ()
   (interactive)
@@ -168,7 +169,7 @@
 	((= page-range 20) (setq page-range 50))
 	((= page-range 50) (setq page-range 10))
 	(t (setq page-range 10)))
-  (message (format "(page-range =%d)" page-range)))
+  (message (format "(page-range (= %d))" page-range)))
 (defun my-page-up ()
   (interactive)
   (move-beginning-of-line (- (1- page-range))))

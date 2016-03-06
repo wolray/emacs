@@ -4,6 +4,8 @@
 (global-set-key (kbd "M-g M-'") 'comment-kill)
 (define-key key-translation-map (kbd "M-'") (kbd "M-g M-'"))
 (define-key key-translation-map (kbd "M-\"") (kbd "M-0"))
+(global-set-key (kbd "M-g C-x '") 'toggle-truncate-lines)
+(define-key key-translation-map (kbd "C-x '") (kbd "M-g C-x '"))
 
 ;; ,
 (global-set-key (kbd "M-g C-,") 'avy-goto-char)
@@ -124,8 +126,7 @@
 (define-key key-translation-map (kbd "C-a") (kbd "C-k"))
 (define-key key-translation-map (kbd "C-x C-a") (kbd "C-x h"))
 (define-key key-translation-map (kbd "M-a") (kbd "M-0"))
-(global-set-key (kbd "M-g C-x a") 'my-copy-buffer)
-(define-key key-translation-map (kbd "C-x a") (kbd "M-g C-x a"))
+(define-key key-translation-map (kbd "C-x a") (kbd "M-0"))
 
 ;; b
 (global-set-key (kbd "M-g C-b") 'bs-show)
@@ -241,7 +242,8 @@
 (define-key key-translation-map (kbd "C-M-s") (kbd "M-g C-M-s"))
 (global-set-key (kbd "M-g C-x s") 'my-switch-to-buffer-scratch)
 (define-key key-translation-map (kbd "C-x s") (kbd "M-g C-x s"))
-(define-key key-translation-map (kbd "C-x C-s") (kbd "C-x C-s"))
+(global-set-key (kbd "M-g C-x C-s") 'my-copy-buffer)
+(define-key key-translation-map (kbd "C-x C-s") (kbd "M-g C-x C-s"))
 
 ;; t
 (global-set-key (kbd "M-g C-t") 'my-toggle-comment)
@@ -271,6 +273,9 @@
 (define-key key-translation-map (kbd "C-M-w") (kbd "M-0"))
 (define-key key-translation-map (kbd "C-x C-w") (kbd "C-x C-w"))
 (define-key key-translation-map (kbd "C-c C-w") (kbd "C-c C-w"))
+
+;; x
+(define-key key-translation-map (kbd "C-x C-x") (kbd "C-x C-s"))
 
 ;; y
 (define-key key-translation-map (kbd "C-y") (kbd "M-0"))

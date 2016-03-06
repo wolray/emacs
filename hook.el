@@ -4,7 +4,6 @@
 (show-paren-mode 1)
 (setq x-select-enable-clipboard t)
 (setq-default indent-tabs-mode t)
-(setq-default truncate-lines t)
 (fset 'yes-or-no-p 'y-or-n-p)
 
 ;; !!save

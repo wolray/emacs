@@ -8,11 +8,8 @@
 (define-key key-translation-map (kbd "C-x '") (kbd "M-g C-x '"))
 
 ;; ,
-(global-set-key (kbd "M-g C-,") 'avy-goto-char)
-(define-key key-translation-map (kbd "C-,") (kbd "M-g C-,"))
+(define-key key-translation-map (kbd "C-,") (kbd "C-/"))
 (define-key key-translation-map (kbd "M-,") (kbd "M-0"))
-(global-set-key (kbd "M-g C-M-,") 'avy-goto-char-2)
-(define-key key-translation-map (kbd "C-M-,") (kbd "M-g C-M-,"))
 
 ;; -
 (define-key key-translation-map (kbd "C--") (kbd "C-<left>"))
@@ -97,6 +94,8 @@
 (define-key key-translation-map (kbd "M-[") (kbd "C-l"))
 (define-key key-translation-map (kbd "C-x [") (kbd "C-c <left>"))
 (define-key key-translation-map (kbd "C-c C-M-[") (kbd "C-c C-M-["))
+(global-set-key (kbd "M-g C-c M-ESC") 'my-paragraph-set)
+(define-key key-translation-map (kbd "C-c M-ESC") (kbd "M-g C-c M-ESC"))
 
 ;; \
 (global-set-key (kbd "M-g C-\\") 'delete-indentation)
@@ -197,8 +196,10 @@
 (define-key key-translation-map (kbd "M-m") (kbd "M-0"))
 
 ;; n
-(define-key key-translation-map (kbd "C-n") (kbd "C-/"))
-(define-key key-translation-map (kbd "C-M-n") (kbd "M-0"))
+(global-set-key (kbd "M-g C-n") 'avy-goto-char)
+(define-key key-translation-map (kbd "C-n") (kbd "M-g C-n"))
+(global-set-key (kbd "M-g C-M-n") 'avy-goto-char-2)
+(define-key key-translation-map (kbd "C-M-n") (kbd "M-g C-M-n"))
 (define-key key-translation-map (kbd "M-n") (kbd "M-0"))
 
 ;; o

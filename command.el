@@ -167,6 +167,13 @@
   (interactive)
   (move-beginning-of-line (1+ page-range)))
 
+(defvar paragraph-origin (cons "\f\\|[ \t]*$" "[ \t\f]*$"))
+(defun my-paragraph-set ()
+  (interactive)
+  (setq paragraph-start (car paragraph-origin)
+	paragraph-separate (cdr paragraph-origin))
+  (message "(my-paragraph-set)"))
+
 (defvar skip-chars " \t")
 (make-variable-buffer-local 'skip-chars)
 (defun my-move-beginning-of-line ()

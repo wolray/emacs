@@ -69,6 +69,8 @@
 (define-key key-translation-map (kbd "C-<backspace>") (kbd "M-g C-<backspace>"))
 (global-set-key (kbd "M-g C-M-<backspace>") 'backward-kill-paragraph)
 (define-key key-translation-map (kbd "C-M-<backspace>") (kbd "M-g C-M-<backspace>"))
+(global-set-key (kbd "M-g C-S-<backspace>") 'delete-trailing-whitespace)
+(define-key key-translation-map (kbd "C-S-<backspace>") (kbd "M-g C-S-<backspace>"))
 (global-set-key (kbd "M-g M-DEL") 'my-backward-kill-line)
 (define-key key-translation-map (kbd "M-DEL") (kbd "M-g M-DEL"))
 (define-key key-translation-map (kbd "C-x DEL") (kbd "M-0"))
@@ -219,8 +221,8 @@
 (define-key key-translation-map (kbd "M-p") (kbd "M-g M-p"))
 (define-key key-translation-map (kbd "C-x p") (kbd "M-0"))
 (define-key key-translation-map (kbd "C-x C-p") (kbd "C-x 2"))
-(global-set-key (kbd "M-g C-c C-p") 'my-move-beginning-of-line-origin)
-(define-key key-translation-map (kbd "C-c C-p") (kbd "M-g C-c C-p"))
+(global-set-key (kbd "C-c C-p") 'my-move-beginning-of-line-origin)
+(define-key key-translation-map (kbd "C-c C-p") (kbd "C-c C-p"))
 (define-key key-translation-map (kbd "C-c C-M-p") (kbd "C-c C-M-p"))
 
 ;; q

@@ -60,6 +60,12 @@
   )
 (add-hook 'bs-mode-hook 'my-bs-mode)
 
+;; latex-mode
+(defun my-latex-mode ()
+  (my-paragraph-set)
+  )
+(add-hook 'latex-mode-hook 'my-latex-mode)
+
 ;; magit-mode
 (setenv "GIT_ASKPASS" "git-gui--askpass")
 (defun my-magit-mode ()

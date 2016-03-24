@@ -24,8 +24,8 @@
 
 ;; !package-menu-mode
 (require 'package)
-(setq package-archives '(("melpa" . "http://melpa.org/packages/")))
-;; (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+;; (setq package-archives '(("melpa" . "http://melpa.org/packages/")))
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 (package-initialize)
 (defun my-package-menu-mode ()
   (local-set-key (kbd "[") 'package-menu-describe-package)

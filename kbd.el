@@ -27,7 +27,6 @@
 (define-key key-translation-map (kbd "M-.") (kbd "M-0"))
 
 ;; /
-(define-key key-translation-map (kbd "C-/") (kbd "M-0"))
 (define-key key-translation-map (kbd "M-/") (kbd "M-0"))
 (define-key key-translation-map (kbd "C-M-/") (kbd "M-0"))
 
@@ -283,4 +282,5 @@
 ;; z
 (define-key key-translation-map (kbd "C-z") (kbd "C-/"))
 (define-key key-translation-map (kbd "M-z") (kbd "M-0"))
+(define-key key-translation-map (kbd "C-x C-z") (kbd "C-x C-z"))
 (define-key key-translation-map (kbd "C-c C-z") (kbd "C-c C-z"))

@@ -4,8 +4,6 @@
 (global-set-key (kbd "M-g M-'") 'comment-kill)
 (define-key key-translation-map (kbd "M-'") (kbd "M-g M-'"))
 (define-key key-translation-map (kbd "M-\"") (kbd "M-0"))
-(global-set-key (kbd "M-g C-x '") 'toggle-truncate-lines)
-(define-key key-translation-map (kbd "C-x '") (kbd "M-g C-x '"))
 
 ;; ,
 (define-key key-translation-map (kbd "C-,") (kbd "C-/"))
@@ -93,16 +91,21 @@
 (define-key key-translation-map (kbd "M-[") (kbd "C-l"))
 (define-key key-translation-map (kbd "C-x [") (kbd "C-c <left>"))
 (define-key key-translation-map (kbd "C-c C-M-[") (kbd "C-c C-M-["))
-(global-set-key (kbd "M-g C-c M-ESC") 'my-paragraph-set)
-(define-key key-translation-map (kbd "C-c M-ESC") (kbd "M-g C-c M-ESC"))
 
-;; \
+;; \\
 (global-set-key (kbd "M-g C-\\") 'delete-indentation)
 (define-key key-translation-map (kbd "C-\\") (kbd "M-g C-\\"))
 (define-key key-translation-map (kbd "C-M-\\") (kbd "C-x C-o"))
 (define-key key-translation-map (kbd "C-|") (kbd "M-0"))
 (define-key key-translation-map (kbd "C-x \\") (kbd "M-0"))
 (define-key key-translation-map (kbd "C-x C-\\") (kbd "M-0"))
+
+;; \f
+(define-key key-translation-map (kbd "<f5>") (kbd "C-x C-s"))
+(global-set-key (kbd "M-g <f10>") 'my-paragraph-set)
+(define-key key-translation-map (kbd "<f10>") (kbd "M-g <f10>"))
+(global-set-key (kbd "M-g <f12>") 'toggle-truncate-lines)
+(define-key key-translation-map (kbd "<f12>") (kbd "M-g <f12>"))
 
 ;; ]
 (global-set-key (kbd "M-g C-]") 'my-move-end-of-line)
@@ -239,8 +242,6 @@
 (define-key key-translation-map (kbd "C-M-s") (kbd "M-g C-M-s"))
 (global-set-key (kbd "M-g C-x s") 'my-switch-to-buffer-scratch)
 (define-key key-translation-map (kbd "C-x s") (kbd "M-g C-x s"))
-(global-set-key (kbd "M-g C-x C-s") 'my-copy-buffer)
-(define-key key-translation-map (kbd "C-x C-s") (kbd "M-g C-x C-s"))
 
 ;; t
 (global-set-key (kbd "M-g C-t") 'my-toggle-comment)
@@ -272,7 +273,8 @@
 (define-key key-translation-map (kbd "C-c C-w") (kbd "C-c C-w"))
 
 ;; x
-(define-key key-translation-map (kbd "C-x C-x") (kbd "C-x C-s"))
+(global-set-key (kbd "M-g C-x C-x") 'my-copy-buffer)
+(define-key key-translation-map (kbd "C-x C-x") (kbd "M-g C-x C-x"))
 
 ;; y
 (define-key key-translation-map (kbd "C-y") (kbd "M-0"))

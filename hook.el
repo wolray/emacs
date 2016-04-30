@@ -8,12 +8,12 @@
 (show-paren-mode 1)
 
 ;; !!save
-(defun my-before-save ()
+(defun BeforeSave ()
   (save-excursion
     (goto-char (point-max))
     (newline 1))
   (delete-trailing-whitespace))
-(add-hook 'before-save-hook 'my-before-save)
+(add-hook 'before-save-hook 'BeforeSave)
 
 ;; !!window
 (column-number-mode 1)
@@ -28,18 +28,18 @@
 ;; (setq package-archives '(("melpa" . "http://melpa.org/packages/")))
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 (package-initialize)
-(defun my-package-menu-mode ()
+(defun PackageMenuMode ()
   (local-set-key (kbd "[") 'package-menu-describe-package)
   (local-set-key (kbd "]") 'next-line)
   (local-unset-key (kbd "n"))
   )
-(add-hook 'package-menu-mode-hook 'my-package-menu-mode)
+(add-hook 'package-menu-mode-hook 'PackageMenuMode)
 
 ;; avy
 (setq avy-keys '(?a ?b ?c ?d ?e ?f ?g ?h ?i ?j ?k ?l ?m ?n ?o ?p ?q ?r ?s ?t ?u ?v ?w ?x ?y ?z))
 
 ;; bs-mode
-(defun my-bs-mode ()
+(defun BsMode ()
   (local-set-key (kbd "-") 'bs-set-current-buffer-to-show-never)
   (local-set-key (kbd "=") 'bs-set-current-buffer-to-show-always)
   (local-set-key (kbd "[") 'bs-select)
@@ -59,24 +59,24 @@
   (local-unset-key (kbd "u"))
   (local-unset-key (kbd "~"))
   )
-(add-hook 'bs-mode-hook 'my-bs-mode)
+(add-hook 'bs-mode-hook 'BsMode)
 
 ;; latex-mode
-(defun my-latex-mode ()
+(defun LatexMode ()
   (my-paragraph-set)
   )
-(add-hook 'latex-mode-hook 'my-latex-mode)
+(add-hook 'latex-mode-hook 'LatexMode)
 
 ;; magit-mode
 (setenv "GIT_ASKPASS" "git-gui--askpass")
-(defun my-magit-mode ()
+(defun MagitMode ()
   (local-set-key (kbd "[") 'magit-section-toggle)
   (local-set-key (kbd "]") 'magit-section-forward)
   (local-unset-key (kbd "TAB"))
   (local-unset-key (kbd "n"))
   )
-(add-hook 'magit-mode-hook 'my-magit-mode)
-(defun my-magit-status-sections ()
+(add-hook 'magit-mode-hook 'MagitMode)
+(defun MagitStatusSections ()
   (magit-insert-status-headers)
   (magit-insert-tracked-files)
   (magit-insert-unstaged-changes)
@@ -95,8 +95,8 @@
   ;; (magit-insert-unpushed-to-upstream)
   ;; (magit-insert-untracked-files)
   )
-(add-hook 'magit-status-sections-hook 'my-magit-status-sections)
-(defun my-magit-status-headers ()
+(add-hook 'magit-status-sections-hook 'MagitStatusSections)
+(defun MagitStatusHeaders ()
   (magit-insert-head-branch-header)
   (magit-insert-diff-filter-header)
   (magit-insert-error-header)
@@ -105,7 +105,7 @@
   ;; (magit-insert-push-branch-header)
   ;; (magit-insert-upstream-branch-header)
   )
-(add-hook 'magit-status-headers-hook 'my-magit-status-headers)
+(add-hook 'magit-status-headers-hook 'MagitStatusHeaders)
 
 ;; org-mode
 (setq org-startup-indented t)
@@ -114,8 +114,8 @@
   (let (org-log-done org-log-states)   ; turn off logging
     (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
 (add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
-(defun my-org-mode ()
-  (local-set-key (kbd "C-c C--") 'my-org-evaluate-time-range)
+(defun OrgMode ()
+  (local-set-key (kbd "C-c C--") 'OrgEvaluateTimeRange)
   (local-set-key (kbd "C-c C-=") 'org-time-stamp)
   (local-set-key (kbd "C-c C-M-]") 'org-clock-out)
   (local-set-key (kbd "C-c C-M-d") 'org-deadline)
@@ -131,23 +131,23 @@
   (local-unset-key (kbd "C-c ]"))
   (setq skip-chars " \t*")
   )
-(add-hook 'org-mode-hook 'my-org-mode)
+(add-hook 'org-mode-hook 'OrgMode)
 
 ;; python-mode
-(defun my-python-mode ()
-  (local-set-key (kbd "C-<return>") 'my-python-shell-send-line)
+(defun PythonMode ()
+  (local-set-key (kbd "C-<return>") 'PythonShellSendLine)
   (local-set-key (kbd "C-c C-d") 'python-shell-send-defun)
   (local-set-key (kbd "C-c C-e") 'run-python)
   (local-unset-key (kbd "C-c C-p"))
   )
-(add-hook 'python-mode-hook 'my-python-mode)
+(add-hook 'python-mode-hook 'PythonMode)
 
 ;; racket-mode
 (setq racket-racket-program "racket")
 (setq racket-raco-program "raco")
-(defun my-racket-mode ()
+(defun RacketMode ()
   (local-set-key (kbd "C-<return>") 'racket-send-last-sexp)
-  (local-set-key (kbd "C-c C-e") 'my-racket-send-buffer)
+  (local-set-key (kbd "C-c C-e") 'RacketSendBuffer)
   (local-unset-key (kbd "C-c C-p"))
   )
-(add-hook 'racket-mode-hook 'my-racket-mode)
+(add-hook 'racket-mode-hook 'RacketMode)

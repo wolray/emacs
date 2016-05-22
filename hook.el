@@ -20,7 +20,6 @@
 (line-number-mode 1)
 (scroll-bar-mode 0)
 (winner-mode 1)
-(require 'linum)
 (global-linum-mode 1)
 
 ;; !package-menu-mode

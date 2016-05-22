@@ -102,9 +102,11 @@
 
 ;; \f
 (define-key key-translation-map (kbd "<f5>") (kbd "C-x C-s"))
-(global-set-key (kbd "M-g <f10>") 'ParagraphSet)
+(global-set-key (kbd "M-g <f9>") 'linum-mode)
+(define-key key-translation-map (kbd "<f9>") (kbd "M-g <f9>"))
+(global-set-key (kbd "M-g <f10>") 'toggle-truncate-lines)
 (define-key key-translation-map (kbd "<f10>") (kbd "M-g <f10>"))
-(global-set-key (kbd "M-g <f12>") 'toggle-truncate-lines)
+(global-set-key (kbd "M-g <f12>") 'ParagraphSet)
 (define-key key-translation-map (kbd "<f12>") (kbd "M-g <f12>"))
 
 ;; ]

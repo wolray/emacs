@@ -207,9 +207,8 @@
 (define-key key-translation-map (kbd "M-n") (kbd "M-0"))
 
 ;; o
-(define-key key-translation-map (kbd "C-o") (kbd "C-M-f"))
-(global-set-key (kbd "M-g C-M-o") 'up-list)
-(define-key key-translation-map (kbd "C-M-o") (kbd "M-g C-M-o"))
+(define-key key-translation-map (kbd "C-o") (kbd "C-<right>"))
+(define-key key-translation-map (kbd "C-M-o") (kbd "C-M-f"))
 (define-key key-translation-map (kbd "M-o") (kbd "M-0"))
 (define-key key-translation-map (kbd "C-x C-o") (kbd "C-x C-o"))
 
@@ -256,7 +255,8 @@
 (define-key key-translation-map (kbd "C-c C-t") (kbd "C-c C-t"))
 
 ;; u
-(define-key key-translation-map (kbd "C-u") (kbd "C-M-b"))
+(define-key key-translation-map (kbd "C-u") (kbd "C-<left>"))
+(define-key key-translation-map (kbd "C-M-u") (kbd "C-M-b"))
 (define-key key-translation-map (kbd "M-u") (kbd "M-0"))
 
 ;; v

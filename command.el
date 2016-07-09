@@ -1,3 +1,10 @@
+(defmacro my-cycle-values (var values)
+  `(let ((i 0) (j t))
+    (while (and (< i (length ,values)) j)
+      (when (equal ,var (elt ,values i)) (setq j nil))
+      (setq i (1+ i)))
+    (setq ,var (if (= i (length ,values)) (car ,values) (elt ,values i)))))
+
 (defmacro my-map-key (obj key)
   `(if (symbolp ,obj)
        (let ((map-key (kbd (concat "M-g " (cadr ',key)))))
@@ -7,8 +14,7 @@
 
 (defun my-backward-kill-line ()
   (interactive)
-  (kill-region
-   (line-beginning-position) (point))
+  (kill-region (line-beginning-position) (point))
   (indent-for-tab-command))
 
 (defun my-capitalize-word ()
@@ -23,8 +29,7 @@
 
 (defun my-copy-buffer ()
   (interactive)
-  (kill-ring-save
-   (point-min) (point-max))
+  (kill-ring-save (point-min) (point-max))
   (message "(my-copy-buffer)"))
 
 (defun my-cycle-paren-shapes ()
@@ -56,10 +61,8 @@
 (defun my-kill-ring-save ()
   (interactive)
   (if (use-region-p)
-      (kill-ring-save
-       (region-beginning) (region-end))
-    (kill-ring-save
-     (line-beginning-position) (line-end-position))))
+      (kill-ring-save (region-beginning) (region-end))
+    (kill-ring-save (line-beginning-position) (line-end-position))))
 
 (defun my-sort-lines ()
   (interactive)
@@ -77,19 +80,13 @@
 (defun my-toggle-comment (beg end)
   (interactive (if (use-region-p)
 		   (list (region-beginning) (region-end))
-		 (list (line-beginning-position)
-		       (line-beginning-position 2))))
+		 (list (line-beginning-position) (line-beginning-position 2))))
   (comment-or-uncomment-region beg end))
 
 (defun my-toggle-search-whitespace-regexp ()
   (interactive)
-  (if (equal search-whitespace-regexp "\\s-+")
-      (progn
-	(setq search-whitespace-regexp ".*?")
-	(message "(search-whitespace-regexp \".*?\")"))
-    (progn
-      (setq search-whitespace-regexp "\\s-+")
-      (message "(search-whitespace-regexp \"\\\\s-+\")"))))
+  (my-cycle-values search-whitespace-regexp '("\\s-+" ".*?"))
+  (message (format "(search-whitespace-regexp \"%s\")" search-whitespace-regexp)))
 
 (defun my-transpose-lines-up ()
   (interactive)
@@ -121,23 +118,19 @@
   (interactive)
   (backward-paragraph 1)
   (forward-paragraph 1)
-  (unless (eobp)
-    (transpose-paragraphs 1)))
+  (unless (eobp) (transpose-paragraphs 1)))
 
-(defvar frame-alpha '100)
+(defvar frame-alpha nil)
 (defun my-toggle-frame-alpha ()
   (interactive)
-  (setq frame-alpha (if (equal frame-alpha '100) '70 '100))
+  (my-cycle-values frame-alpha '(100 70))
   (set-frame-parameter (selected-frame) 'alpha frame-alpha))
 
 (defvar page-range 10)
 (make-variable-buffer-local 'page-range)
 (defun my-toggle-page-range ()
   (interactive)
-  (cond ((= page-range 10) (setq page-range 20))
-	((= page-range 20) (setq page-range 50))
-	((= page-range 50) (setq page-range 10))
-	(t (setq page-range 10)))
+  (my-cycle-values page-range '(10 20 50))
   (message (format "(page-range %d)" page-range)))
 (defun my-page-up ()
   (interactive)
@@ -146,11 +139,10 @@
   (interactive)
   (move-beginning-of-line (1+ page-range)))
 
-(defvar paragraph-origin (cons "\f\\|[ \t]*$" "[ \t\f]*$"))
 (defun my-paragraph-set ()
   (interactive)
-  (setq paragraph-start (car paragraph-origin)
-	paragraph-separate (cdr paragraph-origin))
+  (setq paragraph-start "\f\\|[ \t]*$"
+	paragraph-separate "[ \t\f]*$")
   (message "(my-paragraph-set)"))
 
 (defvar skip-chars " \t")
@@ -171,11 +163,3 @@
 (defun my-move-end-of-line-reverse ()
   (interactive)
   (move-end-of-line 0))
-
-(defvar word-case nil)
-(defun my-toggle-word-case ()
-  (interactive)
-  (unless (eq this-command last-command) (setq word-case nil))
-  (cond ((equal word-case nil) (capitalize-word -1) (setq word-case "c"))
-	((equal word-case "c") (upcase-word -1) (setq word-case "u"))
-	((equal word-case "u") (downcase-word -1) (setq word-case nil))))

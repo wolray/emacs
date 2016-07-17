@@ -12,6 +12,10 @@
 	 (define-key key-translation-map ,key map-key))
      (define-key key-translation-map ,key ,obj)))
 
+(defmacro over (ls)
+  `(elt ,ls (cl-incf count 0)))
+(fset 'incf 'cl-incf)
+
 (defun my-backward-kill-line ()
   (interactive)
   (kill-region (line-beginning-position) (point))
@@ -126,7 +130,7 @@
   (forward-paragraph 1)
   (unless (eobp) (transpose-paragraphs 1)))
 
-(defvar frame-alpha nil)
+(defvar frame-alpha 100)
 (defun my-toggle-frame-alpha ()
   (interactive)
   (my-cycle-values frame-alpha '(100 70))

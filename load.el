@@ -1,3 +1,12 @@
+;; buffer
+(delete-selection-mode 1)
+(electric-pair-mode 1)
+(fset 'yes-or-no-p 'y-or-n-p)
+(setq x-select-enable-clipboard t)
+(setq-default cursor-type 'bar)
+(setq-default indent-tabs-mode t)
+(show-paren-mode 1)
+
 ;; font
 (if (string= system-name "lab")
     (progn
@@ -24,6 +33,13 @@
 (setq make-backup-files nil)
 (setq ring-bell-function 'ignore)
 (setq save-abbrevs nil)
+
+;; window
+(column-number-mode 1)
+(global-linum-mode 1)
+(line-number-mode 1)
+(scroll-bar-mode 0)
+(winner-mode 1)
 
 ;; ~load
 (setq default-directory "d:/sync/")

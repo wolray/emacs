@@ -1,22 +1,3 @@
-;; !!buffer
-(delete-selection-mode 1)
-(electric-pair-mode 1)
-(fset 'yes-or-no-p 'y-or-n-p)
-(setq x-select-enable-clipboard t)
-(setq-default cursor-type 'bar)
-(setq-default indent-tabs-mode t)
-(show-paren-mode 1)
-
-;; !!save
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
-
-;; !!window
-(column-number-mode 1)
-(line-number-mode 1)
-(scroll-bar-mode 0)
-(winner-mode 1)
-(global-linum-mode 1)
-
 ;; !package
 (require 'package)
 ;; (setq package-archives '(("melpa" . "http://melpa.org/packages/")))
@@ -56,6 +37,15 @@
   (local-unset-key (kbd "~"))
   )
 (add-hook 'bs-mode-hook 'f-bs-mode)
+
+;; cua
+(cua-rectangle-mark-mode)
+(define-key cua--rectangle-keymap (kbd "<left>") 'cua-move-rectangle-left)
+(define-key cua--rectangle-keymap (kbd "<right>") 'cua-move-rectangle-right)
+(define-key cua--rectangle-keymap (kbd "M-g C-1") 'keyboard-quit)
+(define-key cua--rectangle-keymap (kbd "M-g C-2") 'cua-exchange-point-and-mark)
+(define-key cua--rectangle-keymap (kbd "M-g C-3") 'f-cua-sequence-rectangle)
+(define-key cua--rectangle-keymap (kbd "M-g C-4") 'cua-clear-rectangle-mark)
 
 ;; ess
 (defun f-ess-clear-inferior ()
@@ -219,6 +209,9 @@
   (local-set-key (kbd "M-g C-y") 'racket-send-last-sexp)
   )
 (add-hook 'racket-mode-hook 'f-racket-mode)
+
+;; save
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;; sql
 (defun f-sql-mode ()

@@ -19,14 +19,13 @@
 
 (defun f-c-1 (arg)
   (interactive "P")
-  (if (eq cursor-type 'box)
-      (kmacro-delete-ring-head)
-    (if (eq last-command 'f-c-2)
-	(progn
-	  (kmacro-end-macro arg)
-	  (f-c-toggle-cursor-type)
-	  (kmacro-delete-ring-head))
-      (f-revert-buffer))))
+  (cond ((minibufferp) (kill-whole-line))
+	((eq cursor-type 'box) (kmacro-delete-ring-head))
+	((eq last-command 'f-c-2)
+	 (kmacro-end-macro arg)
+	 (f-c-toggle-cursor-type)
+	 (kmacro-delete-ring-head))
+	(t (f-revert-buffer))))
 
 (defun f-c-2 (arg)
   (interactive "P")
@@ -44,10 +43,9 @@
 (defun f-c-3 (arg)
   (interactive "P")
   (cond ((minibufferp)
-	 (if (eq last-command 'f-c-3)
-	     (progn (insert "'()") (left-char 1))
-	   (insert "\\,(f-each )")
-	   (left-char 1)))
+	 (if (eq last-command 'f-c-3) (insert "'()")
+	   (insert "\\,(f-each )"))
+	 (left-char 1))
 	((eq cursor-type 'box) (kmacro-cycle-ring-next))
 	((eq last-command 'f-c-2)
 	 (kmacro-end-macro arg)
@@ -60,13 +58,11 @@
 
 (defun f-c-4 ()
   (interactive)
-  (if (eq cursor-type 'box)
-      (f-c-toggle-cursor-type)
-    (if defining-kbd-macro
-	(keyboard-quit)
-      (if (eq last-command 'kmacro-view-macro)
-	  (keyboard-quit)
-	(kmacro-view-macro)))))
+  (cond ((minibufferp) (minibuffer-keyboard-quit))
+	((eq cursor-type 'box) (f-c-toggle-cursor-type))
+	(defining-kbd-macro (keyboard-quit))
+	((eq last-command 'kmacro-view-macro) (keyboard-quit))
+	(t (kmacro-view-macro))))
 
 (defun f-c-toggle-cursor-type ()
   (let ((temp cursor-type))
@@ -95,8 +91,8 @@
 (defun f-cua-sequence-rectangle (first incr)
   (interactive
    (let ((seq (mapcar 'string-to-number
-		      (split-string (read-string "0 (+1): " nil nil "0 1")))))
-     (list (car seq) (or (cdr seq) 1))))
+		      (split-string (read-string "1 (+1): " nil nil "1 1")))))
+     (list (car seq) (or (cadr seq) 1))))
   (cua--rectangle-operation 'clear nil t 1 nil
 			    (lambda (s e _l _r)
 			      (delete-region s e)
@@ -127,11 +123,10 @@
 
 (defun f-incf (&optional first incr repeat)
   (let ((index (floor (/ (cl-incf count 0) (or repeat 1)))))
-    (+ (or first 0) (* (or incr 1) index))))
+    (+ (or first 1) (* (or incr 1) index))))
 (defun f-each (ls &optional repeat)
   (let ((index (floor (/ (cl-incf count 0) (or repeat 1)))))
-    (if (< index (length ls))
-	(elt ls index)
+    (if (< index (length ls)) (elt ls index)
       (keyboard-quit))))
 
 (defun f-kill-region ()
@@ -160,6 +155,12 @@
 (defun f-revert-buffer ()
   (interactive)
   (when (buffer-modified-p) (revert-buffer t t)))
+
+(defun f-set-or-exchange-mark (arg)
+  (interactive "P")
+  (if (use-region-p)
+      (exchange-point-and-mark)
+    (set-mark-command arg)))
 
 (defun f-sort-lines ()
   (interactive)
@@ -203,18 +204,17 @@
 
 (defun f-transpose-paragraphs-down ()
   (interactive)
-  (backward-paragraph 1)
-  (forward-paragraph 1)
+  (backward-paragraph)
+  (forward-paragraph)
   (unless (eobp) (transpose-paragraphs 1)))
 
 (defun f-transpose-paragraphs-up ()
   (interactive)
-  (backward-paragraph 1)
-  (if (bobp) (forward-paragraph)
-    (progn
-      (forward-paragraph 1)
-      (transpose-paragraphs -1)
-      (backward-paragraph 1))))
+  (backward-paragraph)
+  (forward-paragraph)
+  (unless (bobp)
+    (transpose-paragraphs -1)
+    (backward-paragraph)))
 
 (defvar v-frame 100)
 (defun f-toggle-v-frame ()

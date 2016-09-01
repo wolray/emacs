@@ -23,7 +23,7 @@
 	((eq cursor-type 'box) (kmacro-delete-ring-head))
 	((eq last-command 'f-c-2)
 	 (kmacro-end-macro arg)
-	 (f-c-toggle-cursor-type)
+	 (f-c-toggle-status)
 	 (kmacro-delete-ring-head))
 	(t (f-revert-buffer))))
 
@@ -35,7 +35,7 @@
 	((eq cursor-type 'box) (kmacro-cycle-ring-previous))
 	((eq last-command 'f-c-2)
 	 (kmacro-end-macro arg)
-	 (f-c-toggle-cursor-type)
+	 (f-c-toggle-status)
 	 (kmacro-cycle-ring-previous))
 	(t (setq defining-kbd-macro nil)
 	   (kmacro-start-macro arg))))
@@ -49,7 +49,7 @@
 	((eq cursor-type 'box) (kmacro-cycle-ring-next))
 	((eq last-command 'f-c-2)
 	 (kmacro-end-macro arg)
-	 (f-c-toggle-cursor-type)
+	 (f-c-toggle-status)
 	 (kmacro-cycle-ring-next))
 	(defining-kbd-macro (kmacro-end-macro arg))
 	((use-region-p)
@@ -59,25 +59,15 @@
 (defun f-c-4 ()
   (interactive)
   (cond ((minibufferp) (minibuffer-keyboard-quit))
-	((eq cursor-type 'box) (f-c-toggle-cursor-type))
+	((eq cursor-type 'box) (f-c-toggle-status))
 	(defining-kbd-macro (keyboard-quit))
 	((eq last-command 'kmacro-view-macro) (keyboard-quit))
 	(t (kmacro-view-macro))))
 
-(defun f-c-toggle-cursor-type ()
+(defun f-c-toggle-status ()
   (let ((temp cursor-type))
     (setq-default
      cursor-type (m-cycle-values temp '(bar box)))))
-
-(defun f-capitalize-word ()
-  (interactive)
-  (capitalize-word -1))
-(defun f-downcase-word ()
-  (interactive)
-  (downcase-word -1))
-(defun f-upcase-word ()
-  (interactive)
-  (upcase-word -1))
 
 (defun f-copy-buffer ()
   (interactive)
@@ -88,15 +78,18 @@
   (kill-ring-save (point-min) (point-max))
   (message "(f-copy-buffer)"))
 
-(defun f-cua-sequence-rectangle (first incr)
+(defun f-cua-sequence-rectangle (first incr fmt)
   (interactive
-   (let ((seq (mapcar 'string-to-number
-		      (split-string (read-string "1 (+1): " nil nil "1 1")))))
-     (list (car seq) (or (cadr seq) 1))))
+   (let ((seq (split-string
+	       (read-string "1 (+1) (d): " nil nil))))
+     (list (string-to-number (or (car seq) "1"))
+	   (string-to-number (or (cadr seq) "1"))
+	   (concat "%" (or (cadr (cdr seq)) "d")))))
+  (setq cua--rectangle-seq-format fmt)
   (cua--rectangle-operation 'clear nil t 1 nil
 			    (lambda (s e _l _r)
 			      (delete-region s e)
-			      (insert (format "%d" first))
+			      (insert (format fmt first))
 			      (setq first (+ first incr)))))
 
 (defun f-cycle-paren-shapes ()
@@ -105,21 +98,26 @@
     (unless (looking-at-p (rx (any "([")))
       (backward-up-list))
     (let ((pt (point))
-          (new (cond ((looking-at-p (rx "(")) (cons "[" "]"))
-                     ((looking-at-p (rx "[")) (cons "(" ")"))
-                     (t (beep) nil))))
+	  (new (cond ((looking-at-p (rx "(")) (cons "[" "]"))
+		     ((looking-at-p (rx "[")) (cons "(" ")"))
+		     (t (beep) nil))))
       (when new
-        (forward-sexp)
-        (delete-char -1)
-        (insert (cdr new))
-        (goto-char pt)
-        (delete-char 1)
-        (insert (car new))))))
+	(forward-sexp)
+	(delete-char -1)
+	(insert (cdr new))
+	(goto-char pt)
+	(delete-char 1)
+	(insert (car new))))))
 
 (defun f-cycle-search-whitespace-regexp ()
   (interactive)
   (m-cycle-values search-whitespace-regexp '("\\s-+" ".*?"))
   (message "search-whitespace-regexp: \"%s\"" search-whitespace-regexp))
+
+(defun f-dired ()
+  (interactive)
+  (switch-to-buffer (dired-noselect default-directory))
+  (revert-buffer))
 
 (defun f-incf (&optional first incr repeat)
   (let ((index (floor (/ (cl-incf count 0) (or repeat 1)))))
@@ -128,6 +126,12 @@
   (let ((index (floor (/ (cl-incf count 0) (or repeat 1)))))
     (if (< index (length ls)) (elt ls index)
       (keyboard-quit))))
+
+(defun f-indent-paragraph ()
+  (interactive)
+  (save-excursion
+    (mark-paragraph)
+    (indent-region (region-beginning) (region-end))))
 
 (defun f-kill-region ()
   (interactive)
@@ -216,6 +220,18 @@
     (transpose-paragraphs -1)
     (backward-paragraph)))
 
+(defun f-word-capitalize ()
+  (interactive)
+  (capitalize-word -1))
+
+(defun f-word-downcase ()
+  (interactive)
+  (downcase-word -1))
+
+(defun f-word-upcase ()
+  (interactive)
+  (upcase-word -1))
+
 (defvar v-frame 100)
 (defun f-toggle-v-frame ()
   (interactive)
@@ -248,12 +264,12 @@
 (defun f-move-down-line ()
   (interactive)
   (if (minibufferp) (move-end-of-line 1)
-   (save-excursion
-     (move-end-of-line 1)
-     (when (and (eobp) (not buffer-read-only)) (newline 1)))
-   (skip-chars-backward v-skip-chars)
-   (move-beginning-of-line 2)
-   (skip-chars-forward v-skip-chars)))
+    (save-excursion
+      (move-end-of-line 1)
+      (when (and (eobp) (not buffer-read-only)) (newline 1)))
+    (skip-chars-backward v-skip-chars)
+    (move-beginning-of-line 2)
+    (skip-chars-forward v-skip-chars)))
 (defun f-move-down-line-end ()
   (interactive)
   (move-end-of-line (if (eolp) 2 1)))

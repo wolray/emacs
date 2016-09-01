@@ -8,7 +8,7 @@
 (show-paren-mode 1)
 
 ;; font
-(if (string= system-name "lab")
+(if (string= system-name "LAB")
     (progn
       (set-default-font "monaco-10")
       (set-fontset-font "fontset-default" 'gb18030 "kaiti-12"))

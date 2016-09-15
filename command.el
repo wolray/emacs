@@ -17,58 +17,6 @@
   (kill-region (line-beginning-position) (point))
   (indent-for-tab-command))
 
-(defun f-c-1 (arg)
-  (interactive "P")
-  (cond ((minibufferp) (kill-whole-line))
-	((eq cursor-type 'box) (kmacro-delete-ring-head))
-	((eq last-command 'f-c-2)
-	 (kmacro-end-macro arg)
-	 (f-c-toggle-status)
-	 (kmacro-delete-ring-head))
-	(t (f-revert-buffer))))
-
-(defun f-c-2 (arg)
-  (interactive "P")
-  (cond ((minibufferp)
-	 (insert "\\,(f-incf)")
-	 (left-char 1))
-	((eq cursor-type 'box) (kmacro-cycle-ring-previous))
-	((eq last-command 'f-c-2)
-	 (kmacro-end-macro arg)
-	 (f-c-toggle-status)
-	 (kmacro-cycle-ring-previous))
-	(t (setq defining-kbd-macro nil)
-	   (kmacro-start-macro arg))))
-
-(defun f-c-3 (arg)
-  (interactive "P")
-  (cond ((minibufferp)
-	 (if (eq last-command 'f-c-3) (insert "'()")
-	   (insert "\\,(f-each )"))
-	 (left-char 1))
-	((eq cursor-type 'box) (kmacro-cycle-ring-next))
-	((eq last-command 'f-c-2)
-	 (kmacro-end-macro arg)
-	 (f-c-toggle-status)
-	 (kmacro-cycle-ring-next))
-	(defining-kbd-macro (kmacro-end-macro arg))
-	((use-region-p)
-	 (apply-macro-to-region-lines (region-beginning) (region-end)))
-	(t (kmacro-call-macro arg t))))
-
-(defun f-c-4 ()
-  (interactive)
-  (cond ((minibufferp) (minibuffer-keyboard-quit))
-	((eq cursor-type 'box) (f-c-toggle-status))
-	(defining-kbd-macro (keyboard-quit))
-	((eq last-command 'kmacro-view-macro) (keyboard-quit))
-	(t (kmacro-view-macro))))
-
-(defun f-c-toggle-status ()
-  (let ((temp cursor-type))
-    (setq-default
-     cursor-type (m-cycle-values temp '(bar box)))))
-
 (defun f-copy-buffer ()
   (interactive)
   (save-excursion
@@ -81,11 +29,14 @@
 (defun f-cua-sequence-rectangle (first incr fmt)
   (interactive
    (let ((seq (split-string
-	       (read-string "1 (+1) (d): " nil nil))))
+	       (read-string (concat "1 (+1) ("
+				    (substring cua--rectangle-seq-format 1)
+				    "): ") nil nil))))
      (list (string-to-number (or (car seq) "1"))
-	   (string-to-number (or (cadr seq) "1"))
-	   (concat "%" (or (cadr (cdr seq)) "d")))))
-  (setq cua--rectangle-seq-format fmt)
+    	   (string-to-number (or (cadr seq) "1"))
+	   (concat "%" (cadr (cdr seq))))))
+  (if (string= fmt "%") (setq fmt cua--rectangle-seq-format)
+    (setq cua--rectangle-seq-format fmt))
   (cua--rectangle-operation 'clear nil t 1 nil
 			    (lambda (s e _l _r)
 			      (delete-region s e)
@@ -150,6 +101,33 @@
       (kill-ring-save (point) (line-end-position)))
     (unless (minibufferp) (message "(f-kill-ring-save)"))))
 
+(defun f-kmacro-end-or-call-macro (arg)
+  (interactive "P")
+  (cond ((minibufferp)
+	 (if (eq last-command 'f-kmacro-apply-macro) (insert "'()")
+	   (insert "\\,(f-each )"))
+	 (left-char 1))
+	(defining-kbd-macro (kmacro-end-macro arg))
+	((use-region-p)
+	 (apply-macro-to-region-lines (region-beginning) (region-end)))
+	(t (kmacro-call-macro arg t))))
+
+(defun f-kmacro-start-macro (arg)
+  (interactive "P")
+  (cond ((minibufferp)
+	 (insert "\\,(f-incf)")
+	 (left-char 1))
+	(t (setq defining-kbd-macro nil)
+	   (kmacro-start-macro arg))))
+
+(defun f-kmacro-view-or-delete-macro ()
+  (interactive)
+  (cond ((or (eq last-command 'kmacro-cycle-ring-previous)
+	     (eq last-command 'kmacro-cycle-ring-next))
+	 (kmacro-delete-ring-head))
+	((eq last-command 'kmacro-view-macro) (keyboard-quit))
+	(t (kmacro-view-macro))))
+
 (defun f-paragraph-set ()
   (interactive)
   (setq paragraph-start "\f\\|[ \t]*$"
@@ -158,7 +136,8 @@
 
 (defun f-revert-buffer ()
   (interactive)
-  (when (buffer-modified-p) (revert-buffer t t)))
+  (if (minibufferp) (kill-whole-line)
+    (when (buffer-modified-p) (revert-buffer t t))))
 
 (defun f-set-or-exchange-mark (arg)
   (interactive "P")
@@ -273,3 +252,17 @@
 (defun f-move-down-line-end ()
   (interactive)
   (move-end-of-line (if (eolp) 2 1)))
+
+(setq hippie-expand-try-functions-list
+      '(try-expand-dabbrev
+	try-expand-dabbrev-visible
+	try-expand-dabbrev-all-buffers
+	try-expand-dabbrev-from-kill
+	try-complete-file-name-partially
+	try-complete-file-name
+	try-expand-all-abbrevs
+	try-expand-list
+	try-expand-line
+	try-complete-lisp-symbol-partially
+	try-complete-lisp-symbol
+	))

@@ -29,11 +29,11 @@
   (local-unset-key (kbd "+"))
   (local-unset-key (kbd "C"))
   (local-unset-key (kbd "M"))
+  (local-unset-key (kbd "S"))
   (local-unset-key (kbd "b"))
   (local-unset-key (kbd "f"))
   (local-unset-key (kbd "k"))
   (local-unset-key (kbd "n"))
-  (local-unset-key (kbd "S"))
   (local-unset-key (kbd "t"))
   (local-unset-key (kbd "~"))
   )
@@ -43,10 +43,10 @@
 (cua-rectangle-mark-mode)
 (define-key cua--rectangle-keymap (kbd "<left>") 'cua-move-rectangle-left)
 (define-key cua--rectangle-keymap (kbd "<right>") 'cua-move-rectangle-right)
-(define-key cua--rectangle-keymap (kbd "M-g C-1") 'f-cua-sequence-rectangle)
-(define-key cua--rectangle-keymap (kbd "M-g C-2") 'cua-move-rectangle-up)
-(define-key cua--rectangle-keymap (kbd "M-g C-3") 'cua-move-rectangle-down)
-(define-key cua--rectangle-keymap (kbd "M-g C-4") 'cua-exchange-point-and-mark)
+(define-key cua--rectangle-keymap (kbd "C-<left>") 'cua-move-rectangle-up)
+(define-key cua--rectangle-keymap (kbd "C-<right>") 'cua-move-rectangle-down)
+(define-key cua--rectangle-keymap (kbd "M-g C-3") 'f-cua-sequence-rectangle)
+(define-key cua--rectangle-keymap (kbd "TAB") 'cua-exchange-point-and-mark)
 
 ;; ess
 (defun f-ess-clear-inferior ()
@@ -75,6 +75,7 @@
 
 ;; latex
 (defun f-latex-mode ()
+  (setq tab-width 2)
   (f-paragraph-set))
 (add-hook 'latex-mode-hook 'f-latex-mode)
 

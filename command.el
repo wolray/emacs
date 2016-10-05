@@ -104,7 +104,7 @@
 (defun f-kmacro-end-or-call-macro (arg)
   (interactive "P")
   (cond ((minibufferp)
-	 (if (eq last-command 'f-kmacro-apply-macro) (insert "'()")
+	 (if (eq last-command 'f-kmacro-end-or-call-macro) (insert "'()")
 	   (insert "\\,(f-each )"))
 	 (left-char 1))
 	(defining-kbd-macro (kmacro-end-macro arg))
@@ -120,19 +120,24 @@
 	(t (setq defining-kbd-macro nil)
 	   (kmacro-start-macro arg))))
 
-(defun f-kmacro-view-or-delete-macro ()
+(defun f-kmacro-view-macro ()
   (interactive)
-  (cond ((or (eq last-command 'kmacro-cycle-ring-previous)
-	     (eq last-command 'kmacro-cycle-ring-next))
-	 (kmacro-delete-ring-head))
-	((eq last-command 'kmacro-view-macro) (keyboard-quit))
-	(t (kmacro-view-macro))))
+  (if (eq last-command 'kmacro-view-macro) (keyboard-quit)
+    (kmacro-view-macro)))
 
 (defun f-paragraph-set ()
   (interactive)
   (setq paragraph-start "\f\\|[ \t]*$"
 	paragraph-separate "[ \t\f]*$")
   (message "(f-paragraph-set)"))
+
+(defun f-query-replace ()
+  (interactive)
+  (unless (minibufferp) (call-interactively 'query-replace)))
+
+(defun f-query-replace-regexp ()
+  (interactive)
+  (unless (minibufferp) (call-interactively 'query-replace-regexp)))
 
 (defun f-revert-buffer ()
   (interactive)
@@ -237,9 +242,9 @@
   (skip-chars-backward v-skip-chars)
   (move-beginning-of-line (if (bolp) 0 1))
   (skip-chars-forward v-skip-chars))
-(defun f-move-up-line-end ()
+(defun f-move-up-line-beginning ()
   (interactive)
-  (move-end-of-line 0))
+  (move-beginning-of-line (if (bolp) 0 1)))
 (defun f-move-down-line ()
   (interactive)
   (if (minibufferp) (move-end-of-line 1)
@@ -252,17 +257,3 @@
 (defun f-move-down-line-end ()
   (interactive)
   (move-end-of-line (if (eolp) 2 1)))
-
-(setq hippie-expand-try-functions-list
-      '(try-expand-dabbrev
-	try-expand-dabbrev-visible
-	try-expand-dabbrev-all-buffers
-	try-expand-dabbrev-from-kill
-	try-complete-file-name-partially
-	try-complete-file-name
-	try-expand-all-abbrevs
-	try-expand-list
-	try-expand-line
-	try-complete-lisp-symbol-partially
-	try-complete-lisp-symbol
-	))

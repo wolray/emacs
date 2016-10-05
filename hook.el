@@ -11,9 +11,6 @@
   )
 (add-hook 'package-menu-mode-hook 'f-package-menu-mode)
 
-;; avy
-(setq avy-keys (number-sequence ?a ?z))
-
 ;; bs
 (defun f-bs-mode ()
   (local-set-key (kbd "-") 'bs-set-current-buffer-to-show-never)
@@ -45,7 +42,7 @@
 (define-key cua--rectangle-keymap (kbd "<right>") 'cua-move-rectangle-right)
 (define-key cua--rectangle-keymap (kbd "C-<left>") 'cua-move-rectangle-up)
 (define-key cua--rectangle-keymap (kbd "C-<right>") 'cua-move-rectangle-down)
-(define-key cua--rectangle-keymap (kbd "M-g C-3") 'f-cua-sequence-rectangle)
+(define-key cua--rectangle-keymap (kbd "C-s") 'f-cua-sequence-rectangle)
 (define-key cua--rectangle-keymap (kbd "TAB") 'cua-exchange-point-and-mark)
 
 ;; ess
@@ -62,7 +59,7 @@
   (local-set-key (kbd "C-c C-c") 'ess-eval-buffer)
   (local-set-key (kbd "C-c c") 'f-ess-clear-inferior)
   (local-set-key (kbd "M-g C-y") 'ess-eval-line)
-  (local-set-key (kbd "M-g M-y") 'ess-eval-region)
+  (local-set-key (kbd "M-g C-S-y") 'ess-eval-region)
   (local-unset-key (kbd "C-c C-r"))
   (local-unset-key (kbd "C-c C-s"))
   (local-unset-key (kbd "_"))
@@ -72,6 +69,21 @@
   (local-unset-key (kbd "_"))
   (setq v-skip-chars (concat ">" v-skip-chars)))
 (add-hook 'ess-R-post-run-hook 'f-ess-post-run)
+
+;; hippie-expand
+(setq hippie-expand-try-functions-list
+      '(try-expand-dabbrev
+	try-expand-dabbrev-visible
+	try-expand-dabbrev-all-buffers
+	try-expand-dabbrev-from-kill
+	try-complete-file-name-partially
+	try-complete-file-name
+	try-expand-all-abbrevs
+	try-expand-list
+	try-expand-line
+	try-complete-lisp-symbol-partially
+	try-complete-lisp-symbol
+	))
 
 ;; latex
 (defun f-latex-mode ()
@@ -171,6 +183,7 @@
   (local-set-key (kbd "C-c C-s") 'org-sort)
   (local-set-key (kbd "C-c e") 'org-edit-special)
   (local-set-key (kbd "C-c t") 'org-table-toggle-coordinate-overlays)
+  (local-set-key (kbd "M-g C-c C-8") 'org-up-element)
   (local-unset-key (kbd "C-c ["))
   (local-unset-key (kbd "C-c ]"))
   (setq v-skip-chars (concat "*" v-skip-chars)))
@@ -194,7 +207,7 @@
   (local-set-key (kbd "C-c C-r") 'run-python)
   (local-set-key (kbd "C-c c") 'f-python-shell-clear-shell)
   (local-set-key (kbd "M-g C-y") 'f-python-shell-send-line)
-  (local-set-key (kbd "M-g M-y") 'python-shell-send-region)
+  (local-set-key (kbd "M-g C-S-y") 'python-shell-send-region)
   (setq python-shell-interpreter "ipython"))
 (add-hook 'python-mode-hook 'f-python-mode)
 

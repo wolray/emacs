@@ -43,7 +43,7 @@
 
 ;; ~load
 (setq default-directory "d:/sync/")
-(add-to-list 'load-path "d:/sync/emacs/emacs.d/")
+(add-to-list 'load-path "d:/sync/emacs.d/")
 (load "hook.el")
 (load "command.el")
 (load "kbd.el")

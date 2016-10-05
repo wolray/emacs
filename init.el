@@ -13,4 +13,4 @@
  ;; If there is more than one, they won't work right.
  )
 
-(load "d:/sync/emacs/emacs.d/load.el")
+(load "d:/sync/emacs.d/load.el")

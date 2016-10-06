@@ -46,28 +46,21 @@
 (define-key cua--rectangle-keymap (kbd "TAB") 'cua-exchange-point-and-mark)
 
 ;; ess
-(defun f-ess-clear-inferior ()
-  (interactive)
-  (with-temp-buffer
-    (switch-to-buffer "*R*")
-    (delete-region (point-min) (point-max))
-    (inferior-ess-send-input)
-    (beginning-of-buffer)
-    (kill-line)
-    (switch-to-prev-buffer)))
 (defun f-ess-mode ()
   (local-set-key (kbd "C-c C-c") 'ess-eval-buffer)
   (local-set-key (kbd "C-c c") 'f-ess-clear-inferior)
-  (local-set-key (kbd "M-g C-y") 'ess-eval-line)
   (local-set-key (kbd "M-g C-S-y") 'ess-eval-region)
+  (local-set-key (kbd "M-g C-y") 'ess-eval-line)
   (local-unset-key (kbd "C-c C-r"))
   (local-unset-key (kbd "C-c C-s"))
   (local-unset-key (kbd "_"))
-  (setq ess-indent-level 2))
+  (setq ess-indent-level 2)
+  )
 (add-hook 'ess-mode-hook 'f-ess-mode)
 (defun f-ess-post-run ()
   (local-unset-key (kbd "_"))
-  (setq v-skip-chars (concat ">" v-skip-chars)))
+  (setq v-skip-chars (concat ">" v-skip-chars))
+  )
 (add-hook 'ess-R-post-run-hook 'f-ess-post-run)
 
 ;; hippie-expand
@@ -133,47 +126,10 @@
 
 ;; org
 (setq org-startup-indented t)
-(defun org-summary-todo (n-done n-not-done)
-  "Switch entry to DONE when all subentries are done, to TODO otherwise."
+(defun f-org-summary-todo (n-done n-not-done)
   (let (org-log-done org-log-states)   ; turn off logging
     (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
-(add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
-(defun f-org-make-tdiff-string (diff)
-  (let ((y (floor (/ diff 365)))
-	(d (mod diff 365))
-	(fmt "")
-	(l nil))
-    (cond ((= diff 0)
-	   (setq fmt "today"))
-	  ((< diff 0)
-	   (if (< y 0)
-	       (setq fmt (concat fmt "%d year"  (if (< y -1) "s") " ")
-		     l (push (- y) l)))
-	   (setq fmt (concat fmt "%d day"  (if (< d 364) "s") " until")
-		 l (push (- 365 d) l)))
-	  ((> diff 0)
-	   (if (> y 0)
-	       (setq fmt (concat fmt "%d year"  (if (> y 1) "s") " ")
-		     l (push y l)))
-	   (setq fmt (concat fmt "%d day"  (if (> d 1) "s") " since")
-		 l (push d l))))
-    (apply 'format fmt (nreverse l))))
-(defun f-org-evaluate-time-range ()
-  (interactive)
-  (or
-   (org-clock-update-time-maybe)
-   (save-excursion
-     (unless (org-at-timestamp-p)
-       (goto-char (line-beginning-position))
-       (re-search-forward org-tsr-regexp (line-end-position) t))
-     (unless (org-at-timestamp-p)
-       (user-error "")))
-   (let* ((ts1 (match-string 0))
-	  (time1 (org-time-string-to-time ts1))
-	  (t1 (time-to-days time1))
-	  (t2 (time-to-days (current-time)))
-	  (diff (- t2 t1)))
-     (message "%s" (f-org-make-tdiff-string diff)))))
+(add-hook 'org-after-todo-statistics-hook 'f-org-summary-todo)
 (defun f-org-mode ()
   (local-set-key (kbd "C-c C--") 'f-org-evaluate-time-range)
   (local-set-key (kbd "C-c C-=") 'org-time-stamp)
@@ -186,39 +142,23 @@
   (local-set-key (kbd "M-g C-c C-8") 'org-up-element)
   (local-unset-key (kbd "C-c ["))
   (local-unset-key (kbd "C-c ]"))
-  (setq v-skip-chars (concat "*" v-skip-chars)))
+  (setq v-skip-chars (concat "*" v-skip-chars))
+  )
 (add-hook 'org-mode-hook 'f-org-mode)
 
 ;; python
-(defun f-python-shell-clear-shell ()
-  (interactive)
-  (with-temp-buffer
-    (switch-to-buffer "*Python*")
-    (delete-region (point-min) (point-max))
-    (comint-send-input)
-    (beginning-of-buffer)
-    (kill-line)
-    (switch-to-prev-buffer)))
-(defun f-python-shell-send-line ()
-  (interactive)
-  (python-shell-send-region
-   (line-beginning-position) (line-end-position)))
 (defun f-python-mode ()
   (local-set-key (kbd "C-c C-r") 'run-python)
   (local-set-key (kbd "C-c c") 'f-python-shell-clear-shell)
-  (local-set-key (kbd "M-g C-y") 'f-python-shell-send-line)
   (local-set-key (kbd "M-g C-S-y") 'python-shell-send-region)
-  (setq python-shell-interpreter "ipython"))
+  (local-set-key (kbd "M-g C-y") 'f-python-shell-send-line)
+  (setq python-shell-interpreter "ipython")
+  )
 (add-hook 'python-mode-hook 'f-python-mode)
 
 ;; racket
 (setq racket-racket-program "racket")
 (setq racket-raco-program "raco")
-(defun f-racket-send-buffer ()
-  (interactive)
-  (set-mark (point))
-  (racket-send-region
-   (point-min) (point-max)))
 (defun f-racket-mode ()
   (local-set-key (kbd "C-c C-c") 'f-racket-send-buffer)
   (local-set-key (kbd "M-g C-y") 'racket-send-last-sexp)
@@ -232,3 +172,31 @@
 (defun f-sql-mode ()
   (setq tab-width 4))
 (add-hook 'sql-mode-hook 'f-sql-mode)
+
+;; visual-mode
+(defvar visual-mode-map (make-sparse-keymap))
+(define-minor-mode visual-mode
+  :init-value nil
+  :lighter " VM"
+  :keymap visual-mode-map
+  (setq cursor-type (if visual-mode 'box 'bar))
+  (message " "))
+(define-key visual-mode-map (kbd "1") 'f-kmacro-view-macro)
+(define-key visual-mode-map (kbd "2") 'f-kmacro-start-macro)
+(define-key visual-mode-map (kbd "3") 'f-kmacro-end-or-call-macro)
+(define-key visual-mode-map (kbd "4") 'f-query-replace-regexp)
+(define-key visual-mode-map (kbd "G") 'keyboard-quit)
+(define-key visual-mode-map (kbd "I") 'recenter-top-bottom)
+(define-key visual-mode-map (kbd "S") 'isearch-forward)
+(define-key visual-mode-map (kbd "g") 'keyboard-quit)
+(define-key visual-mode-map (kbd "i") 'visual-mode)
+(define-key visual-mode-map (kbd "q") 'f-query-replace)
+(define-key visual-mode-map (kbd "s") 'isearch-forward)
+(dolist (k '("`" "5" "8" "*" "9" "("
+	     "w" "e" "r" "t" "y" "u" "o"
+	     "a" "d" "f" "j" "k" "l"
+	     "z" "v" "b" "m"))
+  (define-key visual-mode-map (kbd k) (kbd (concat "C-" k))))
+(dolist (k '("R" "Y" "U" "O"
+	     "D" "F" "H" "J" "K" "L"))
+  (define-key visual-mode-map (kbd k) (kbd (concat "C-S-" (downcase k)))))

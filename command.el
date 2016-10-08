@@ -80,6 +80,18 @@
     (kill-line)
     (switch-to-prev-buffer)))
 
+(defun f-highlight-symbol ()
+  (interactive)
+  (if (highlight-symbol-symbol-highlighted-p
+	   (highlight-symbol-get-symbol))
+      (highlight-symbol-remove-all)
+    (highlight-symbol)))
+
+(defun f-highlight-symbol-query-replace ()
+  (interactive)
+  (unless (minibufferp)
+    (call-interactively 'highlight-symbol-query-replace)))
+
 (defun f-incf (&optional first incr repeat)
   (let ((index (floor (/ (cl-incf count 0) (or repeat 1)))))
     (+ (or first 1) (* (or incr 1) index))))
@@ -208,8 +220,7 @@
 
 (defun f-set-or-exchange-mark (arg)
   (interactive "P")
-  (if (use-region-p)
-      (exchange-point-and-mark)
+  (if (use-region-p) (exchange-point-and-mark)
     (set-mark-command arg)))
 
 (defun f-sort-lines ()
@@ -228,8 +239,7 @@
 
 (defun f-toggle-comment (beg end)
   (interactive
-   (if (use-region-p)
-       (list (region-beginning) (region-end))
+   (if (use-region-p) (list (region-beginning) (region-end))
      (list (line-beginning-position) (line-beginning-position 2))))
   (comment-or-uncomment-region beg end))
 
@@ -249,8 +259,8 @@
   (unless (or (bobp) (eobp))
     (next-line 1)
     (transpose-lines -1)
-    (previous-line 2))
-  (back-to-indentation))
+    (move-beginning-of-line -1))
+  (skip-chars-forward v-skip-chars))
 
 (defun f-transpose-paragraphs-down ()
   (interactive)
@@ -265,6 +275,14 @@
   (unless (bobp)
     (transpose-paragraphs -1)
     (backward-paragraph)))
+
+(defun f-visual-mode-off ()
+  (interactive)
+  (visual-mode -1))
+
+(defun f-visual-mode-on ()
+  (interactive)
+  (visual-mode 1))
 
 (defun f-word-capitalize ()
   (interactive)
@@ -304,12 +322,10 @@
   (if (minibufferp) (move-beginning-of-line 1)
     (skip-chars-backward v-skip-chars)
     (move-beginning-of-line (if (bolp) 0 1))
-    (skip-chars-forward v-skip-chars)
-    (visual-mode)))
+    (skip-chars-forward v-skip-chars)))
 (defun f-move-up-line-beginning ()
   (interactive)
-  (move-beginning-of-line (if (bolp) 0 1))
-  (unless (minibufferp) (visual-mode)))
+  (move-beginning-of-line (if (bolp) 0 1)))
 (defun f-move-down-line ()
   (interactive)
   (if (minibufferp) (move-end-of-line 1)
@@ -318,9 +334,7 @@
       (when (and (eobp) (not buffer-read-only)) (newline 1)))
     (skip-chars-backward v-skip-chars)
     (move-beginning-of-line 2)
-    (skip-chars-forward v-skip-chars)
-    (visual-mode)))
+    (skip-chars-forward v-skip-chars)))
 (defun f-move-down-line-end ()
   (interactive)
-  (move-end-of-line (if (eolp) 2 1))
-  (unless (minibufferp) (visual-mode)))
+  (move-end-of-line (if (eolp) 2 1)))

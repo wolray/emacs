@@ -1,9 +1,6 @@
 ;; !package
-(require 'package)
-;; (setq package-archives '(("melpa" . "http://melpa.org/packages/")))
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
-(package-initialize)
-;; (package-refresh-contents)
+(setq package-archives '(("gnu"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
+                         ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
 (defun f-package-menu-mode ()
   (local-set-key (kbd "[") 'package-menu-describe-package)
   (local-set-key (kbd "]") 'next-line)
@@ -62,6 +59,9 @@
   (setq v-skip-chars (concat ">" v-skip-chars))
   )
 (add-hook 'ess-R-post-run-hook 'f-ess-post-run)
+
+;; highlight-symbol
+(setq highlight-symbol-colors '("DeepPink" "cyan" "MediumPurple1" "SpringGreen1" "DarkOrange" "HotPink1" "RoyalBlue1" "OliveDrab"))
 
 ;; hippie-expand
 (setq hippie-expand-try-functions-list
@@ -174,13 +174,18 @@
 (add-hook 'sql-mode-hook 'f-sql-mode)
 
 ;; visual-mode
-(defvar visual-mode-map (make-sparse-keymap))
 (define-minor-mode visual-mode
   :init-value nil
-  :lighter " VM"
-  :keymap visual-mode-map
-  (setq cursor-type (if visual-mode 'box 'bar))
-  (message " "))
+  :keymap (make-sparse-keymap)
+  (setq cursor-type (if visual-mode 'box 'bar)))
+(dolist (k '("`" "5" "8" "*" "9" "("
+	     "w" "e" "r" "t" "y" "u" "o" "\\"
+	     "a" "d" "f" "j" "k" "l"
+	     "z" "v" "b" "m"))
+  (define-key visual-mode-map (kbd k) (kbd (concat "C-" k))))
+(dolist (k '("R" "Y" "U" "O"
+	     "D" "F" "H" "J" "K" "L"))
+  (define-key visual-mode-map (kbd k) (kbd (concat "C-S-" (downcase k)))))
 (define-key visual-mode-map (kbd "1") 'f-kmacro-view-macro)
 (define-key visual-mode-map (kbd "2") 'f-kmacro-start-macro)
 (define-key visual-mode-map (kbd "3") 'f-kmacro-end-or-call-macro)
@@ -189,14 +194,6 @@
 (define-key visual-mode-map (kbd "I") 'recenter-top-bottom)
 (define-key visual-mode-map (kbd "S") 'isearch-forward)
 (define-key visual-mode-map (kbd "g") 'keyboard-quit)
-(define-key visual-mode-map (kbd "i") 'visual-mode)
+(define-key visual-mode-map (kbd "i") 'f-visual-mode-off)
 (define-key visual-mode-map (kbd "q") 'f-query-replace)
 (define-key visual-mode-map (kbd "s") 'isearch-forward)
-(dolist (k '("`" "5" "8" "*" "9" "("
-	     "w" "e" "r" "t" "y" "u" "o"
-	     "a" "d" "f" "j" "k" "l"
-	     "z" "v" "b" "m"))
-  (define-key visual-mode-map (kbd k) (kbd (concat "C-" k))))
-(dolist (k '("R" "Y" "U" "O"
-	     "D" "F" "H" "J" "K" "L"))
-  (define-key visual-mode-map (kbd k) (kbd (concat "C-S-" (downcase k)))))

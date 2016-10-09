@@ -1,6 +1,10 @@
 ;; !package
-(setq package-archives '(("gnu"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
-                         ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
+(package-initialize)
+(setq package-archives
+      '(("gnu"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
+	("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
+	;; ("melpa" . "http://melpa.org/packages/"))
+      ))
 (defun f-package-menu-mode ()
   (local-set-key (kbd "[") 'package-menu-describe-package)
   (local-set-key (kbd "]") 'next-line)
@@ -172,6 +176,9 @@
 (defun f-sql-mode ()
   (setq tab-width 4))
 (add-hook 'sql-mode-hook 'f-sql-mode)
+
+;; theme
+(load-theme 'tango-dark t)
 
 ;; visual-mode
 (define-minor-mode visual-mode

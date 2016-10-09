@@ -2,8 +2,9 @@
 (package-initialize)
 (setq package-archives
       '(("gnu"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
-	("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
+	("melpa" . "http://elpa.zilongshanren.com/melpa/")
 	;; ("melpa" . "http://melpa.org/packages/"))
+	;; ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
       ))
 (defun f-package-menu-mode ()
   (local-set-key (kbd "[") 'package-menu-describe-package)
@@ -65,7 +66,11 @@
 (add-hook 'ess-R-post-run-hook 'f-ess-post-run)
 
 ;; highlight-symbol
-(setq highlight-symbol-colors '("DeepPink" "cyan" "MediumPurple1" "SpringGreen1" "DarkOrange" "HotPink1" "RoyalBlue1" "OliveDrab"))
+(require 'highlight-symbol)
+(setq highlight-symbol-colors
+      '(;; "yellow"
+	"DeepPink" ;; "cyan"
+	"MediumPurple1" "SpringGreen1" "DarkOrange" "HotPink1" "RoyalBlue1" "OliveDrab"))
 
 ;; hippie-expand
 (setq hippie-expand-try-functions-list
@@ -178,7 +183,8 @@
 (add-hook 'sql-mode-hook 'f-sql-mode)
 
 ;; theme
-(load-theme 'tango-dark t)
+(load-theme 'ample t)
+(set-cursor-color "#ffffff")
 
 ;; visual-mode
 (define-minor-mode visual-mode

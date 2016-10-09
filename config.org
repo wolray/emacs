@@ -1,0 +1,129 @@
+* bing-dict
+** main-window
+*** (B0 "C-C")
+* emacs
+** package-install
+*** ample-theme
+*** ess
+**** julia-mode
+*** highlight-symbol
+*** magit
+**** async
+**** dash
+**** with-editor
+**** git-commit
+**** magit-popup
+*** markdown-mode
+*** matlab-mode
+** \HHEK_LOCAL_MACHINES\SYSTEM\CurrentControlSet\Control\Keyboard Layout\Scancode Map
+00 00 00 00  00 00 00 00
+05 00 00 00  1D E0 39 00
+39 00 27 00  27 00 2A 00
+2A 00 3A 00  00 00 00 00
+* everything
+** general
+*** (results 'B110100111)
+*** (fonts-and-colors monaco)
+*** keyboard
+**** (+ copy-full-name "u")
+**** (+ copy-path "o")
+**** (+ delete "k")
+**** (+ item-down "l")
+**** (+ item-up "j")
+**** (+ open-path "i")
+**** (+ rename "h")
+**** (+ toggle-window "C-[")
+**** (- exit "C-q")
+**** (= options "C-w")
+** indexes
+*** (exclude 'B011)
+* latex
+** texstudio
+** texlive-2015
+*** medium scheme
+**** (B1 chinese cjk)
+**** (B0 (other-langs) texworks-editor)
+* matlab
+** toolbox
+*** curve-fitting
+*** optimization
+*** statistics-and-machine-learning
+*** symbolic-math
+** (font (monaco (lab 10) (acer 11)))
+** (initial-folder "d:\sync")
+* mysql
+** mysql-documentation
+** samples-and-examples
+** mysql-server
+* onenote
+** 常规
+*** (用户界面选项 'B1)
+*** (默认字体 calibri 12)
+** (显示 'B1<-2>)
+** 校对
+*** (自动更正选项 'B1 'B1<-1>)
+* opera
+** (sync bookmarks)
+** (on-startup continue)
+** (search (or bing google))
+** (downloads "d:\" 'B1)
+** shortcuts
+*** 'A0
+*** config
+**** (back "C-u")
+**** (close-tab "C-k")
+**** (cycle-backward-through-tabs "M-u")
+**** (cycle-forward-through-tabs "M-o")
+**** (downloads "C-d")
+**** (find-next "C-s")
+**** (find-previous "C-r")
+**** (focus-address-bar "C-m")
+**** (forward "C-o")
+**** (history "C-h")
+**** (manage-bookmarks "C-b")
+**** (new-tab "C-n")
+**** (open-settings "C-w")
+**** (reload "<f5>")
+**** (reopen-last-closed-tab "C-t")
+**** (select-previously-active-tab "C-i")
+**** (show-bookmarks-bar "C-f")
+**** (stop "C-g")
+**** (switch-left-through-tabs "C-j")
+**** (switch-right-through-tabs "C-l")
+**** (toggle-full-screen "<f11>")
+**** (B0 (other))
+** (ui 'B1<-1>)
+* python
+** shell
+ipython profile create
+** [[~\.ipython\profile_default\ipython_config.py]]
+c.InteractiveShell.separate_in=''
+* qqpinyin
+** 常用
+*** (初始状态 英文 简体 半角 'B0)
+** 按键
+*** (候选翻页 'B1<1>)
+*** (其他快捷键 'A0)
+** 外观
+*** (皮肤选择 'B10010)
+*** 输入框
+**** (英文字体 monaco 11)
+**** (中文字体 kaiti 13)
+** 高级
+*** (输入法管理 'B1<1> 'A0)
+*** (其他设置 'B0<1>)
+* rstudio
+** (font monaco 11)
+* stata-13
+** font
+*** courier-new
+*** regular
+*** (11 do-file)
+*** (12 result command)
+*** (11 review variables)
+* windows
+** quick access
+*** appdata
+*** program files
+*** program files (x86)
+*** sync

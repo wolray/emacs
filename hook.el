@@ -197,26 +197,21 @@
   :init-value nil
   :keymap (make-sparse-keymap)
   (setq cursor-type (if visual-mode 'box 'bar)))
-(dolist (k '("`" "5" "7" "8" "9" "0"
+(dolist (k '("`" "2" "3" "4" "5" "7" "8" "9" "0"
 	     "w" "e" "r" "t" "y" "u" "o" "\\"
 	     "a" "d" "f" "j" "k" "l"
 	     "v" "b" "m"))
   (define-key visual-mode-map (kbd k) (kbd (concat "C-" k))))
-(dolist (k '("R" "Y" "U" "O"
+(dolist (k '("R" "Y" "U" "I" "O"
 	     "D" "F" "H" "J" "K" "L"))
   (define-key visual-mode-map (kbd k) (kbd (concat "C-S-" (downcase k)))))
-(define-key visual-mode-map (kbd "1") 'keyboard-quit)
-(define-key visual-mode-map (kbd "2") 'f-paragraph-backward)
-(define-key visual-mode-map (kbd "3") 'f-paragraph-forward)
-(define-key visual-mode-map (kbd "4") 'f-query-replace-regexp)
+(define-key visual-mode-map (kbd "1") 'undo)
 (define-key visual-mode-map (kbd "G") 'keyboard-quit)
-(define-key visual-mode-map (kbd "I") 'recenter-top-bottom)
-(define-key visual-mode-map (kbd "M-g M-2") 'f-transpose-paragraphs-up)
-(define-key visual-mode-map (kbd "M-g M-3") 'f-transpose-paragraphs-down)
 (define-key visual-mode-map (kbd "S") 'isearch-forward)
 (define-key visual-mode-map (kbd "g") 'keyboard-quit)
 (define-key visual-mode-map (kbd "h") 'f-paragraph-mark)
 (define-key visual-mode-map (kbd "i") 'f-visual-mode-off)
+(define-key visual-mode-map (kbd "n") 'keyboard-quit)
 (define-key visual-mode-map (kbd "q") 'f-query-replace)
 (define-key visual-mode-map (kbd "s") 'isearch-forward)
 (define-key visual-mode-map (kbd "z") 'undo)

@@ -86,11 +86,6 @@
     (highlight-symbol)
     (visual-mode 1)))
 
-(defun f-highlight-symbol-query-replace ()
-  (interactive)
-  (unless (minibufferp)
-    (call-interactively 'highlight-symbol-query-replace)))
-
 (defun f-incf (&optional first incr repeat)
   (let ((index (floor (/ (cl-incf count 0) (or repeat 1)))))
     (+ (or first 1) (* (or incr 1) index))))
@@ -185,6 +180,20 @@
 	  (diff (- t2 t1)))
      (message "%s" (f-org-make-tdiff-string diff)))))
 
+(defun f-other-window ()
+  (interactive)
+  (let ((vp visual-mode))
+    (other-window 1)
+    (when (and (f-index major-mode '(
+				     emacs-lisp-mode
+				     ess-mode
+				     lisp-interaction-mode
+				     matlab-mode
+				     org-mode
+				     python-mode
+				     )) vp)
+      (visual-mode 1))))
+
 (defun f-paragraph-backward ()
   (interactive)
   (visual-mode 1)
@@ -231,7 +240,11 @@
 
 (defun f-query-replace ()
   (interactive)
-  (unless (minibufferp) (call-interactively 'query-replace)))
+  (unless (minibufferp)
+    (if (highlight-symbol-symbol-highlighted-p
+	 (highlight-symbol-get-symbol))
+	(call-interactively 'highlight-symbol-query-replace)
+      (call-interactively 'query-replace))))
 
 (defun f-query-replace-regexp ()
   (interactive)
@@ -242,20 +255,6 @@
   (set-mark (point))
   (racket-send-region
    (point-min) (point-max)))
-
-(defun f-other-window ()
-  (interactive)
-  (let ((vp visual-mode))
-    (other-window 1)
-    (when (and (f-index major-mode '(
-				     emacs-lisp-mode
-				     ess-mode
-				     lisp-interaction-mode
-				     matlab-mode
-				     org-mode
-				     python-mode
-				     )) vp)
-      (visual-mode 1))))
 
 (defun f-revert-buffer ()
   (interactive)

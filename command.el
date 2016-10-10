@@ -1,9 +1,6 @@
 (defmacro m-cycle-values (var values)
-  `(let ((i 0) (j t))
-     (while (and (< i (length ,values)) j)
-       (when (equal ,var (elt ,values i)) (setq j nil))
-       (setq i (1+ i)))
-     (setq ,var (if (= i (length ,values)) (car ,values) (elt ,values i)))))
+  `(let ((i (f-index ,var ,values)))
+     (setq ,var (elt ,values (if (and i (< (1+ i) (length ,values))) (1+ i) 0)))))
 
 (defmacro m-map-key (obj key)
   `(if (symbolp ,obj)
@@ -101,6 +98,12 @@
   (let ((index (floor (/ (cl-incf count 0) (or repeat 1)))))
     (if (< index (length ls)) (elt ls index)
       (keyboard-quit))))
+(defun f-index (x ls)
+  (let ((i 0) (p nil))
+    (while (and (< i (length ls)) (not p))
+      (if (eq x (elt ls i)) (setq p t)
+	(setq i (1+ i))))
+    (and p i)))
 
 (defun f-indent-paragraph ()
   (interactive)
@@ -127,6 +130,7 @@
 
 (defun f-kmacro-end-or-call-macro (arg)
   (interactive "P")
+  (visual-mode -1)
   (cond ((minibufferp)
 	 (if (eq last-command 'f-kmacro-end-or-call-macro) (insert "'()")
 	   (insert "\\,(f-each )"))
@@ -138,6 +142,7 @@
 
 (defun f-kmacro-start-macro (arg)
   (interactive "P")
+  (visual-mode -1)
   (cond ((minibufferp)
 	 (insert "\\,(f-incf)")
 	 (left-char 1))
@@ -180,6 +185,29 @@
 	  (diff (- t2 t1)))
      (message "%s" (f-org-make-tdiff-string diff)))))
 
+(defun f-paragraph-backward ()
+  (interactive)
+  (visual-mode 1)
+  (if (not (eq major-mode 'org-mode))
+	(backward-paragraph)
+    (org-backward-element)
+    (skip-chars-forward v-skip-chars)))
+
+(defun f-paragraph-forward ()
+  (interactive)
+  (visual-mode 1)
+  (if (not (eq major-mode 'org-mode))
+	(forward-paragraph)
+    (org-forward-element)
+    (skip-chars-forward v-skip-chars)))
+
+(defun f-paragraph-mark ()
+  (interactive)
+  (visual-mode 1)
+  (if (not (eq major-mode 'org-mode))
+      (call-interactively 'mark-paragraph)
+    (org-mark-element)))
+
 (defun f-paragraph-set ()
   (interactive)
   (setq paragraph-start "\f\\|[ \t]*$"
@@ -214,6 +242,20 @@
   (set-mark (point))
   (racket-send-region
    (point-min) (point-max)))
+
+(defun f-other-window ()
+  (interactive)
+  (let ((vp visual-mode))
+    (other-window 1)
+    (when (and (f-index major-mode '(
+				     emacs-lisp-mode
+				     ess-mode
+				     lisp-interaction-mode
+				     matlab-mode
+				     org-mode
+				     python-mode
+				     )) vp)
+      (visual-mode 1))))
 
 (defun f-revert-buffer ()
   (interactive)
@@ -321,11 +363,11 @@
     (skip-chars-backward v-skip-chars)
     (beginning-of-line (if (bolp) 0 1))
     (skip-chars-forward v-skip-chars)
-    (visual-mode 1)))
+    (unless (or defining-kbd-macro executing-kbd-macro) (visual-mode 1))))
 (defun f-move-up-line-beginning ()
   (interactive)
   (beginning-of-line (if (bolp) 0 1))
-  (visual-mode 1))
+  (unless (or defining-kbd-macro executing-kbd-macro) (visual-mode 1)))
 (defun f-move-down-line ()
   (interactive)
   (if (minibufferp) (end-of-line)
@@ -335,8 +377,8 @@
     (skip-chars-backward v-skip-chars)
     (beginning-of-line 2)
     (skip-chars-forward v-skip-chars)
-    (visual-mode 1)))
+    (unless (or defining-kbd-macro executing-kbd-macro) (visual-mode 1))))
 (defun f-move-down-line-end ()
   (interactive)
   (end-of-line (if (eolp) 2 1))
-  (visual-mode 1))
+  (unless (or defining-kbd-macro executing-kbd-macro) (visual-mode 1)))

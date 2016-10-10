@@ -1,11 +1,17 @@
 ;; !package
-(package-initialize)
 (setq package-archives
       '(("gnu"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
 	("melpa" . "http://elpa.zilongshanren.com/melpa/")
 	;; ("melpa" . "http://melpa.org/packages/"))
 	;; ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
-      ))
+	))
+(package-initialize)
+((lambda (&rest packages)
+   (dolist (pkg packages)
+     (unless (package-installed-p pkg)
+       (when (y-or-n-p (format "Package \"%s\" is missing. Install it? " pkg))
+	 (package-install pkg)))))
+ 'ample-theme 'ess 'highlight-symbol 'magit 'markdown-mode 'matlab-mode)
 (defun f-package-menu-mode ()
   (local-set-key (kbd "[") 'package-menu-describe-package)
   (local-set-key (kbd "]") 'next-line)
@@ -39,7 +45,7 @@
 (add-hook 'bs-mode-hook 'f-bs-mode)
 
 ;; cua
-(cua-rectangle-mark-mode)
+(require 'cua-rect)
 (define-key cua--rectangle-keymap (kbd "<left>") 'cua-move-rectangle-left)
 (define-key cua--rectangle-keymap (kbd "<right>") 'cua-move-rectangle-right)
 (define-key cua--rectangle-keymap (kbd "C-<left>") 'cua-move-rectangle-up)
@@ -66,8 +72,7 @@
 (add-hook 'ess-R-post-run-hook 'f-ess-post-run)
 
 ;; highlight-symbol
-(when (package-installed-p 'highlight-symbol)
-  (require 'highlight-symbol))
+(require 'highlight-symbol)
 (setq highlight-symbol-colors
       '(;; "yellow"
 	"DeepPink" ;; "cyan"
@@ -192,23 +197,26 @@
   :init-value nil
   :keymap (make-sparse-keymap)
   (setq cursor-type (if visual-mode 'box 'bar)))
-(dolist (k '("`" "5" "8" "*" "9" "("
+(dolist (k '("`" "5" "7" "8" "9" "0"
 	     "w" "e" "r" "t" "y" "u" "o" "\\"
 	     "a" "d" "f" "j" "k" "l"
-	     "z" "v" "b" "m"))
+	     "v" "b" "m"))
   (define-key visual-mode-map (kbd k) (kbd (concat "C-" k))))
 (dolist (k '("R" "Y" "U" "O"
 	     "D" "F" "H" "J" "K" "L"))
   (define-key visual-mode-map (kbd k) (kbd (concat "C-S-" (downcase k)))))
-(define-key visual-mode-map (kbd "1") 'f-kmacro-view-macro)
-(define-key visual-mode-map (kbd "2") 'f-kmacro-start-macro)
-(define-key visual-mode-map (kbd "3") 'f-kmacro-end-or-call-macro)
+(define-key visual-mode-map (kbd "1") 'keyboard-quit)
+(define-key visual-mode-map (kbd "2") 'f-paragraph-backward)
+(define-key visual-mode-map (kbd "3") 'f-paragraph-forward)
 (define-key visual-mode-map (kbd "4") 'f-query-replace-regexp)
 (define-key visual-mode-map (kbd "G") 'keyboard-quit)
 (define-key visual-mode-map (kbd "I") 'recenter-top-bottom)
+(define-key visual-mode-map (kbd "M-g M-2") 'f-transpose-paragraphs-up)
+(define-key visual-mode-map (kbd "M-g M-3") 'f-transpose-paragraphs-down)
 (define-key visual-mode-map (kbd "S") 'isearch-forward)
 (define-key visual-mode-map (kbd "g") 'keyboard-quit)
-(define-key visual-mode-map (kbd "h") 'mark-paragraph)
+(define-key visual-mode-map (kbd "h") 'f-paragraph-mark)
 (define-key visual-mode-map (kbd "i") 'f-visual-mode-off)
 (define-key visual-mode-map (kbd "q") 'f-query-replace)
 (define-key visual-mode-map (kbd "s") 'isearch-forward)
+(define-key visual-mode-map (kbd "z") 'undo)

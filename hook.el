@@ -66,7 +66,8 @@
 (add-hook 'ess-R-post-run-hook 'f-ess-post-run)
 
 ;; highlight-symbol
-(require 'highlight-symbol)
+(when (package-installed-p 'highlight-symbol)
+  (require 'highlight-symbol))
 (setq highlight-symbol-colors
       '(;; "yellow"
 	"DeepPink" ;; "cyan"
@@ -207,6 +208,7 @@
 (define-key visual-mode-map (kbd "I") 'recenter-top-bottom)
 (define-key visual-mode-map (kbd "S") 'isearch-forward)
 (define-key visual-mode-map (kbd "g") 'keyboard-quit)
+(define-key visual-mode-map (kbd "h") 'mark-paragraph)
 (define-key visual-mode-map (kbd "i") 'f-visual-mode-off)
 (define-key visual-mode-map (kbd "q") 'f-query-replace)
 (define-key visual-mode-map (kbd "s") 'isearch-forward)

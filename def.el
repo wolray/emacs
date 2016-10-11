@@ -184,14 +184,15 @@
   (interactive)
   (let ((vp visual-mode))
     (other-window 1)
-    (when (and (f-index major-mode '(
-				     emacs-lisp-mode
-				     ess-mode
-				     lisp-interaction-mode
-				     matlab-mode
-				     org-mode
-				     python-mode
-				     )) vp)
+    (when (and vp (f-index major-mode
+			   '(
+			     emacs-lisp-mode
+			     ess-mode
+			     lisp-interaction-mode
+			     matlab-mode
+			     org-mode
+			     python-mode
+			     )))
       (visual-mode 1))))
 
 (defun f-paragraph-backward ()

@@ -9,7 +9,7 @@
 ((lambda (&rest packages)
    (dolist (pkg packages)
      (unless (package-installed-p pkg)
-       (when (y-or-n-p (format "Package \"%s\" is missing. Install it? " pkg))
+       (when (y-or-n-p (format "Package \"%s\" not found. Install it? " pkg))
 	 (package-install pkg)))))
  'ample-theme 'ess 'highlight-symbol 'magit 'markdown-mode 'matlab-mode)
 (defun f-package-menu-mode ()
@@ -50,8 +50,12 @@
 (define-key cua--rectangle-keymap (kbd "<right>") 'cua-move-rectangle-right)
 (define-key cua--rectangle-keymap (kbd "C-<left>") 'cua-move-rectangle-up)
 (define-key cua--rectangle-keymap (kbd "C-<right>") 'cua-move-rectangle-down)
+(define-key cua--rectangle-keymap (kbd "C-i") 'cua-exchange-point-and-mark)
 (define-key cua--rectangle-keymap (kbd "C-s") 'f-cua-sequence-rectangle)
-(define-key cua--rectangle-keymap (kbd "TAB") 'cua-exchange-point-and-mark)
+(define-key cua--rectangle-keymap (kbd "M-g C-8") 'ignore)
+(define-key cua--rectangle-keymap (kbd "M-g C-9") 'ignore)
+(define-key cua--rectangle-keymap (kbd "M-g C-e") 'ignore)
+(define-key cua--rectangle-keymap (kbd "M-g C-f") 'ignore)
 
 ;; ess
 (defun f-ess-mode ()
@@ -191,27 +195,3 @@
 ;; theme
 (load-theme 'ample t)
 (set-cursor-color "#ffffff")
-
-;; visual-mode
-(define-minor-mode visual-mode
-  :init-value nil
-  :keymap (make-sparse-keymap)
-  (setq cursor-type (if visual-mode 'box 'bar)))
-(dolist (k '("`" "2" "3" "4" "5" "7" "8" "9" "0"
-	     "w" "e" "r" "t" "y" "u" "o" "\\"
-	     "a" "d" "f" "j" "k" "l"
-	     "v" "b" "m"))
-  (define-key visual-mode-map (kbd k) (kbd (concat "C-" k))))
-(dolist (k '("R" "Y" "U" "I" "O"
-	     "D" "F" "H" "J" "K" "L"))
-  (define-key visual-mode-map (kbd k) (kbd (concat "C-S-" (downcase k)))))
-(define-key visual-mode-map (kbd "1") 'undo)
-(define-key visual-mode-map (kbd "G") 'keyboard-quit)
-(define-key visual-mode-map (kbd "S") 'isearch-forward)
-(define-key visual-mode-map (kbd "g") 'keyboard-quit)
-(define-key visual-mode-map (kbd "h") 'f-paragraph-mark)
-(define-key visual-mode-map (kbd "i") 'f-visual-mode-off)
-(define-key visual-mode-map (kbd "n") 'keyboard-quit)
-(define-key visual-mode-map (kbd "q") 'f-query-replace)
-(define-key visual-mode-map (kbd "s") 'isearch-forward)
-(define-key visual-mode-map (kbd "z") 'undo)

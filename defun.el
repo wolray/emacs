@@ -3,11 +3,19 @@
      (setq ,var (elt ,values (if (and i (< (1+ i) (length ,values))) (1+ i) 0)))))
 
 (defmacro m-map-key (obj key)
-  `(if (symbolp ,obj)
-       (let ((map-key (kbd (concat "M-g " (cadr ',key)))))
-	 (global-set-key map-key ,obj)
-	 (define-key key-translation-map ,key map-key))
-     (define-key key-translation-map ,key ,obj)))
+  `(let ((keystr (cadr ',key)) mapkey vmchar)
+     (define-key key-translation-map ,key
+       (if (not (symbolp ,obj)) ,obj
+	 (setq mapkey (kbd (concat "M-g " keystr)))
+	 (global-set-key mapkey ,obj) mapkey))
+     (setq vmchar (substring keystr -1))
+     (when (and (string= "C" (substring keystr 0 1))
+		(string-match "[[:alnum:]`\\]" vmchar)
+		(or (when (string= "S" (substring keystr 2 3))
+		      (setq vmchar (upcase vmchar)) t)
+		    (= 3 (length keystr))))
+       (define-key visual-mode-map (kbd vmchar)
+	 (if (symbolp ,obj) ,obj (key-binding ,obj))))))
 
 (defun f-backward-kill-line ()
   (interactive)
@@ -22,6 +30,11 @@
   (delete-trailing-whitespace)
   (kill-ring-save (point-min) (point-max))
   (message "(f-copy-buffer)"))
+
+(defun f-cua-rectangle-mark-mode ()
+  (interactive)
+  (visual-mode -1)
+  (call-interactively 'cua-rectangle-mark-mode))
 
 (defun f-cua-sequence-rectangle (first incr fmt)
   (interactive
@@ -211,13 +224,6 @@
     (org-forward-element)
     (skip-chars-forward v-skip-chars)))
 
-(defun f-paragraph-mark ()
-  (interactive)
-  (visual-mode 1)
-  (if (not (eq major-mode 'org-mode))
-      (call-interactively 'mark-paragraph)
-    (org-mark-element)))
-
 (defun f-paragraph-set ()
   (interactive)
   (setq paragraph-start "\f\\|[ \t]*$"
@@ -324,6 +330,9 @@
   (interactive)
   (visual-mode -1))
 
+(defun f-visual-mode-sleep ()
+  (or visual-mode defining-kbd-macro executing-kbd-macro))
+
 (defun f-word-capitalize ()
   (interactive)
   (capitalize-word -1))
@@ -363,11 +372,14 @@
     (skip-chars-backward v-skip-chars)
     (beginning-of-line (if (bolp) 0 1))
     (skip-chars-forward v-skip-chars)
-    (unless (or defining-kbd-macro executing-kbd-macro) (visual-mode 1))))
+    (unless (f-visual-mode-sleep) (visual-mode 1))))
 (defun f-move-up-line-beginning ()
   (interactive)
-  (beginning-of-line (if (bolp) 0 1))
-  (unless (or defining-kbd-macro executing-kbd-macro) (visual-mode 1)))
+  (if (not (eq major-mode 'org-mode))
+      (beginning-of-line (if (bolp) 0 1))
+    (org-up-element)
+    (skip-chars-forward v-skip-chars))
+  (unless (f-visual-mode-sleep) (visual-mode 1)))
 (defun f-move-down-line ()
   (interactive)
   (if (minibufferp) (end-of-line)
@@ -377,8 +389,8 @@
     (skip-chars-backward v-skip-chars)
     (beginning-of-line 2)
     (skip-chars-forward v-skip-chars)
-    (unless (or defining-kbd-macro executing-kbd-macro) (visual-mode 1))))
+    (unless (f-visual-mode-sleep) (visual-mode 1))))
 (defun f-move-down-line-end ()
   (interactive)
   (end-of-line (if (eolp) 2 1))
-  (unless (or defining-kbd-macro executing-kbd-macro) (visual-mode 1)))
+  (unless (f-visual-mode-sleep) (visual-mode 1)))

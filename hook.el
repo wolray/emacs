@@ -11,7 +11,14 @@
      (unless (package-installed-p pkg)
        (when (y-or-n-p (format "Package \"%s\" not found. Install it? " pkg))
 	 (package-install pkg)))))
- 'ample-theme 'ess 'highlight-symbol 'magit 'markdown-mode 'matlab-mode)
+ 'ample-theme
+ 'ess
+ 'ghc
+ 'highlight-symbol
+ 'magit
+ 'markdown-mode
+ 'matlab-mode
+ )
 (defun f-package-menu-mode ()
   (local-set-key (kbd "[") 'package-menu-describe-package)
   (local-set-key (kbd "]") 'next-line)
@@ -60,7 +67,6 @@
 ;; ess
 (defun f-ess-mode ()
   (local-set-key (kbd "C-c C-c") 'ess-eval-buffer)
-  (local-set-key (kbd "C-c c") 'f-ess-clear-inferior)
   (local-set-key (kbd "M-g C-S-y") 'ess-eval-region)
   (local-set-key (kbd "M-g C-y") 'ess-eval-line)
   (local-unset-key (kbd "C-c C-r"))
@@ -168,7 +174,6 @@
 ;; python
 (defun f-python-mode ()
   (local-set-key (kbd "C-c C-r") 'run-python)
-  (local-set-key (kbd "C-c c") 'f-python-shell-clear-shell)
   (local-set-key (kbd "M-g C-S-y") 'python-shell-send-region)
   (local-set-key (kbd "M-g C-y") 'f-python-shell-send-line)
   (setq python-shell-interpreter "ipython")

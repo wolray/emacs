@@ -1,5 +1,5 @@
 (defmacro m-cycle-values (var values)
-  `(let ((i (f-index ,var ,values)))
+  `(let ((i (cl-position ,var ,values)))
      (setq ,var (elt ,values (if (and i (< (1+ i) (length ,values))) (1+ i) 0)))))
 
 (defmacro m-map-key (obj key)
@@ -11,9 +11,9 @@
      (setq vmchar (substring keystr -1))
      (when (and (string= "C" (substring keystr 0 1))
 		(string-match "[[:alnum:]`\\]" vmchar)
-		(or (when (string= "S" (substring keystr 2 3))
-		      (setq vmchar (upcase vmchar)) t)
-		    (= 3 (length keystr))))
+		(or (= 3 (length keystr))
+		    (when (string= "S" (substring keystr 2 3))
+		      (setq vmchar (upcase vmchar)) t)))
        (define-key visual-mode-map (kbd vmchar)
 	 (if (symbolp ,obj) ,obj (key-binding ,obj))))))
 
@@ -29,7 +29,7 @@
     (unless (or (eobp) buffer-read-only) (newline 1)))
   (delete-trailing-whitespace)
   (kill-ring-save (point-min) (point-max))
-  (message "(f-copy-buffer)"))
+  (message "Current buffer copied"))
 
 (defun f-cua-rectangle-mark-mode ()
   (interactive)
@@ -80,24 +80,14 @@
   (switch-to-buffer (dired-noselect default-directory))
   (revert-buffer))
 
-(defun f-ess-clear-inferior ()
-  (interactive)
-  (with-temp-buffer
-    (switch-to-buffer "*R*")
-    (delete-region (point-min) (point-max))
-    (inferior-ess-send-input)
-    (goto-char (point-min))
-    (kill-line)
-    (switch-to-prev-buffer)))
-
 (defun f-highlight-symbol ()
   (interactive)
   (visual-mode -1)
-  (if (highlight-symbol-symbol-highlighted-p
-       (highlight-symbol-get-symbol))
-      (highlight-symbol-remove-all)
-    (highlight-symbol)
-    (visual-mode 1)))
+  (let ((s (highlight-symbol-get-symbol)))
+    (if (or (not s) (highlight-symbol-symbol-highlighted-p s))
+	(highlight-symbol-remove-all)
+      (highlight-symbol)
+      (visual-mode 1))))
 
 (defun f-incf (&optional first incr repeat)
   (let ((index (floor (/ (cl-incf count 0) (or repeat 1)))))
@@ -106,12 +96,6 @@
   (let ((index (floor (/ (cl-incf count 0) (or repeat 1)))))
     (if (< index (length ls)) (elt ls index)
       (keyboard-quit))))
-(defun f-index (x ls)
-  (let ((i 0) (p nil))
-    (while (and (< i (length ls)) (not p))
-      (if (eq x (elt ls i)) (setq p t)
-	(setq i (1+ i))))
-    (and p i)))
 
 (defun f-indent-paragraph ()
   (interactive)
@@ -134,7 +118,7 @@
       (back-to-indentation)
       (skip-chars-forward v-skip-chars)
       (kill-ring-save (point) (line-end-position)))
-    (unless (minibufferp) (message "(f-kill-ring-save)"))))
+    (unless (minibufferp) (message "Current line copied"))))
 
 (defun f-kmacro-end-or-call-macro (arg)
   (interactive "P")
@@ -197,20 +181,20 @@
   (interactive)
   (let ((vp visual-mode))
     (other-window 1)
-    (when (and vp (f-index major-mode
-			   '(
-			     emacs-lisp-mode
-			     ess-mode
-			     lisp-interaction-mode
-			     matlab-mode
-			     org-mode
-			     python-mode
-			     )))
+    (when (and vp (cl-position major-mode
+			       '(
+				 emacs-lisp-mode
+				 ess-mode
+				 lisp-interaction-mode
+				 matlab-mode
+				 org-mode
+				 python-mode
+				 )))
       (visual-mode 1))))
 
 (defun f-paragraph-backward ()
   (interactive)
-  (visual-mode 1)
+  (unless (f-visual-mode-locked-p) (visual-mode 1))
   (if (not (eq major-mode 'org-mode))
 	(backward-paragraph)
     (org-backward-element)
@@ -218,27 +202,15 @@
 
 (defun f-paragraph-forward ()
   (interactive)
-  (visual-mode 1)
+  (unless (f-visual-mode-locked-p) (visual-mode 1))
   (if (not (eq major-mode 'org-mode))
 	(forward-paragraph)
     (org-forward-element)
     (skip-chars-forward v-skip-chars)))
 
 (defun f-paragraph-set ()
-  (interactive)
   (setq paragraph-start "\f\\|[ \t]*$"
-	paragraph-separate "[ \t\f]*$")
-  (message "(f-paragraph-set)"))
-
-(defun f-python-shell-clear-shell ()
-  (interactive)
-  (with-temp-buffer
-    (switch-to-buffer "*Python*")
-    (delete-region (point-min) (point-max))
-    (comint-send-input)
-    (goto-char (point-min))
-    (kill-line)
-    (switch-to-prev-buffer)))
+	paragraph-separate "[ \t\f]*$"))
 
 (defun f-python-shell-send-line ()
   (interactive)
@@ -273,6 +245,24 @@
   (if (use-region-p) (exchange-point-and-mark)
     (set-mark-command arg)))
 
+(defun f-shell-clear ()
+  (if (not (get-buffer-process (current-buffer)))
+      (message "No inferior process")
+    (delete-region (point-min) (point-max))
+    (comint-send-input)
+    (goto-char (point-min))
+    (kill-line)))
+
+(defun f-shell-clear-shell ()
+  (interactive)
+  (let ((modes '(python-mode ess-mode)) (buffers '("*Python*" "*R*")) i)
+    (setq i (cl-position major-mode modes))
+    (if i (with-temp-buffer
+	    (switch-to-buffer (elt buffers i))
+	    (f-shell-clear)
+	    (switch-to-prev-buffer))
+      (f-shell-clear))))
+
 (defun f-sort-lines ()
   (interactive)
   (when (use-region-p)
@@ -281,7 +271,7 @@
 (defun f-sort-paragraphs ()
   (interactive)
   (sort-paragraphs nil (point-min) (point-max))
-  (message "(f-sort-paragraphs)"))
+  (message "All paragraphs sorted"))
 
 (defun f-switch-to-scratch ()
   (interactive)
@@ -326,12 +316,16 @@
     (transpose-paragraphs -1)
     (backward-paragraph)))
 
+(defun f-visual-mode-locked-p ()
+  (or visual-mode
+      (minibufferp)
+      defining-kbd-macro
+      executing-kbd-macro
+      ))
+
 (defun f-visual-mode-off ()
   (interactive)
   (visual-mode -1))
-
-(defun f-visual-mode-sleep ()
-  (or visual-mode defining-kbd-macro executing-kbd-macro))
 
 (defun f-word-capitalize ()
   (interactive)
@@ -372,14 +366,14 @@
     (skip-chars-backward v-skip-chars)
     (beginning-of-line (if (bolp) 0 1))
     (skip-chars-forward v-skip-chars)
-    (unless (f-visual-mode-sleep) (visual-mode 1))))
+    (unless (f-visual-mode-locked-p) (visual-mode 1))))
 (defun f-move-up-line-beginning ()
   (interactive)
   (if (not (eq major-mode 'org-mode))
       (beginning-of-line (if (bolp) 0 1))
     (org-up-element)
     (skip-chars-forward v-skip-chars))
-  (unless (f-visual-mode-sleep) (visual-mode 1)))
+  (unless (f-visual-mode-locked-p) (visual-mode 1)))
 (defun f-move-down-line ()
   (interactive)
   (if (minibufferp) (end-of-line)
@@ -389,8 +383,8 @@
     (skip-chars-backward v-skip-chars)
     (beginning-of-line 2)
     (skip-chars-forward v-skip-chars)
-    (unless (f-visual-mode-sleep) (visual-mode 1))))
+    (unless (f-visual-mode-locked-p) (visual-mode 1))))
 (defun f-move-down-line-end ()
   (interactive)
   (end-of-line (if (eolp) 2 1))
-  (unless (f-visual-mode-sleep) (visual-mode 1)))
+  (unless (f-visual-mode-locked-p) (visual-mode 1)))

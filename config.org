@@ -6,6 +6,8 @@
 *** ample-theme
 *** ess
 **** julia-mode
+*** ghc
+**** haskell
 *** highlight-symbol
 *** magit
 **** async
@@ -37,6 +39,21 @@
 **** (= options "C-w")
 ** indexes
 *** (exclude 'B011)
+* haskell
+** haskell-platform
+C:\Program Files
+** path
+C:\Program Files\Haskell Platform\8.0.1\bin
+C:\Program Files\Haskell Platform\8.0.1\mingw\bin
+** shell
+*** 1
+$ cable user-config init
+**** [[~\cabal\config]]
+extra-prog-path: C:\Program Files\Haskell Platform\8.0.1\msys\usr\bin
+extra-lib-dirs: C:\Program Files\Haskell Platform\8.0.1\mingw\lib
+extra-include-dirs: C:\Program Files\Haskell Platform\8.0.1\mingw\include
+*** 2
+$ stack setup
 * latex
 ** texstudio
 ** texlive-2015
@@ -95,8 +112,8 @@
 ** (ui 'B1<-1>)
 * python
 ** shell
-ipython profile create
-** [[~\.ipython\profile_default\ipython_config.py]]
+$ ipython profile create
+*** [[~\.ipython\profile_default\ipython_config.py]]
 c.InteractiveShell.separate_in=''
 * qqpinyin
 ** ≥£”√

@@ -1,8 +1,8 @@
 ;; !package
 (setq package-archives
       '(("gnu"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
-	("melpa" . "http://elpa.zilongshanren.com/melpa/")
-	;; ("melpa" . "http://melpa.org/packages/"))
+	;; ("melpa" . "http://elpa.zilongshanren.com/melpa/")
+	("melpa" . "http://melpa.org/packages/")
 	;; ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
 	))
 (package-initialize)

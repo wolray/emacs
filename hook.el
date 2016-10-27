@@ -64,6 +64,9 @@
 (define-key cua--rectangle-keymap (kbd "M-g C-e") 'ignore)
 (define-key cua--rectangle-keymap (kbd "M-g C-f") 'ignore)
 
+;; edmacro-mode
+(define-key edmacro-mode-map (kbd "C-x C-k RET") 'kill-this-buffer)
+
 ;; ess
 (defun f-ess-mode ()
   (local-set-key (kbd "C-c C-c") 'ess-eval-buffer)
@@ -100,13 +103,12 @@
 	try-expand-list
 	try-expand-line
 	try-complete-lisp-symbol-partially
-	try-complete-lisp-symbol
-	))
+	try-complete-lisp-symbol))
 
 ;; latex
 (defun f-latex-mode ()
-  (setq tab-width 2)
   (f-paragraph-set))
+  (setq tab-width 2)
 (add-hook 'latex-mode-hook 'f-latex-mode)
 
 ;; magit

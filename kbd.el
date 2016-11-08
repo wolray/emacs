@@ -1,12 +1,14 @@
 (define-minor-mode number-mode
   :init-value t
   :global t
-  :keymap (make-sparse-keymap))
-(m-set-number 1 (kbd "C-l"))
+  :keymap (make-sparse-keymap)
+  (set-cursor-color (if number-mode "#ffffff"
+		      (highlight-symbol-next-color))))
+(m-set-number 1 'c-sort-lines-or-paragraphs)
 (m-set-number 2 'c-move-backward-line)
 (m-set-number 3 'c-move-forward-line)
-(m-set-number 4 'c-cua-rectangle-mark-mode)
-(m-set-number 5 'c-sort-lines-or-paragraphs)
+(m-set-number 4 (kbd "C-l"))
+(m-set-number 5 (kbd "C-x C-s"))
 (m-set-number 6 (kbd "M-^"))
 (m-set-number 7 'c-paragraph-backward)
 (m-set-number 8 'c-move-up)
@@ -45,6 +47,7 @@
 (m-map-key 'c-backward-kill-line (kbd "M-DEL"))
 (m-map-key 'c-clear-shell (kbd "C-c c"))
 (m-map-key 'c-copy-buffer (kbd "C-x C-x"))
+(m-map-key 'c-cua-rectangle-mark-mode (kbd "C-1"))
 (m-map-key 'c-cycle-paren-shapes (kbd "C-c i"))
 (m-map-key 'c-cycle-search-whitespace-regexp (kbd "C-M-s"))
 (m-map-key 'c-dired (kbd "C-x C-d"))
@@ -72,6 +75,7 @@
 (m-map-key 'c-toggle-comment (kbd "C-t"))
 (m-map-key 'c-toggle-comment (kbd "M-t"))
 (m-map-key 'c-toggle-frame (kbd "<f12>"))
+(m-map-key 'c-toggle-number-mode (kbd "`"))
 (m-map-key 'c-toggle-page (kbd "M-["))
 (m-map-key 'c-transpose-lines-down (kbd "M-9"))
 (m-map-key 'c-transpose-lines-up (kbd "M-8"))
@@ -171,6 +175,7 @@
 (m-map-key (kbd "M-g M-q") (kbd "C-M-q"))
 (m-map-key (kbd "M-g M-u") (kbd "C-M-u"))
 (m-map-key (kbd "RET") (kbd "M-m"))
+(m-map-key (kbd "`") (kbd "C-`"))
 (m-map-key nil (kbd "C-"))
 (m-map-key nil (kbd "C-'"))
 (m-map-key nil (kbd "C-;"))

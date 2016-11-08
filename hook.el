@@ -55,7 +55,7 @@
 (require 'cua-rect)
 (define-key cua--rectangle-keymap (kbd "C-2") 'cua-move-rectangle-left)
 (define-key cua--rectangle-keymap (kbd "C-3") 'cua-move-rectangle-right)
-(define-key cua--rectangle-keymap (kbd "C-5") 'c-cua-sequence-rectangle)
+(define-key cua--rectangle-keymap (kbd "C-4") 'c-cua-sequence-rectangle)
 (define-key cua--rectangle-keymap (kbd "C-7") 'cua-move-rectangle-up)
 (define-key cua--rectangle-keymap (kbd "C-8") 'cua-resize-rectangle-up)
 (define-key cua--rectangle-keymap (kbd "C-9") 'cua-resize-rectangle-down)
@@ -166,8 +166,7 @@
   (local-set-key (kbd "M-g C-c C-8") 'org-up-element)
   (local-unset-key (kbd "C-c ["))
   (local-unset-key (kbd "C-c ]"))
-  (setq -chars (concat "*" -chars))
-  )
+  (setq -chars (concat "*" -chars)))
 (add-hook 'org-mode-hook 'f-org-mode)
 
 ;; python

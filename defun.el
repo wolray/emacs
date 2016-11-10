@@ -391,9 +391,9 @@
 (defun f-move-up-or-down (n)
   (unless (minibufferp)
     (cond ((and (= -move 2) (eolp))
-	   (next-line n) (end-of-line))
+	   (forward-line n) (end-of-line))
 	  ((and (= -move 1) (= (current-column) (f-skip-bol t)))
-	   (next-line n) (f-skip-bol))
+	   (forward-line n) (f-skip-bol))
 	  (t (next-line n) (setq -move 0)))
     (f-visual-mode)))
 

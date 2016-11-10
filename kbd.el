@@ -175,6 +175,7 @@
 (m-map-key (kbd "M-g M-q") (kbd "C-M-q"))
 (m-map-key (kbd "M-g M-u") (kbd "C-M-u"))
 (m-map-key (kbd "RET") (kbd "M-m"))
+(m-map-key (kbd "`") (kbd "C-M-`"))
 (m-map-key (kbd "`") (kbd "C-`"))
 (m-map-key nil (kbd "C-"))
 (m-map-key nil (kbd "C-'"))

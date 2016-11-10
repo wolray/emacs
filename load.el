@@ -8,13 +8,13 @@
 (show-paren-mode 1)
 
 ;; font
-(if (string= system-name "LAB")
-    (progn
-      (set-default-font "monaco-10")
-      (set-fontset-font "fontset-default" 'gb18030 "kaiti-12"))
-  (progn
-    (set-default-font "monaco-11")
-    (set-fontset-font "fontset-default" 'gb18030 "kaiti-13")))
+(defmacro m-set-font (en cn)
+  `(progn
+     (set-default-font ,en)
+     (set-fontset-font "fontset-default" 'gb18030 ,cn)))
+(if (string-match system-name "DELL-PC LAB")
+    (m-set-font "monaco-13" "楷体-15")
+  (m-set-font "ubuntu mono-13" "微软雅黑-12"))
 
 ;; frame
 (menu-bar-mode 0)
@@ -23,9 +23,9 @@
 (setq frame-title-format "")
 
 ;; language
-(set-buffer-file-coding-system 'chinese-gbk)
-(set-keyboard-coding-system 'chinese-gbk)
-(set-language-environment 'chinese-gbk)
+(set-buffer-file-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-language-environment 'utf-8)
 
 ;; startup
 (setq inhibit-startup-message t)

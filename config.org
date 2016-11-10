@@ -2,6 +2,8 @@
 ** main-window
 *** (B0 "C-C")
 * emacs
+** [[~\.emacs.d\init.el]]
+(load "d:/sync/emacs.d/load.el")
 ** package-install
 *** ample-theme
 *** ess
@@ -25,7 +27,7 @@
 * everything
 ** general
 *** (results 'B110100111)
-*** (fonts-and-colors monaco)
+*** (fonts-and-colors (font ubuntu-mono))
 *** keyboard
 **** (+ copy-full-name "u")
 **** (+ copy-path "o")
@@ -33,12 +35,15 @@
 **** (+ item-down "l")
 **** (+ item-up "j")
 **** (+ open-path "i")
-**** (+ rename "h")
+**** (+ rename "<backspace>")
 **** (+ toggle-window "C-[")
 **** (- exit "C-q")
 **** (= options "C-w")
 ** indexes
 *** (exclude 'B011)
+* git
+** (select-components 'A0)
+** (adjusting-path 'B010)
 * haskell
 ** haskell-platform
 C:\Program Files
@@ -66,23 +71,30 @@ $ stack setup
 *** optimization
 *** statistics-and-machine-learning
 *** symbolic-math
-** (font (monaco (lab 10) (acer 11)))
-** (initial-folder "d:\sync")
+** (font ubuntu-mono)
+** (general (initial-folder "d:\sync"))
 * mysql
 ** mysql-documentation
 ** samples-and-examples
 ** mysql-server
+* office
+** excel
+** onenote
+** powerpoint
+** visio-viewer
+** word
+** tools
 * onenote
-** ³£¹æ
-*** (ÓÃ»§½çÃæÑ¡Ïî 'B1)
-*** (Ä¬ÈÏ×ÖÌå calibri 12)
-** (ÏÔÊ¾ 'B1<-2>)
-** Ğ£¶Ô
-*** (×Ô¶¯¸üÕıÑ¡Ïî 'B1 'B1<-1>)
+** å¸¸è§„
+*** (ç”¨æˆ·ç•Œé¢é€‰é¡¹ 'B1)
+*** (é»˜è®¤å­—ä½“ calibri 12)
+** (æ˜¾ç¤º 'B1<-2>)
+** æ ¡å¯¹
+*** (è‡ªåŠ¨æ›´æ­£é€‰é¡¹ 'B1 'B1<-1>)
 * opera
 ** (sync bookmarks)
 ** (on-startup continue)
-** (search (or bing google))
+** (search (or baidu google))
 ** (downloads "d:\" 'B1)
 ** shortcuts
 *** 'A0
@@ -114,30 +126,23 @@ $ stack setup
 ** shell
 $ ipython profile create
 *** [[~\.ipython\profile_default\ipython_config.py]]
-c.InteractiveShell.separate_in=''
+c.InteractiveShell.separate_in = ''
 * qqpinyin
-** ³£ÓÃ
-*** (³õÊ¼×´Ì¬ Ó¢ÎÄ ¼òÌå °ë½Ç 'B0)
-** °´¼ü
-*** (ºòÑ¡·­Ò³ 'B1<1>)
-*** (ÆäËû¿ì½İ¼ü 'A0)
-** Íâ¹Û
-*** (Æ¤·ôÑ¡Ôñ 'B10010)
-*** ÊäÈë¿ò
-**** (Ó¢ÎÄ×ÖÌå monaco 11)
-**** (ÖĞÎÄ×ÖÌå kaiti 13)
-** ¸ß¼¶
-*** (ÊäÈë·¨¹ÜÀí 'B1<1> 'A0)
-*** (ÆäËûÉèÖÃ 'B0<1>)
-* rstudio
-** (font monaco 11)
+** å¸¸ç”¨
+*** (åˆå§‹çŠ¶æ€ è‹±æ–‡ ç®€ä½“ åŠè§’ 'B0)
+** æŒ‰é”®
+*** (å€™é€‰ç¿»é¡µ 'B1<1>)
+*** (å…¶ä»–å¿«æ·é”® 'A0)
+** å¤–è§‚
+*** (çš®è‚¤é€‰æ‹© 'B10010)
+*** è¾“å…¥æ¡†
+**** (è‹±æ–‡å­—ä½“ ubuntu-mono)
+**** (ä¸­æ–‡å­—ä½“ å¾®è½¯é›…é»‘)
+** é«˜çº§
+*** (è¾“å…¥æ³•ç®¡ç† 'B1<1> 'B0)
+*** (å…¶ä»–è®¾ç½® 'B0<1>)
 * stata-13
-** font
-*** courier-new
-*** regular
-*** (11 do-file)
-*** (12 result command)
-*** (11 review variables)
+** (font courier-new regular)
 * windows
 ** quick access
 *** appdata

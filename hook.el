@@ -53,13 +53,9 @@
 
 ;; cua
 (require 'cua-rect)
-(define-key cua--rectangle-keymap (kbd "C-2") 'cua-move-rectangle-left)
-(define-key cua--rectangle-keymap (kbd "C-3") 'cua-move-rectangle-right)
-(define-key cua--rectangle-keymap (kbd "C-4") 'c-cua-sequence-rectangle)
-(define-key cua--rectangle-keymap (kbd "C-7") 'cua-move-rectangle-up)
-(define-key cua--rectangle-keymap (kbd "C-8") 'cua-resize-rectangle-up)
-(define-key cua--rectangle-keymap (kbd "C-9") 'cua-resize-rectangle-down)
-(define-key cua--rectangle-keymap (kbd "C-0") 'cua-move-rectangle-down)
+(define-key cua--rectangle-keymap (kbd "C-M-b") 'cua-move-rectangle-left)
+(define-key cua--rectangle-keymap (kbd "C-M-f") 'cua-move-rectangle-right)
+(define-key cua--rectangle-keymap (kbd "M-g I") 'cua-exchange-point-and-mark)
 
 ;; edmacro-mode
 (define-key edmacro-mode-map (kbd "C-x C-k RET") 'kill-this-buffer)
@@ -166,7 +162,8 @@
   (local-set-key (kbd "M-g C-c C-8") 'org-up-element)
   (local-unset-key (kbd "C-c ["))
   (local-unset-key (kbd "C-c ]"))
-  (setq -chars (concat "*" -chars)))
+  (setq -chars (concat "*" -chars)
+	-move 1))
 (add-hook 'org-mode-hook 'f-org-mode)
 
 ;; python
@@ -188,7 +185,7 @@
 (add-hook 'racket-mode-hook 'f-racket-mode)
 
 ;; save
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+(add-hook 'before-save-hook 'f-delete-trailing-whitespace)
 
 ;; sql
 (defun f-sql-mode ()

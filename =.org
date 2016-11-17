@@ -1,0 +1,229 @@
+* computer
+** bing-dict
+*** main-window
+**** (B0 "C-C")
+** emacs
+*** [[~\.emacs.d\init.el]]
+(load "d:/sync/emacs.d/load.el")
+*** package-install
+**** ample-theme
+**** ess
+***** julia-mode
+**** ghc
+***** haskell
+**** highlight-symbol
+**** magit
+***** async
+***** dash
+***** with-editor
+***** git-commit
+***** magit-popup
+**** markdown-mode
+**** matlab-mode
+*** \HHEK_LOCAL_MACHINES\SYSTEM\CurrentControlSet\Control\Keyboard Layout\Scancode Map
+00 00 00 00  00 00 00 00
+05 00 00 00  1D E0 39 00
+39 00 27 00  27 00 2A 00
+2A 00 3A 00  00 00 00 00
+** everything
+*** general
+**** (results 'B110100111)
+**** (fonts-and-colors (font ubuntu-mono))
+**** keyboard
+***** (+ copy-full-name "u")
+***** (+ copy-path "o")
+***** (+ delete "k")
+***** (+ item-down "l")
+***** (+ item-up "j")
+***** (+ open-path "i")
+***** (+ rename "<backspace>")
+***** (+ toggle-window "C-[")
+***** (- exit "C-q")
+***** (= options "C-w")
+*** indexes
+**** (exclude 'B011)
+** git
+*** (select-components 'A0)
+*** (adjusting-path 'B010)
+** haskell
+*** haskell-platform
+C:\Program Files
+*** path
+C:\Program Files\Haskell Platform\8.0.1\bin
+C:\Program Files\Haskell Platform\8.0.1\mingw\bin
+*** shell
+**** 1
+$ cable user-config init
+***** [[~\cabal\config]]
+extra-prog-path: C:\Program Files\Haskell Platform\8.0.1\msys\usr\bin
+extra-lib-dirs: C:\Program Files\Haskell Platform\8.0.1\mingw\lib
+extra-include-dirs: C:\Program Files\Haskell Platform\8.0.1\mingw\include
+**** 2
+$ stack setup
+** latex
+*** texstudio
+*** texlive-2015
+**** medium scheme
+***** (B1 chinese cjk)
+***** (B0 (other-langs) texworks-editor)
+** matlab
+*** toolbox
+**** curve-fitting
+**** optimization
+**** statistics-and-machine-learning
+**** symbolic-math
+*** (font ubuntu-mono)
+*** (general (initial-folder "d:\sync"))
+** mysql
+*** mysql-documentation
+*** samples-and-examples
+*** mysql-server
+** office
+*** excel
+*** onenote
+*** powerpoint
+*** visio-viewer
+*** word
+*** tools
+** onenote
+*** 常规
+**** (用户界面选项 'B1)
+**** (默认字体 calibri 12)
+*** (显示 'B1<-2>)
+*** 校对
+**** (自动更正选项 'B1 'B1<-1>)
+** opera
+*** (sync bookmarks)
+*** (on-startup continue)
+*** (search (or baidu google))
+*** (downloads "d:\" 'B1)
+*** shortcuts
+**** 'A0
+**** config
+***** (back "C-u")
+***** (close-tab "C-k")
+***** (cycle-backward-through-tabs "M-u")
+***** (cycle-forward-through-tabs "M-o")
+***** (downloads "C-d")
+***** (find-next "C-s")
+***** (find-previous "C-r")
+***** (focus-address-bar "C-m")
+***** (forward "C-o")
+***** (history "C-h")
+***** (manage-bookmarks "C-b")
+***** (new-tab "C-n")
+***** (open-settings "C-w")
+***** (reload "<f5>")
+***** (reopen-last-closed-tab "C-t")
+***** (select-previously-active-tab "C-i")
+***** (show-bookmarks-bar "C-f")
+***** (stop "C-g")
+***** (switch-left-through-tabs "C-j")
+***** (switch-right-through-tabs "C-l")
+***** (toggle-full-screen "<f11>")
+***** (B0 (other))
+*** (ui 'B1<-1>)
+** python
+*** shell
+$ ipython profile create
+**** [[~\.ipython\profile_default\ipython_config.py]]
+c.InteractiveShell.separate_in = ''
+** qqpinyin
+*** 常用
+**** (初始状态 英文 简体 半角 'B0)
+*** 按键
+**** (候选翻页 'B1<1>)
+**** (其他快捷键 'A0)
+*** 外观
+**** (皮肤选择 'B10010)
+**** 输入框
+***** (英文字体 ubuntu-mono)
+***** (中文字体 微软雅黑)
+*** 高级
+**** (输入法管理 'B1<1> 'B0)
+**** (其他设置 'B0<1>)
+** stata-13
+*** (font courier-new regular)
+** windows
+*** quick access
+**** appdata
+**** program files
+**** program files (x86)
+**** sync
+* 生活
+** 证件&卡
+*** 证件（抽屉）
+**** 护照
+**** 港澳通行证
+***** (w94045320 20190629)
+**** 北京大学学生证
+**** 北京大学户籍卡
+**** 驾照
+*** 卡包（抽屉）
+**** 四川大学校友卡
+**** 成都社会保险卡
+**** 中国社会保障卡
+**** 四川大学校园卡
+**** 身份证-阆中
+**** 招商银行-全币信用卡
+**** 北京大学校园卡
+**** 面包新语卡
+**** 北京大学农业银行卡
+**** 深圳市居住证
+*** 证书（文件夹）
+**** 北京大学研究生录取通知书
+**** 吴玉章学院优秀学生助理
+**** 吴玉章学院国际夏令营参与证书
+**** 四川大学2014届本科毕业生就业推荐表
+**** 四川大学优秀学生
+**** 四川大学学士学位证书
+***** 复印件x4
+**** 四川大学学生社团优秀干部
+**** 四川大学本科学生成绩单
+**** 四川大学毕业证书
+***** 复印件x4
+**** 国家励志奖学金
+**** 大学英语四六级证书
+(CET-4 2010-12 525)
+(CET-6 2011-12-17 517)
+(CET-6 2012-12-22 531)
+***** 复印件x3
+*** 单据
+**** 文件夹
+***** 宏碁电脑发票&保修单
+***** 魅族MX2发票&保修单
+***** 卡西欧计算器使用说明
+** 账户
+*** (apple 290061869@qq.com ***)
+*** (apple radiumlei@icloud.com ***)
+*** (mansun-device *** msd1415)
+*** (utsz 20133211657 065510)
+*** (wolfram-cc a0129463@u.nus.edu cc13579)
+*** (平安 raywen ***)
+*** (汇丰职业论坛 *** phbs12666)
+*** (郑非电影 nicecurve zf921003)
+*** 阆中家里
+**** (宽带账户 15182942599@tfgkd 942599)
+**** (无线路由 wenlei wenlei1991)
+*** 招商银行
+**** (开户行 杭州分行高新支行)
+*** 老妈
+**** (wechat *** yyx1512599)
+**** (alipay *** yyx1512599)
+** 电子产品
+*** 笔记本-ACER
+**** 充电器
+**** 罗技无线鼠标
+*** 移动硬盘
+*** PS4
+**** 主机
+**** 手柄x2
+**** 游戏
+***** 光盘
+****** 重力异常
+***** 数字
+** 衣物
+*** 鞋子
+**** 贵人鸟运动鞋
+*** 短袖
+**** 北大logo短袖

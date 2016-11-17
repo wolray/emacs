@@ -12,9 +12,10 @@
   `(progn
      (set-default-font ,en)
      (set-fontset-font "fontset-default" 'gb18030 ,cn)))
-(if (string-match system-name "DELL-PC LAB")
-    (m-set-font "monaco-13" "楷体-15")
-  (m-set-font "ubuntu mono-13" "微软雅黑-12"))
+(m-set-font "ubuntu mono-13" "微软雅黑-12")
+;; (if (string-match system-name "DELL-PC LAB")
+;;     (m-set-font "monaco-13" "楷体-15")
+;;   (m-set-font "ubuntu mono-13" "微软雅黑-12"))
 
 ;; frame
 (menu-bar-mode 0)

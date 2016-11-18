@@ -63,8 +63,8 @@
 ;; ess
 (defun f-ess-mode ()
   (local-set-key (kbd "C-c C-c") 'ess-eval-buffer)
-  (local-set-key (kbd "M-g C-S-y") 'ess-eval-region)
   (local-set-key (kbd "M-g C-y") 'ess-eval-line)
+  (local-set-key (kbd "M-g Y") 'ess-eval-region)
   (local-unset-key (kbd "C-c C-r"))
   (local-unset-key (kbd "C-c C-s"))
   (local-unset-key (kbd "_"))
@@ -109,7 +109,6 @@
 (defun f-magit-mode ()
   (local-set-key (kbd "[") 'magit-section-toggle)
   (local-set-key (kbd "]") 'magit-section-forward)
-  (local-unset-key (kbd "TAB"))
   (local-unset-key (kbd "n"))
   )
 (add-hook 'magit-mode-hook 'f-magit-mode)
@@ -169,8 +168,8 @@
 ;; python
 (defun f-python-mode ()
   (local-set-key (kbd "C-c C-r") 'run-python)
-  (local-set-key (kbd "M-g C-S-y") 'python-shell-send-region)
   (local-set-key (kbd "M-g C-y") 'c-python-shell-send-line)
+  (local-set-key (kbd "M-g Y") 'python-shell-send-region)
   (setq python-shell-interpreter "ipython")
   )
 (add-hook 'python-mode-hook 'f-python-mode)

@@ -23,11 +23,6 @@
 	 (define-key visual-mode-map
 	   (kbd vs) (if (symbolp ,obj) ,obj (key-binding ,obj)))))))
 
-(defmacro m-set-number (num obj)
-  `(let ((s (number-to-string ,num)))
-     (define-key number-mode-map
-       (kbd s) (if (symbolp ,obj) ,obj (key-binding ,obj)))))
-
 (defun c-backward-kill-line ()
   (interactive)
   (kill-region (line-beginning-position) (point))
@@ -181,6 +176,11 @@
 	(t (setq defining-kbd-macro nil)
 	   (kmacro-start-macro arg))))
 
+(defun c-mark-paragraph ()
+  (interactive)
+  (funcall 'call-interactively (key-binding (kbd "M-h")))
+  (unless (f-visual-mode-bad) (visual-mode)))
+
 (defun c-move-backward-line ()
   (interactive)
   (let ((col (f-skip-bol t)))
@@ -239,19 +239,15 @@
 (defun c-paragraph-backward ()
   (interactive)
   (unless (minibufferp)
-    (if (not (eq major-mode 'org-mode))
-	(backward-paragraph)
-      (org-backward-element)
-      (skip-chars-forward -chars))
+    (funcall 'call-interactively (key-binding (kbd "M-{")))
+    (skip-chars-forward -chars)
     (unless (f-visual-mode-bad) (visual-mode))))
 
 (defun c-paragraph-forward ()
   (interactive)
   (unless (minibufferp)
-    (if (not (eq major-mode 'org-mode))
-	(forward-paragraph)
-      (org-forward-element)
-      (skip-chars-forward -chars))
+    (funcall 'call-interactively (key-binding (kbd "M-}")))
+    (skip-chars-forward -chars)
     (unless (f-visual-mode-bad) (visual-mode))))
 
 (defun c-python-shell-send-line ()
@@ -277,6 +273,10 @@
   (set-mark (point))
   (racket-send-region
    (point-min) (point-max)))
+
+(defun c-return ()
+  (interactive)
+  (funcall 'call-interactively (key-binding (kbd "C-m"))))
 
 (defun c-revert-buffer ()
   (interactive)
@@ -324,8 +324,7 @@
 
 (defun c-toggle-visual-mode ()
   (interactive)
-  (unless (f-visual-mode-bad)
-    (visual-mode (and visual-mode -1))))
+  (visual-mode (and visual-mode -1)))
 
 (defun c-transpose-lines-down ()
   (interactive)
@@ -384,6 +383,12 @@
 (defun c-word-upcase ()
   (interactive)
   (upcase-word -1))
+
+(defun c-yank ()
+  (interactive)
+  (let ((pt (point)))
+    (funcall 'call-interactively (key-binding (kbd "C-y")))
+    (goto-char pt)))
 
 (defun f-clear-shell ()
   (if (not (get-buffer-process (current-buffer)))

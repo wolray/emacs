@@ -16,17 +16,16 @@
      (setq vs (substring ks -1))
      (if (= 1 (length ks))
 	 (define-key key-translation-map
-	   (kbd (concat "C-S-" (downcase vs))),key)
-       (when (and (= 3 (length ks))
-		  (string= "C" (substring ks 0 1))
-		  (string-match "[a-z]" vs))
-	 (define-key visual-mode-map
-	   (kbd vs) (if (symbolp ,obj) ,obj (key-binding ,obj)))))))
+	   (kbd (concat "C-S-" (downcase vs))) ,key)
+       (and (= 3 (length ks))
+	    (string= "C" (substring ks 0 1))
+	    (string-match "[a-z]" vs)
+	    (define-key visual-mode-map
+	      (kbd vs) (if (symbolp ,obj) ,obj (key-binding ,obj)))))))
 
 (defun c-backward-kill-line ()
   (interactive)
-  (kill-region (line-beginning-position) (point))
-  (indent-for-tab-command))
+  (kill-region (f-beginning-of-line 0) (point)))
 
 (defun c-clear-shell ()
   (interactive)
@@ -113,34 +112,32 @@
 
 (defun c-highlight-symbol ()
   (interactive)
-  (unless (or (minibufferp))
+  (unless (minibufferp)
     (let ((s (highlight-symbol-get-symbol)))
       (if (or (not s) (highlight-symbol-symbol-highlighted-p s))
 	  (highlight-symbol-remove-all)
 	(highlight-symbol)
-	(unless (f-visual-mode-bad) (visual-mode))))))
+	(f-try-visual-mode)))))
 
 (defun c-indent-paragraph ()
   (interactive)
-  (let ((pt (point)))
+  (save-excursion
     (mark-paragraph)
-    (indent-region (region-beginning) (region-end))
-    (goto-char pt)))
+    (indent-region (region-beginning) (region-end)))
+  (when (bolp) (skip-chars-forward -chars)))
 
 (defun c-kill-region ()
   (interactive)
   (if (use-region-p)
       (kill-region (region-beginning) (region-end))
     (kill-whole-line)
-    (back-to-indentation)))
+    (skip-chars-forward -chars)))
 
 (defun c-kill-ring-save ()
   (interactive)
   (if (use-region-p)
       (kill-ring-save (region-beginning) (region-end))
-    (save-excursion
-      (f-skip-bol)
-      (kill-ring-save (point) (line-end-position)))
+    (kill-ring-save (f-beginning-of-line 0) (line-end-position))
     (unless (minibufferp) (message "Current line copied"))))
 
 (defun c-kmacro-cycle-ring-next ()
@@ -179,19 +176,19 @@
 (defun c-mark-paragraph ()
   (interactive)
   (funcall 'call-interactively (key-binding (kbd "M-h")))
-  (unless (f-visual-mode-bad) (visual-mode)))
+  (f-try-visual-mode))
 
 (defun c-move-backward-line ()
   (interactive)
-  (let ((col (f-skip-bol t)))
+  (let ((co (f-beginning-of-line 1)))
     (if (eq major-mode 'org-mode)
-	(cond ((and (<= (current-column) col) (/= col 2))
+	(cond ((and (<= (current-column) co) (/= co 2))
 	       (org-up-element) (skip-chars-forward -chars) (setq -move 1))
-	      (t (f-skip-bol) (setq -move 1)))
+	      (t (f-beginning-of-line) (setq -move 1)))
       (cond ((and (bolp) (not (eolp))) (end-of-line) (setq -move 2))
-	    ((<= (current-column) col) (beginning-of-line) (setq -move 0))
-	    (t (f-skip-bol) (setq -move 1)))))
-  (unless (f-visual-mode-bad) (visual-mode)))
+	    ((<= (current-column) co) (beginning-of-line) (setq -move 0))
+	    (t (f-beginning-of-line) (setq -move 1)))))
+  (f-try-visual-mode))
 
 (defun c-move-down ()
   (interactive)
@@ -200,12 +197,12 @@
 (defun c-move-forward-line ()
   (interactive)
   (if (eq major-mode 'org-mode)
-      (cond ((eolp) (f-skip-bol) (setq -move 1))
+      (cond ((eolp) (f-beginning-of-line) (setq -move 1))
 	    (t (end-of-line) (setq -move 2)))
     (cond ((and (eolp) (not (bolp))) (beginning-of-line) (setq -move 0))
-	  ((>= (current-column) (f-skip-bol t)) (end-of-line) (setq -move 2))
-	  (t (f-skip-bol) (setq -move 1))))
-  (unless (f-visual-mode-bad) (visual-mode)))
+	  ((>= (current-column) (f-beginning-of-line 1)) (end-of-line) (setq -move 2))
+	  (t (f-beginning-of-line) (setq -move 1))))
+  (f-try-visual-mode))
 
 (defun c-move-up ()
   (interactive)
@@ -241,14 +238,14 @@
   (unless (minibufferp)
     (funcall 'call-interactively (key-binding (kbd "M-{")))
     (skip-chars-forward -chars)
-    (unless (f-visual-mode-bad) (visual-mode))))
+    (f-try-visual-mode)))
 
 (defun c-paragraph-forward ()
   (interactive)
   (unless (minibufferp)
     (funcall 'call-interactively (key-binding (kbd "M-}")))
     (skip-chars-forward -chars)
-    (unless (f-visual-mode-bad) (visual-mode))))
+    (f-try-visual-mode)))
 
 (defun c-python-shell-send-line ()
   (interactive)
@@ -270,18 +267,13 @@
 
 (defun c-racket-send-buffer ()
   (interactive)
-  (set-mark (point))
   (racket-send-region
    (point-min) (point-max)))
 
-(defun c-return ()
-  (interactive)
-  (funcall 'call-interactively (key-binding (kbd "C-m"))))
-
 (defun c-revert-buffer ()
   (interactive)
-  (when (and (not (minibufferp)) (buffer-modified-p))
-    (revert-buffer t t)))
+  (and (not (minibufferp)) (buffer-modified-p)
+       (revert-buffer t t)))
 
 (defun c-set-or-exchange-mark (arg)
   (interactive "P")
@@ -293,7 +285,7 @@
   (unless (minibufferp)
     (if (use-region-p)
 	(sort-lines nil (region-beginning) (region-end))
-      (when (y-or-n-p (format "Sort all paragraphs?"))
+      (when (y-or-n-p "Sort all paragraphs?")
 	(sort-paragraphs nil (point-min) (point-max))))))
 
 (defun c-switch-to-scratch ()
@@ -343,16 +335,16 @@
   (unless (minibufferp)
     (delete-trailing-whitespace)
     (beginning-of-line)
-    (unless (or (bobp) (eobp))
-      (forward-line)
-      (transpose-lines -1)
-      (beginning-of-line -1))
+    (or (bobp) (eobp)
+	(progn (forward-line)
+	       (transpose-lines -1)
+	       (beginning-of-line -1)))
     (skip-chars-forward -chars)))
 
 (defun c-transpose-paragraphs-down ()
   (interactive)
   (unless (minibufferp)
-    (let ((p nil))
+    (let (p)
       (delete-trailing-whitespace)
       (backward-paragraph)
       (when (bobp) (setq p t) (newline))
@@ -362,15 +354,15 @@
 
 (defun c-transpose-paragraphs-up ()
   (interactive)
-  (unless (or (minibufferp) (save-excursion (backward-paragraph) (bobp)))
-    (let ((p nil))
-      (delete-trailing-whitespace)
-      (backward-paragraph 2)
-      (when (bobp) (setq p t) (newline))
-      (forward-paragraph 2)
-      (transpose-paragraphs -1)
-      (backward-paragraph)
-      (when p (save-excursion (goto-char (point-min)) (kill-line))))))
+  (or (minibufferp) (save-excursion (backward-paragraph) (bobp))
+      (let (p)
+	(delete-trailing-whitespace)
+	(backward-paragraph 2)
+	(when (bobp) (setq p t) (newline))
+	(forward-paragraph 2)
+	(transpose-paragraphs -1)
+	(backward-paragraph)
+	(when p (save-excursion (goto-char (point-min)) (kill-line))))))
 
 (defun c-word-capitalize ()
   (interactive)
@@ -384,11 +376,15 @@
   (interactive)
   (upcase-word -1))
 
-(defun c-yank ()
-  (interactive)
-  (let ((pt (point)))
-    (funcall 'call-interactively (key-binding (kbd "C-y")))
-    (goto-char pt)))
+(defun f-beginning-of-line (&optional arg)
+  (let (pt co)
+    (save-excursion
+      (beginning-of-line)
+      (skip-chars-forward -chars)
+      (setq pt (point) co (current-column)))
+    (cond ((eq arg 0) pt)
+	  ((eq arg 1) co)
+	  (t (move-to-column co)))))
 
 (defun f-clear-shell ()
   (if (not (get-buffer-process (current-buffer)))
@@ -417,9 +413,9 @@
   (unless (minibufferp)
     (next-line n)
     (cond ((= -move 2) (end-of-line))
-	  ((= -move 1) (f-skip-bol))
+	  ((= -move 1) (f-beginning-of-line))
 	  (t (beginning-of-line)))
-    (unless (f-visual-mode-bad) (visual-mode))))
+    (f-try-visual-mode)))
 
 (defun f-org-make-tdiff-string (diff)
   (let ((y (floor (/ diff 365))) (d (mod diff 365)) (fmt "") (l nil))
@@ -440,25 +436,13 @@
   (setq paragraph-start "\f\\|[ \t]*$"
 	paragraph-separate "[ \t\f]*$"))
 
-(defun f-skip-bol (&optional save)
-  (let ((col (save-excursion
-	       (beginning-of-line)
-	       (skip-chars-forward -chars)
-	       (current-column))))
-    (unless save (move-to-column col)) col))
-
-(defun f-visual-mode-bad ()
-  (or defining-kbd-macro
+(defun f-try-visual-mode ()
+  (or visual-mode
+      defining-kbd-macro
       executing-kbd-macro
-      (not (cl-find major-mode
-			'(
-			  emacs-lisp-mode
-			  ess-mode
-			  lisp-interaction-mode
-			  matlab-mode
-			  org-mode
-			  python-mode
-			  )))))
+      (not (or (buffer-file-name)
+	       (string= (buffer-name) "*scratch*")))
+      (visual-mode)))
 
 (defvar -chars " \t")
 (make-variable-buffer-local '-chars)

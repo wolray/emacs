@@ -158,7 +158,6 @@
   (local-set-key (kbd "C-c C-s") 'org-sort)
   (local-set-key (kbd "C-c e") 'org-edit-special)
   (local-set-key (kbd "C-c t") 'org-table-toggle-coordinate-overlays)
-  (local-set-key (kbd "M-g C-c C-8") 'org-up-element)
   (local-unset-key (kbd "C-c ["))
   (local-unset-key (kbd "C-c ]"))
   (setq -chars (concat "*" -chars)

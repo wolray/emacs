@@ -13,9 +13,6 @@
      (set-default-font ,en)
      (set-fontset-font "fontset-default" 'gb18030 ,cn)))
 (m-set-font "ubuntu mono-13" "微软雅黑-12")
-;; (if (string-match system-name "DELL-PC LAB")
-;;     (m-set-font "monaco-13" "楷体-15")
-;;   (m-set-font "ubuntu mono-13" "微软雅黑-12"))
 
 ;; frame
 (menu-bar-mode 0)
@@ -26,7 +23,7 @@
 ;; language
 (set-buffer-file-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
-(set-language-environment 'utf-8)
+(set-language-environment 'chinese-gbk)
 
 ;; startup
 (setq inhibit-startup-message t)

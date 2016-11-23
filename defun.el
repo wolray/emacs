@@ -1,6 +1,5 @@
 (defmacro m-command-with-minibuffer (cmd)
   `(unless (minibufferp)
-     (number-mode -1)
      (call-interactively ,cmd)))
 
 (defmacro m-cycle-values (var values)
@@ -73,8 +72,7 @@
 (defun c-cycle-paren-shapes ()
   (interactive)
   (save-excursion
-    (unless (looking-at-p (rx (any "([")))
-      (backward-up-list))
+    (unless (looking-at-p (rx (any "(["))) (backward-up-list))
     (let ((pt (point))
 	  (new (cond ((looking-at-p (rx "(")) (cons "[" "]"))
 		     ((looking-at-p (rx "[")) (cons "(" ")"))
@@ -175,8 +173,7 @@
 
 (defun c-mark-paragraph ()
   (interactive)
-  (funcall 'call-interactively (key-binding (kbd "M-h")))
-  (f-try-visual-mode))
+  (funcall 'call-interactively (key-binding (kbd "M-h"))))
 
 (defun c-move-backward-line ()
   (interactive)

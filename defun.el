@@ -1,30 +1,16 @@
-(defmacro m-command-with-minibuffer (cmd)
-  `(unless (minibufferp)
-     (call-interactively ,cmd)))
-
 (defmacro m-cycle-values (var values)
   `(let ((i (cl-position ,var ,values)))
      (setq ,var (elt ,values (if (and i (< (1+ i) (length ,values))) (1+ i) 0)))))
 
-(defmacro m-map-key (obj key)
-  `(let ((ks (cadr ',key)) mk vs)
-     (define-key key-translation-map
-       ,key (if (not (symbolp ,obj)) ,obj
-	      (setq mk (kbd (concat "M-g " ks)))
-	      (global-set-key mk ,obj) mk))
-     (setq vs (substring ks -1))
-     (if (= 1 (length ks))
-	 (define-key key-translation-map
-	   (kbd (concat "C-S-" (downcase vs))) ,key)
-       (and (= 3 (length ks))
-	    (string= "C" (substring ks 0 1))
-	    (string-match "[a-z]" vs)
-	    (define-key visual-mode-map
-	      (kbd vs) (if (symbolp ,obj) ,obj (key-binding ,obj)))))))
-
 (defun c-backward-kill-line ()
   (interactive)
   (kill-region (f-beginning-of-line 0) (point)))
+
+(defun c-backward-kill-sexp ()
+  (interactive)
+  (let ((pt (point)))
+    (call-interactively (key-binding (kbd "C-M-b")))
+    (kill-region (point) pt)))
 
 (defun c-clear-shell ()
   (interactive)
@@ -91,22 +77,22 @@
     (m-cycle-values search-whitespace-regexp '("\\s-+" ".*?"))
     (message "search-whitespace-regexp: \"%s\"" search-whitespace-regexp)))
 
+(defun c-delete-indentation ()
+  (interactive)
+  (delete-indentation)
+  (f-visual-mode))
+
+(defun c-delete-pair ()
+  (interactive)
+  (while (not (looking-at-p "[([{<]"))
+    (left-char))
+  (save-excursion (forward-sexp 1) (delete-char -1))
+  (delete-char 1))
+
 (defun c-dired ()
   (interactive)
   (switch-to-buffer (dired-noselect default-directory))
   (revert-buffer))
-
-(defun c-eval-expression ()
-  (interactive)
-  (m-command-with-minibuffer 'eval-expression))
-
-(defun c-execute-extended-command ()
-  (interactive)
-  (m-command-with-minibuffer 'execute-extended-command))
-
-(defun c-find-file ()
-  (interactive)
-  (m-command-with-minibuffer 'find-file))
 
 (defun c-highlight-symbol ()
   (interactive)
@@ -115,7 +101,7 @@
       (if (or (not s) (highlight-symbol-symbol-highlighted-p s))
 	  (highlight-symbol-remove-all)
 	(highlight-symbol)
-	(f-try-visual-mode)))))
+	(f-visual-mode)))))
 
 (defun c-indent-paragraph ()
   (interactive)
@@ -123,6 +109,11 @@
     (mark-paragraph)
     (indent-region (region-beginning) (region-end)))
   (when (bolp) (skip-chars-forward -chars)))
+
+(defun c-insert-numbers ()
+  (interactive)
+  (insert (read-string ""))
+  (f-visual-mode))
 
 (defun c-kill-region ()
   (interactive)
@@ -173,7 +164,7 @@
 
 (defun c-mark-paragraph ()
   (interactive)
-  (funcall 'call-interactively (key-binding (kbd "M-h"))))
+  (call-interactively (key-binding (kbd "M-h"))))
 
 (defun c-move-backward-line ()
   (interactive)
@@ -185,7 +176,7 @@
       (cond ((and (bolp) (not (eolp))) (end-of-line) (setq -move 2))
 	    ((<= (current-column) co) (beginning-of-line) (setq -move 0))
 	    (t (f-beginning-of-line) (setq -move 1)))))
-  (f-try-visual-mode))
+  (f-visual-mode))
 
 (defun c-move-down ()
   (interactive)
@@ -199,7 +190,7 @@
     (cond ((and (eolp) (not (bolp))) (beginning-of-line) (setq -move 0))
 	  ((>= (current-column) (f-beginning-of-line 1)) (end-of-line) (setq -move 2))
 	  (t (f-beginning-of-line) (setq -move 1))))
-  (f-try-visual-mode))
+  (f-visual-mode))
 
 (defun c-move-up ()
   (interactive)
@@ -233,16 +224,16 @@
 (defun c-paragraph-backward ()
   (interactive)
   (unless (minibufferp)
-    (funcall 'call-interactively (key-binding (kbd "M-{")))
+    (call-interactively (key-binding (kbd "M-{")))
     (skip-chars-forward -chars)
-    (f-try-visual-mode)))
+    (f-visual-mode)))
 
 (defun c-paragraph-forward ()
   (interactive)
   (unless (minibufferp)
-    (funcall 'call-interactively (key-binding (kbd "M-}")))
+    (call-interactively (key-binding (kbd "M-}")))
     (skip-chars-forward -chars)
-    (f-try-visual-mode)))
+    (f-visual-mode)))
 
 (defun c-python-shell-send-line ()
   (interactive)
@@ -252,15 +243,10 @@
 (defun c-query-replace ()
   (interactive)
   (unless (minibufferp)
-    (number-mode -1)
     (if (highlight-symbol-symbol-highlighted-p
 	 (highlight-symbol-get-symbol))
 	(call-interactively 'highlight-symbol-query-replace)
       (call-interactively 'query-replace))))
-
-(defun c-query-replace-regexp ()
-  (interactive)
-  (m-command-with-minibuffer 'query-replace-regexp))
 
 (defun c-racket-send-buffer ()
   (interactive)
@@ -285,6 +271,24 @@
       (when (y-or-n-p "Sort all paragraphs?")
 	(sort-paragraphs nil (point-min) (point-max))))))
 
+(defun c-switch-to-next-buffer ()
+  (interactive)
+  (unless (minibufferp)
+    (let ((p t) (bn (buffer-name)))
+      (switch-to-next-buffer)
+      (while (and p (not (f-normal-buffer t)))
+	(switch-to-next-buffer)
+	(when (string= bn (buffer-name)) (setq p nil))))))
+
+(defun c-switch-to-prev-buffer ()
+  (interactive)
+  (unless (minibufferp)
+    (let ((p t) (bn (buffer-name)))
+      (switch-to-prev-buffer)
+      (while (and p (not (f-normal-buffer t)))
+	(switch-to-prev-buffer)
+	(when (string= bn (buffer-name)) (setq p nil))))))
+
 (defun c-switch-to-scratch ()
   (interactive)
   (switch-to-buffer "*scratch*"))
@@ -300,10 +304,6 @@
   (interactive)
   (m-cycle-values -frame '(100 70))
   (set-frame-parameter (selected-frame) 'alpha -frame))
-
-(defun c-toggle-number-mode ()
-  (interactive)
-  (number-mode (and number-mode -1)))
 
 (defun c-toggle-page ()
   (interactive)
@@ -412,7 +412,12 @@
     (cond ((= -move 2) (end-of-line))
 	  ((= -move 1) (f-beginning-of-line))
 	  (t (beginning-of-line)))
-    (f-try-visual-mode)))
+    (f-visual-mode)))
+
+(defun f-normal-buffer (&optional p)
+  (or (buffer-file-name)
+      (string= (buffer-name) "*scratch*")
+      (and p (string= (buffer-name) "*shell*"))))
 
 (defun f-org-make-tdiff-string (diff)
   (let ((y (floor (/ diff 365))) (d (mod diff 365)) (fmt "") (l nil))
@@ -433,12 +438,11 @@
   (setq paragraph-start "\f\\|[ \t]*$"
 	paragraph-separate "[ \t\f]*$"))
 
-(defun f-try-visual-mode ()
+(defun f-visual-mode ()
   (or visual-mode
       defining-kbd-macro
       executing-kbd-macro
-      (not (or (buffer-file-name)
-	       (string= (buffer-name) "*scratch*")))
+      (not (f-normal-buffer))
       (visual-mode)))
 
 (defvar -chars " \t")

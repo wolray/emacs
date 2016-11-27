@@ -11,7 +11,7 @@
      (unless (package-installed-p pkg)
        (when (y-or-n-p (format "Package \"%s\" not found. Install it? " pkg))
 	 (package-install pkg)))))
- 'ample-theme
+ 'color-theme-solarized
  'ess
  'ghc
  'highlight-symbol
@@ -56,6 +56,9 @@
 (define-key cua--rectangle-keymap (kbd "C-M-b") 'cua-move-rectangle-left)
 (define-key cua--rectangle-keymap (kbd "C-M-f") 'cua-move-rectangle-right)
 (define-key cua--rectangle-keymap (kbd "M-g I") 'cua-exchange-point-and-mark)
+(dolist (s (mapcar 'number-to-string (number-sequence 0 9)))
+  (define-key cua--rectangle-keymap (kbd s) 'self-insert-command))
+
 
 ;; edmacro-mode
 (define-key edmacro-mode-map (kbd "C-x C-k RET") 'kill-this-buffer)
@@ -73,7 +76,7 @@
 (add-hook 'ess-mode-hook 'f-ess-mode)
 (defun f-ess-post-run ()
   (local-unset-key (kbd "_"))
-  (setq -chars (concat ">" -chars))
+  (setq skip/chars (concat ">" skip/chars))
   )
 (add-hook 'ess-R-post-run-hook 'f-ess-post-run)
 
@@ -160,8 +163,8 @@
   (local-set-key (kbd "C-c t") 'org-table-toggle-coordinate-overlays)
   (local-unset-key (kbd "C-c ["))
   (local-unset-key (kbd "C-c ]"))
-  (setq -chars (concat "*" -chars)
-	-move 1))
+  (setq skip/chars (concat "*" skip/chars)
+	move/pos 1))
 (add-hook 'org-mode-hook 'f-org-mode)
 
 ;; python
@@ -190,6 +193,5 @@
   (setq tab-width 4))
 (add-hook 'sql-mode-hook 'f-sql-mode)
 
-;; theme
-(load-theme 'ample t)
-(set-cursor-color "#ffffff")
+;; ~theme
+(load-theme 'solarized t)

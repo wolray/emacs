@@ -6,7 +6,8 @@
 *** [[~\.emacs.d\init.el]]
 (load "d:/sync/emacs.d/load.el")
 *** package-install
-**** ample-theme
+**** color-theme-solarized
+***** color-theme
 **** ess
 ***** julia-mode
 **** ghc
@@ -242,3 +243,4 @@ c.InteractiveShell.separate_in = ''
 *** 绿色网鞋
 *** 蓝色网鞋
 *** 双星板鞋
+*** 阿迪达斯运动鞋

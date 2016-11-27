@@ -15,8 +15,9 @@
 (defun c-clear-shell ()
   (interactive)
   (unless (minibufferp)
-    (let ((modes '(python-mode ess-mode)) (buffers '("*Python*" "*R*")) i)
-      (setq i (cl-position major-mode modes))
+    (let* ((modes '(python-mode ess-mode))
+	   (buffers '("*Python*" "*R*"))
+	   (i (cl-position major-mode modes)))
       (if i (with-temp-buffer
 	      (switch-to-buffer (elt buffers i))
 	      (f-clear-shell)
@@ -36,7 +37,7 @@
     (visual-mode -1)
     (if cua-rectangle-mark-mode
 	(call-interactively 'c-cua-sequence-rectangle)
-     (cua-rectangle-mark-mode))))
+      (cua-rectangle-mark-mode))))
 
 (defun c-cua-sequence-rectangle (first incr fmt)
   (interactive
@@ -108,11 +109,12 @@
   (save-excursion
     (mark-paragraph)
     (indent-region (region-beginning) (region-end)))
-  (when (bolp) (skip-chars-forward -chars)))
+  (when (bolp) (skip-chars-forward skip/chars)))
 
-(defun c-insert-numbers ()
-  (interactive)
-  (insert (read-string ""))
+(defun c-insert (bg pt)
+  (interactive (list (f-beginning-of-line 0) (point)))
+  (insert (read-string "" (buffer-substring-no-properties bg pt)))
+  (delete-region bg pt)
   (f-visual-mode))
 
 (defun c-kill-region ()
@@ -120,7 +122,7 @@
   (if (use-region-p)
       (kill-region (region-beginning) (region-end))
     (kill-whole-line)
-    (skip-chars-forward -chars)))
+    (skip-chars-forward skip/chars)))
 
 (defun c-kill-ring-save ()
   (interactive)
@@ -171,11 +173,11 @@
   (let ((co (f-beginning-of-line 1)))
     (if (eq major-mode 'org-mode)
 	(cond ((and (<= (current-column) co) (/= co 2))
-	       (org-up-element) (skip-chars-forward -chars) (setq -move 1))
-	      (t (f-beginning-of-line) (setq -move 1)))
-      (cond ((and (bolp) (not (eolp))) (end-of-line) (setq -move 2))
-	    ((<= (current-column) co) (beginning-of-line) (setq -move 0))
-	    (t (f-beginning-of-line) (setq -move 1)))))
+	       (org-up-element) (skip-chars-forward skip/chars) (setq move/pos 1))
+	      (t (f-beginning-of-line) (setq move/pos 1)))
+      (cond ((and (bolp) (not (eolp))) (end-of-line) (setq move/pos 2))
+	    ((<= (current-column) co) (beginning-of-line) (setq move/pos 0))
+	    (t (f-beginning-of-line) (setq move/pos 1)))))
   (f-visual-mode))
 
 (defun c-move-down ()
@@ -185,11 +187,11 @@
 (defun c-move-forward-line ()
   (interactive)
   (if (eq major-mode 'org-mode)
-      (cond ((eolp) (f-beginning-of-line) (setq -move 1))
-	    (t (end-of-line) (setq -move 2)))
-    (cond ((and (eolp) (not (bolp))) (beginning-of-line) (setq -move 0))
-	  ((>= (current-column) (f-beginning-of-line 1)) (end-of-line) (setq -move 2))
-	  (t (f-beginning-of-line) (setq -move 1))))
+      (cond ((eolp) (f-beginning-of-line) (setq move/pos 1))
+	    (t (end-of-line) (setq move/pos 2)))
+    (cond ((and (eolp) (not (bolp))) (beginning-of-line) (setq move/pos 0))
+	  ((>= (current-column) (f-beginning-of-line 1)) (end-of-line) (setq move/pos 2))
+	  (t (f-beginning-of-line) (setq move/pos 1))))
   (f-visual-mode))
 
 (defun c-move-up ()
@@ -213,26 +215,31 @@
 	  (diff (- t2 t1)))
      (message "%s" (f-org-make-tdiff-string diff)))))
 
+(defun c-other-window ()
+  (interactive)
+  (other-window 1)
+  (and visual-mode (visual-mode)))
+
 (defun c-page-down ()
   (interactive)
-  (unless (minibufferp) (beginning-of-line (1+ -page))))
+  (unless (minibufferp) (beginning-of-line (1+ page/range))))
 
 (defun c-page-up ()
   (interactive)
-  (unless (minibufferp) (beginning-of-line (- (1- -page)))))
+  (unless (minibufferp) (beginning-of-line (- (1- page/range)))))
 
 (defun c-paragraph-backward ()
   (interactive)
   (unless (minibufferp)
     (call-interactively (key-binding (kbd "M-{")))
-    (skip-chars-forward -chars)
+    (skip-chars-forward skip/chars)
     (f-visual-mode)))
 
 (defun c-paragraph-forward ()
   (interactive)
   (unless (minibufferp)
     (call-interactively (key-binding (kbd "M-}")))
-    (skip-chars-forward -chars)
+    (skip-chars-forward skip/chars)
     (f-visual-mode)))
 
 (defun c-python-shell-send-line ()
@@ -302,14 +309,14 @@
 
 (defun c-toggle-frame ()
   (interactive)
-  (m-cycle-values -frame '(100 70))
-  (set-frame-parameter (selected-frame) 'alpha -frame))
+  (m-cycle-values frame/transparency '(100 70))
+  (set-frame-parameter (selected-frame) 'alpha frame/transparency))
 
 (defun c-toggle-page ()
   (interactive)
   (unless (minibufferp)
-    (m-cycle-values -page '(10 20 50))
-    (message "-page: %s" -page)))
+    (m-cycle-values page/range '(10 20 50))
+    (message "-page: %s" page/range)))
 
 (defun c-toggle-visual-mode ()
   (interactive)
@@ -336,7 +343,7 @@
 	(progn (forward-line)
 	       (transpose-lines -1)
 	       (beginning-of-line -1)))
-    (skip-chars-forward -chars)))
+    (skip-chars-forward skip/chars)))
 
 (defun c-transpose-paragraphs-down ()
   (interactive)
@@ -377,7 +384,7 @@
   (let (pt co)
     (save-excursion
       (beginning-of-line)
-      (skip-chars-forward -chars)
+      (skip-chars-forward skip/chars)
       (setq pt (point) co (current-column)))
     (cond ((eq arg 0) pt)
 	  ((eq arg 1) co)
@@ -409,8 +416,8 @@
 (defun f-move-up-or-down (n)
   (unless (minibufferp)
     (next-line n)
-    (cond ((= -move 2) (end-of-line))
-	  ((= -move 1) (f-beginning-of-line))
+    (cond ((= move/pos 2) (end-of-line))
+	  ((= move/pos 1) (f-beginning-of-line))
 	  (t (beginning-of-line)))
     (f-visual-mode)))
 
@@ -445,13 +452,13 @@
       (not (f-normal-buffer))
       (visual-mode)))
 
-(defvar -chars " \t")
-(make-variable-buffer-local '-chars)
+(defvar skip/chars " \t")
+(make-variable-buffer-local 'skip/chars)
 
-(defvar -frame 100)
+(defvar frame/transparency 100)
 
-(defvar -move 0)
-(make-variable-buffer-local '-move)
+(defvar move/pos 0)
+(make-variable-buffer-local 'move/pos)
 
-(defvar -page 10)
-(make-variable-buffer-local '-page)
+(defvar page/range 10)
+(make-variable-buffer-local 'page/range)

@@ -12,7 +12,8 @@
   `(progn
      (set-default-font ,en)
      (set-fontset-font "fontset-default" 'gb18030 ,cn)))
-(m-set-font "ubuntu mono-13" "微软雅黑-12")
+(m-set-font "monaco-11" "楷体-13")
+;; (m-set-font "ubuntu mono-13" "微软雅黑-12")
 
 ;; frame
 (menu-bar-mode 0)

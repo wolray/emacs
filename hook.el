@@ -59,7 +59,6 @@
 (dolist (s (mapcar 'number-to-string (number-sequence 0 9)))
   (define-key cua--rectangle-keymap (kbd s) 'self-insert-command))
 
-
 ;; edmacro-mode
 (define-key edmacro-mode-map (kbd "C-x C-k RET") 'kill-this-buffer)
 
@@ -101,10 +100,13 @@
 	try-complete-lisp-symbol-partially
 	try-complete-lisp-symbol))
 
+;; isearch
+(define-key isearch-mode-map (kbd "C-y") 'c-isearch-yank)
+
 ;; latex
 (defun f-latex-mode ()
-  (f-paragraph-set))
-  (setq tab-width 2)
+  (f-paragraph-set)
+  (setq tab-width 2))
 (add-hook 'latex-mode-hook 'f-latex-mode)
 
 ;; magit
@@ -146,6 +148,11 @@
   )
 (add-hook 'magit-status-headers-hook 'f-magit-status-headers)
 
+;; matlab
+(defun f-matlab-mode ()
+  (setq auto-fill-function nil))
+(add-hook 'matlab-mode-hook 'f-matlab-mode)
+
 ;; org
 (setq org-startup-indented t)
 (defun f-org-summary-todo (n-done n-not-done)
@@ -153,16 +160,14 @@
     (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
 (add-hook 'org-after-todo-statistics-hook 'f-org-summary-todo)
 (defun f-org-mode ()
-  (local-set-key (kbd "C-c C--") 'c-org-evaluate-time-range)
-  (local-set-key (kbd "C-c C-=") 'org-time-stamp)
-  (local-set-key (kbd "C-c C-M-d") 'org-deadline)
-  (local-set-key (kbd "C-c C-M-s") 'org-schedule)
   (local-set-key (kbd "C-c C-d") 'org-sparse-tree)
+  (local-set-key (kbd "C-c C-e") 'org-edit-special)
   (local-set-key (kbd "C-c C-s") 'org-sort)
-  (local-set-key (kbd "C-c e") 'org-edit-special)
-  (local-set-key (kbd "C-c t") 'org-table-toggle-coordinate-overlays)
-  (local-unset-key (kbd "C-c ["))
-  (local-unset-key (kbd "C-c ]"))
+  (local-set-key (kbd "C-c C-t") 'org-table-toggle-coordinate-overlays)
+  (local-set-key (kbd "C-c d") 'org-deadline)
+  (local-set-key (kbd "C-c e") 'c-org-evaluate-time-range)
+  (local-set-key (kbd "C-c s") 'org-schedule)
+  (local-set-key (kbd "C-c t") 'org-time-stamp)
   (setq skip/chars (concat "*" skip/chars)
 	move/pos 1))
 (add-hook 'org-mode-hook 'f-org-mode)
@@ -172,8 +177,7 @@
   (local-set-key (kbd "C-c C-r") 'run-python)
   (local-set-key (kbd "M-g C-y") 'c-python-shell-send-line)
   (local-set-key (kbd "M-g Y") 'python-shell-send-region)
-  (setq python-shell-interpreter "ipython")
-  )
+  (setq python-shell-interpreter "ipython"))
 (add-hook 'python-mode-hook 'f-python-mode)
 
 ;; racket

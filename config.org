@@ -44,7 +44,7 @@
 *** indexes
 **** (exclude 'B011)
 ** git
-*** (select-components 'A0)
+*** (select-components 'B0{:})
 *** (adjusting-path 'B010)
 ** haskell
 *** haskell-platform
@@ -90,16 +90,16 @@ $ stack setup
 *** 常规
 **** (用户界面选项 'B1)
 **** (默认字体 calibri 12)
-*** (显示 'B1<-2>)
+*** (显示 'B1{-2})
 *** 校对
-**** (自动更正选项 'B1 'B1<-1>)
+**** (自动更正选项 'B1 'B1{-1})
 ** opera
 *** (sync bookmarks)
 *** (on-startup continue)
 *** (search (or baidu google))
 *** (downloads "d:\" 'B1)
 *** shortcuts
-**** 'A0
+**** 'B0{:}
 **** config
 ***** (back "C-u")
 ***** (close-tab "C-k")
@@ -123,7 +123,7 @@ $ stack setup
 ***** (switch-right-through-tabs "C-l")
 ***** (toggle-full-screen "<f11>")
 ***** (B0 (other))
-*** (ui 'B1<-1>)
+*** (ui 'B1{-1})
 ** python
 *** shell
 $ ipython profile create
@@ -133,16 +133,16 @@ c.InteractiveShell.separate_in = ''
 *** 常用
 **** (初始状态 英文 简体 半角 'B0)
 *** 按键
-**** (候选翻页 'B1<1>)
-**** (其他快捷键 'A0)
+**** (候选翻页 'B1{1})
+**** (其他快捷键 'B0{:} (高级快捷键设置 'B0 ('B1 "C-M-a") 'B0))
 *** 外观
 **** (皮肤选择 'B10010)
 **** 输入框
 ***** (英文字体 ubuntu-mono)
 ***** (中文字体 微软雅黑)
 *** 高级
-**** (输入法管理 'B1<1> 'B0)
-**** (其他设置 'B0<1>)
+**** (输入法管理 'B1{1} 'B0)
+**** (其他设置 'B0{1})
 ** stata-13
 *** (font courier-new regular)
 ** windows

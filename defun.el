@@ -102,7 +102,38 @@
       (if (or (not s) (highlight-symbol-symbol-highlighted-p s))
 	  (highlight-symbol-remove-all)
 	(highlight-symbol)
+	(setq symbol/pos (point))
 	(f-visual-mode)))))
+
+(defun c-highlight-symbol-definition ()
+  (interactive)
+  (unless (minibufferp)
+    (let ((p t) (pt (point)) (s (highlight-symbol-get-symbol)))
+      (when s
+	(highlight-symbol-count s t)
+	(unless (f-highlight-symbol-def-p s)
+	  (setq symbol/pos pt)
+	  (while (and p (not (f-highlight-symbol-def-p s)))
+	    (highlight-symbol-jump 1)
+	    (when (= pt (point)) (setq p nil))))))))
+
+(defun c-highlight-symbol-next ()
+  (interactive)
+  (unless (minibufferp)
+    (highlight-symbol-jump 1)
+    (setq symbol/pos (point))))
+
+(defun c-highlight-symbol-prev ()
+  (interactive)
+  (unless (minibufferp)
+    (highlight-symbol-jump -1)
+    (setq symbol/pos (point))))
+
+(defun c-highlight-symbol-recall ()
+  (interactive)
+  (when symbol/pos
+    (goto-char symbol/pos)
+    (highlight-symbol-count (highlight-symbol-get-symbol) t)))
 
 (defun c-indent-paragraph ()
   (interactive)
@@ -113,9 +144,16 @@
 
 (defun c-insert (bg pt)
   (interactive (list (f-beginning-of-line 0) (point)))
+  (when (< pt bg) (goto-char (setq pt bg)))
   (insert (read-string "" (buffer-substring-no-properties bg pt)))
   (delete-region bg pt)
   (f-visual-mode))
+
+(defun c-isearch-yank ()
+  (interactive)
+  (if (not (use-region-p)) (isearch-yank-string (current-kill 0))
+    (deactivate-mark)
+    (isearch-yank-internal (lambda () (mark)))))
 
 (defun c-kill-region ()
   (interactive)
@@ -124,12 +162,12 @@
     (kill-whole-line)
     (skip-chars-forward skip/chars)))
 
-(defun c-kill-ring-save ()
-  (interactive)
-  (if (use-region-p)
-      (kill-ring-save (region-beginning) (region-end))
-    (kill-ring-save (f-beginning-of-line 0) (line-end-position))
-    (unless (minibufferp) (message "Current line copied"))))
+(defun c-kill-ring-save (bg ed)
+  (interactive
+   (if (use-region-p) (list (region-beginning) (region-end))
+     (list (f-beginning-of-line 0) (line-end-position))))
+  (kill-ring-save bg ed)
+  (unless (minibufferp) (message "Current line copied")))
 
 (defun c-kmacro-cycle-ring-next ()
   (interactive)
@@ -230,17 +268,15 @@
 
 (defun c-paragraph-backward ()
   (interactive)
-  (unless (minibufferp)
-    (call-interactively (key-binding (kbd "M-{")))
-    (skip-chars-forward skip/chars)
-    (f-visual-mode)))
+  (call-interactively (key-binding (kbd "M-{")))
+  (skip-chars-forward skip/chars)
+  (f-visual-mode))
 
 (defun c-paragraph-forward ()
   (interactive)
-  (unless (minibufferp)
-    (call-interactively (key-binding (kbd "M-}")))
-    (skip-chars-forward skip/chars)
-    (f-visual-mode)))
+  (call-interactively (key-binding (kbd "M-}")))
+  (skip-chars-forward skip/chars)
+  (f-visual-mode))
 
 (defun c-python-shell-send-line ()
   (interactive)
@@ -283,7 +319,7 @@
   (unless (minibufferp)
     (let ((p t) (bn (buffer-name)))
       (switch-to-next-buffer)
-      (while (and p (not (f-normal-buffer t)))
+      (while (and p (not (f-normal-buffer-p)))
 	(switch-to-next-buffer)
 	(when (string= bn (buffer-name)) (setq p nil))))))
 
@@ -292,7 +328,7 @@
   (unless (minibufferp)
     (let ((p t) (bn (buffer-name)))
       (switch-to-prev-buffer)
-      (while (and p (not (f-normal-buffer t)))
+      (while (and p (not (f-normal-buffer-p)))
 	(switch-to-prev-buffer)
 	(when (string= bn (buffer-name)) (setq p nil))))))
 
@@ -300,12 +336,12 @@
   (interactive)
   (switch-to-buffer "*scratch*"))
 
-(defun c-toggle-comment (beg end)
+(defun c-toggle-comment (bg ed)
   (interactive
    (if (use-region-p) (list (region-beginning) (region-end))
      (list (line-beginning-position) (line-beginning-position 2))))
   (unless (minibufferp)
-    (comment-or-uncomment-region beg end)))
+    (comment-or-uncomment-region bg ed)))
 
 (defun c-toggle-frame ()
   (interactive)
@@ -316,7 +352,7 @@
   (interactive)
   (unless (minibufferp)
     (m-cycle-values page/range '(10 20 50))
-    (message "-page: %s" page/range)))
+    (message "page/range: %s" page/range)))
 
 (defun c-toggle-visual-mode ()
   (interactive)
@@ -401,16 +437,21 @@
 (defun f-delete-trailing-whitespace ()
   (save-excursion
     (goto-char (point-max))
-    (unless buffer-read-only (newline)))
+    (or buffer-read-only (bolp) (newline)))
   (delete-trailing-whitespace))
 
 (defun f-each (ls &optional repeat)
-  (let ((index (floor (/ (cl-incf count 0) (or repeat 1)))))
+  (let ((index (/ (cl-incf count 0) (or repeat 1))))
     (if (< index (length ls)) (elt ls index)
       (keyboard-quit))))
 
+(defun f-highlight-symbol-def-p (symbol)
+  (save-excursion
+    (f-beginning-of-line)
+    (looking-at-p (concat symbol/def symbol))))
+
 (defun f-incf (&optional first incr repeat)
-  (let ((index (floor (/ (cl-incf count 0) (or repeat 1)))))
+  (let ((index (/ (cl-incf count 0) (or repeat 1))))
     (+ (or first 1) (* (or incr 1) index))))
 
 (defun f-move-up-or-down (n)
@@ -421,10 +462,9 @@
 	  (t (beginning-of-line)))
     (f-visual-mode)))
 
-(defun f-normal-buffer (&optional p)
+(defun f-normal-buffer-p ()
   (or (buffer-file-name)
-      (string= (buffer-name) "*scratch*")
-      (and p (string= (buffer-name) "*shell*"))))
+      (string-match (buffer-name) "*scratch* *shell*")))
 
 (defun f-org-make-tdiff-string (diff)
   (let ((y (floor (/ diff 365))) (d (mod diff 365)) (fmt "") (l nil))
@@ -449,11 +489,8 @@
   (or visual-mode
       defining-kbd-macro
       executing-kbd-macro
-      (not (f-normal-buffer))
+      (not (f-normal-buffer-p))
       (visual-mode)))
-
-(defvar skip/chars " \t")
-(make-variable-buffer-local 'skip/chars)
 
 (defvar frame/transparency 100)
 
@@ -462,3 +499,12 @@
 
 (defvar page/range 10)
 (make-variable-buffer-local 'page/range)
+
+(defvar skip/chars " \t")
+(make-variable-buffer-local 'skip/chars)
+
+(defvar symbol/def "(?def[a-z-]* ")
+(make-variable-buffer-local 'symbol/def)
+
+(defvar symbol/pos nil)
+(make-variable-buffer-local 'symbol/pos)

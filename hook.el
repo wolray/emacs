@@ -4,7 +4,7 @@
 	;; ("melpa" . "http://elpa.zilongshanren.com/melpa/")
 	("melpa" . "http://melpa.org/packages/")
 	;; ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
-	))
+        ))
 (package-initialize)
 ((lambda (&rest packages)
    (dolist (pkg packages)
@@ -53,22 +53,20 @@
 
 ;; cua
 (require 'cua-rect)
-(define-key cua--rectangle-keymap (kbd "C-M-b") 'cua-move-rectangle-left)
-(define-key cua--rectangle-keymap (kbd "C-M-f") 'cua-move-rectangle-right)
-(define-key cua--rectangle-keymap (kbd "M-g I") 'cua-exchange-point-and-mark)
-(dolist (s (mapcar 'number-to-string (number-sequence 0 9)))
-  (define-key cua--rectangle-keymap (kbd s) 'self-insert-command))
+(define-key cua--rectangle-keymap (kbd "<left>") 'cua-move-rectangle-left)
+(define-key cua--rectangle-keymap (kbd "<return>") 'c-cua-sequence-rectangle)
+(define-key cua--rectangle-keymap (kbd "<right>") 'cua-move-rectangle-right)
+(define-key cua--rectangle-keymap (kbd "<tab>") 'cua-rotate-rectangle)
+(define-key cua--rectangle-keymap (kbd "M-g SPC") 'keyboard-quit)
 
-;; edmacro-mode
-(define-key edmacro-mode-map (kbd "C-x C-k RET") 'kill-this-buffer)
+;; edmacro
+(define-key edmacro-mode-map (kbd "M-g H-i") 'kill-this-buffer)
 
 ;; ess
 (defun f-ess-mode ()
   (local-set-key (kbd "C-c C-c") 'ess-eval-buffer)
-  (local-set-key (kbd "M-g C-y") 'ess-eval-line)
+  (local-set-key (kbd "M-g y") 'ess-eval-line)
   (local-set-key (kbd "M-g Y") 'ess-eval-region)
-  (local-unset-key (kbd "C-c C-r"))
-  (local-unset-key (kbd "C-c C-s"))
   (local-unset-key (kbd "_"))
   (setq ess-indent-level 2)
   )
@@ -101,7 +99,10 @@
 	try-complete-lisp-symbol))
 
 ;; isearch
-(define-key isearch-mode-map (kbd "C-y") 'c-isearch-yank)
+(define-key isearch-mode-map (kbd "M-g M-i") 'c-isearch-yank)
+(define-key isearch-mode-map (kbd "M-g M-u") 'isearch-repeat-backward)
+(define-key isearch-mode-map (kbd "M-g M-o") 'isearch-repeat-forward)
+(define-key isearch-mode-map (kbd "M-g M-k") 'isearch-yank-kill)
 
 ;; latex
 (defun f-latex-mode ()
@@ -160,22 +161,22 @@
     (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
 (add-hook 'org-after-todo-statistics-hook 'f-org-summary-todo)
 (defun f-org-mode ()
-  (local-set-key (kbd "C-c C-d") 'org-sparse-tree)
-  (local-set-key (kbd "C-c C-e") 'org-edit-special)
-  (local-set-key (kbd "C-c C-s") 'org-sort)
-  (local-set-key (kbd "C-c C-t") 'org-table-toggle-coordinate-overlays)
-  (local-set-key (kbd "C-c d") 'org-deadline)
-  (local-set-key (kbd "C-c e") 'c-org-evaluate-time-range)
-  (local-set-key (kbd "C-c s") 'org-schedule)
-  (local-set-key (kbd "C-c t") 'org-time-stamp)
+  (local-set-key (kbd "C-c d") 'org-sparse-tree)
+  (local-set-key (kbd "C-c e") 'org-edit-special)
+  (local-set-key (kbd "C-c s") 'org-sort)
+  (local-set-key (kbd "C-c t") 'org-table-toggle-coordinate-overlays)
+  ;; (local-set-key (kbd "C-c d") 'org-deadline)
+  ;; (local-set-key (kbd "C-c e") 'c-org-evaluate-time-range)
+  ;; (local-set-key (kbd "C-c s") 'org-schedule)
+  ;; (local-set-key (kbd "C-c t") 'org-time-stamp)
   (setq skip/chars (concat "*" skip/chars)
 	move/pos 1))
 (add-hook 'org-mode-hook 'f-org-mode)
 
 ;; python
 (defun f-python-mode ()
-  (local-set-key (kbd "C-c C-r") 'run-python)
-  (local-set-key (kbd "M-g C-y") 'c-python-shell-send-line)
+  (local-set-key (kbd "C-c r") 'run-python)
+  (local-set-key (kbd "M-g y") 'c-python-shell-send-line)
   (local-set-key (kbd "M-g Y") 'python-shell-send-region)
   (setq python-shell-interpreter "ipython"))
 (add-hook 'python-mode-hook 'f-python-mode)
@@ -185,7 +186,7 @@
 (setq racket-raco-program "raco")
 (defun f-racket-mode ()
   (local-set-key (kbd "C-c C-c") 'c-racket-send-buffer)
-  (local-set-key (kbd "M-g C-y") 'racket-send-last-sexp)
+  (local-set-key (kbd "M-g y") 'racket-send-last-sexp)
   )
 (add-hook 'racket-mode-hook 'f-racket-mode)
 

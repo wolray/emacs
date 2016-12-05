@@ -261,9 +261,10 @@
 
 (defun c-other-window ()
   (interactive)
-  (let ((md major-mode))
-    (other-window 1)
-    (and visual-mode (not (eq md major-mode)) (visual-mode))))
+  (if (minibufferp) (minibuffer-keyboard-quit)
+    (let ((md major-mode))
+      (other-window 1)
+      (and visual-mode (not (eq md major-mode)) (visual-mode)))))
 
 (defun c-page-down ()
   (interactive)
@@ -295,6 +296,11 @@
 	 (highlight-symbol-get-symbol))
 	(call-interactively 'highlight-symbol-query-replace)
       (call-interactively 'query-replace))))
+
+(defun c-query-replace-regexp ()
+  (interactive)
+  (unless (minibufferp)
+    (call-interactively 'query-replace-regexp)))
 
 (defun c-racket-send-buffer ()
   (interactive)

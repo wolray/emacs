@@ -23,7 +23,8 @@
 **** matlab-mode
 *** \HHEK_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layout\scancode map
 00 00 00 00  00 00 00 00
-03 00 00 00  2A 00 3A 00
+05 00 00 00  27 00 39 00
+39 00 27 00  2A 00 3A 00
 5D E0 2A 00  00 00 00 00
 ** everything
 *** general

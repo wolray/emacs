@@ -264,7 +264,7 @@
   (if (minibufferp) (minibuffer-keyboard-quit)
     (let ((md major-mode))
       (other-window 1)
-      (and visual-mode (not (eq md major-mode)) (visual-mode)))))
+      (f-visual-mode (eq md major-mode)))))
 
 (defun c-page-down ()
   (interactive)
@@ -306,6 +306,12 @@
   (interactive)
   (racket-send-region
    (point-min) (point-max)))
+
+(defun c-read-only-mode ()
+  (interactive)
+  (unless (minibufferp)
+    (call-interactively (key-binding (kbd "C-x C-q")))
+    (f-visual-mode)))
 
 (defun c-revert-buffer ()
   (interactive)
@@ -365,10 +371,6 @@
     (m-cycle-values page/range '(10 20 50))
     (message "page/range: %s" page/range)))
 
-(defun c-toggle-visual-mode ()
-  (interactive)
-  (visual-mode (and visual-mode -1)))
-
 (defun c-transpose-lines-down ()
   (interactive)
   (unless (minibufferp)
@@ -414,6 +416,10 @@
 	(transpose-paragraphs -1)
 	(backward-paragraph)
 	(when p (save-excursion (goto-char (point-min)) (kill-line))))))
+
+(defun c-visual-mode ()
+  (interactive)
+  (visual-mode (and visual-mode -1)))
 
 (defun c-word-capitalize ()
   (interactive)
@@ -487,6 +493,9 @@
 (defun f-paragraph-set ()
   (setq paragraph-start "\f\\|[ \t]*$"
 	paragraph-separate "[ \t\f]*$"))
+
+(defun f-visual-mode (&optional p)
+  (and visual-mode (not p) (visual-mode)))
 
 (defvar frame/transparency 100)
 

@@ -198,5 +198,10 @@
   (setq tab-width 4))
 (add-hook 'sql-mode-hook 'f-sql-mode)
 
+;; with-editor
+(defun f-with-editor-mode ()
+  (local-set-key (kbd "C-c k") 'with-editor-cancel))
+(add-hook 'with-editor-mode-hook 'f-with-editor-mode)
+
 ;; ~theme
 (load-theme 'solarized t)

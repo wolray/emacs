@@ -38,13 +38,13 @@
 ***** (+ item-up "j")
 ***** (+ open-path "i")
 ***** (+ rename "<backspace>")
-***** (+ toggle-window "C-[")
-***** (- exit "C-q")
-***** (= options "C-w")
+***** (+ toggle-window "C-;")
+***** (- exit)
+***** (- options)
 *** indexes
 **** (exclude 'B011)
 ** git
-*** (select-components 'B0{:})
+*** (select-components 'A0)
 *** (adjusting-path 'B010)
 ** haskell
 *** haskell-platform
@@ -99,7 +99,7 @@ $ stack setup
 *** (search (or baidu google))
 *** (downloads "d:\" 'B1)
 *** shortcuts
-**** 'B0{:}
+**** 'A0
 **** config
 ***** (back "C-u")
 ***** (close-tab "C-k")
@@ -134,7 +134,7 @@ c.InteractiveShell.separate_in = ''
 **** (初始状态 英文 简体 半角 'B0)
 *** 按键
 **** (候选翻页 'B1{1})
-**** (其他快捷键 'B0{:} (高级快捷键设置 'B0 ('B1 "C-M-a") 'B0))
+**** (其他快捷键 'A0 (高级快捷键设置 'B0 ('B1 "C-M-a") 'B0))
 *** 外观
 **** (皮肤选择 'B10010)
 **** 输入框

@@ -23,8 +23,7 @@
 **** matlab-mode
 *** \HHEK_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layout\scancode map
 00 00 00 00  00 00 00 00
-05 00 00 00  27 00 39 00
-39 00 27 00  2A 00 3A 00
+03 00 00 00  2A 00 3A 00
 5D E0 2A 00  00 00 00 00
 ** everything
 *** general
@@ -158,10 +157,13 @@ c.InteractiveShell.separate_in = ''
 **** 南瓜先生大冒险
 **** 星际战甲
 **** 瑞奇与叮当
-**** 雨血前传·蜃楼
+**** 雨血前传-蜃楼
 *** PS4-游戏光盘
 **** 撕纸小邮差
 **** 重力异想
+**** 真三国无双7-猛将传
+**** Journey
+**** The-Last-of-Us
 *** 北京大学学生证
 *** 北京大学户籍卡
 *** 卡包
@@ -215,6 +217,14 @@ c.InteractiveShell.separate_in = ''
 **** 大学英语四六级证书复印件
 **** 简历x4
 **** 身份证复印件x2
+** 实验室
+*** 文件夹
+**** 三方+就业推荐表
+**** 菜鸟实习合同
+*** 键盘盒
+**** U盘-hp (win7-pro-64-en)
+**** U盘-sakura (win10-pro-64-en)
+**** U盘-费米科技
 ** 账户
 *** (apple 290061869@qq.com ***)
 *** (apple radiumlei@icloud.com ***)

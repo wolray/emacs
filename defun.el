@@ -2,10 +2,36 @@
   `(let ((i (cl-position ,var ,values)))
      (setq ,var (elt ,values (if (and i (< (1+ i) (length ,values))) (1+ i) 0)))))
 
-(defmacro m-minibuffer-cmd (cmd)
-  `(unless (minibufferp)
-     (visual-mode -1)
-     (call-interactively ,cmd)))
+(defmacro m-key-to-command (func &optional before after)
+  `(defun ,func ()
+     (interactive)
+     ,before
+     (call-interactively (key-binding (kbd (symbol-name ',func))))
+     ,after))
+(m-key-to-command <down>)
+(m-key-to-command <left>)
+(m-key-to-command <right>)
+(m-key-to-command <up>)
+(m-key-to-command C-/)
+(m-key-to-command C-<left>)
+(m-key-to-command C-<right>)
+(m-key-to-command C-M-b)
+(m-key-to-command C-M-f)
+(m-key-to-command C-M-o)
+(m-key-to-command C-M-u)
+(m-key-to-command C-g)
+(m-key-to-command C-k)
+(m-key-to-command C-s)
+(m-key-to-command C-y)
+(m-key-to-command DEL)
+(m-key-to-command M-DEL)
+(m-key-to-command M-Y)
+(m-key-to-command M-^)
+(m-key-to-command M-h)
+(m-key-to-command M-y)
+(m-key-to-command M-{ nil (skip-chars-forward skip/chars))
+(m-key-to-command M-} nil (skip-chars-forward skip/chars))
+(m-key-to-command RET)
 
 (defun c-backward-kill-line ()
   (interactive)
@@ -13,9 +39,7 @@
 
 (defun c-backward-kill-sexp ()
   (interactive)
-  (let ((pt (point)))
-    (call-interactively (key-binding (kbd "C-M-b")))
-    (kill-region (point) pt)))
+  (let ((pt (point))) (C-M-b) (kill-region (point) pt)))
 
 (defun c-clear-shell ()
   (interactive)
@@ -81,33 +105,19 @@
     (m-cycle-values search-whitespace-regexp '("\\s-+" ".*?"))
     (message "search-whitespace-regexp: \"%s\"" search-whitespace-regexp)))
 
-(defun c-delete-indentation ()
-  (interactive)
-  (delete-indentation))
-
 (defun c-delete-pair ()
   (interactive)
-  (while (not (looking-at-p "[([{<'\"]"))
-    (left-char))
-  (save-excursion (forward-sexp 1) (delete-char -1))
+  (let ((pt (point)))
+    (while (not (looking-at-p "[([{<'\"]"))
+      (when (bobp) (goto-char pt) (user-error "No pair detected"))
+      (left-char)))
+  (save-excursion (forward-sexp) (delete-char -1))
   (delete-char 1))
 
 (defun c-dired ()
   (interactive)
   (switch-to-buffer (dired-noselect default-directory))
   (revert-buffer))
-
-(defun c-eval-expression ()
-  (interactive)
-  (m-minibuffer-cmd 'eval-expression))
-
-(defun c-execute-extended-command ()
-  (interactive)
-  (m-minibuffer-cmd 'execute-extended-command))
-
-(defun c-find-file ()
-  (interactive)
-  (m-minibuffer-cmd 'find-file))
 
 (defun c-highlight-symbol ()
   (interactive)
@@ -191,17 +201,14 @@
 
 (defun c-kmacro-delete-ring-head ()
   (interactive)
-  (unless (minibufferp)
-    (kmacro-delete-ring-head)))
+  (unless (minibufferp) (kmacro-delete-ring-head)))
 
 (defun c-kmacro-edit-macro ()
   (interactive)
-  (unless (minibufferp)
-    (kmacro-edit-macro)))
+  (unless (minibufferp) (kmacro-edit-macro)))
 
 (defun c-kmacro-end-or-call-macro (arg)
   (interactive "P")
-  (visual-mode)
   (cond ((minibufferp)
 	 (if (eq last-command 'c-kmacro-end-or-call-macro) (insert "'()")
 	   (insert "\\,(f-each )"))
@@ -214,15 +221,9 @@
 (defun c-kmacro-start-macro (arg)
   (interactive "P")
   (visual-mode)
-  (cond ((minibufferp)
-	 (insert "\\,(f-incf)")
-	 (left-char))
+  (cond ((minibufferp) (insert "\\,(f-incf)") (left-char))
 	(t (setq defining-kbd-macro nil)
 	   (kmacro-start-macro arg))))
-
-(defun c-mark-paragraph ()
-  (interactive)
-  (call-interactively (key-binding (kbd "M-h"))))
 
 (defun c-move-backward-line ()
   (interactive)
@@ -261,10 +262,8 @@
 
 (defun c-other-window ()
   (interactive)
-  (if (minibufferp) (minibuffer-keyboard-quit)
-    (let ((md major-mode))
-      (other-window 1)
-      (f-visual-mode (eq md major-mode)))))
+  (other-window 1)
+  (when visual-mode (visual-mode)))
 
 (defun c-page-down ()
   (interactive)
@@ -273,16 +272,6 @@
 (defun c-page-up ()
   (interactive)
   (unless (minibufferp) (beginning-of-line (- (1- page/range)))))
-
-(defun c-paragraph-backward ()
-  (interactive)
-  (call-interactively (key-binding (kbd "M-{")))
-  (skip-chars-forward skip/chars))
-
-(defun c-paragraph-forward ()
-  (interactive)
-  (call-interactively (key-binding (kbd "M-}")))
-  (skip-chars-forward skip/chars))
 
 (defun c-python-shell-send-line ()
   (interactive)
@@ -297,21 +286,10 @@
 	(call-interactively 'highlight-symbol-query-replace)
       (call-interactively 'query-replace))))
 
-(defun c-query-replace-regexp ()
-  (interactive)
-  (unless (minibufferp)
-    (call-interactively 'query-replace-regexp)))
-
 (defun c-racket-send-buffer ()
   (interactive)
   (racket-send-region
    (point-min) (point-max)))
-
-(defun c-read-only-mode ()
-  (interactive)
-  (unless (minibufferp)
-    (call-interactively (key-binding (kbd "C-x C-q")))
-    (f-visual-mode)))
 
 (defun c-revert-buffer ()
   (interactive)
@@ -493,9 +471,6 @@
 (defun f-paragraph-set ()
   (setq paragraph-start "\f\\|[ \t]*$"
 	paragraph-separate "[ \t\f]*$"))
-
-(defun f-visual-mode (&optional p)
-  (and visual-mode (not p) (visual-mode)))
 
 (defvar frame/transparency 100)
 

@@ -57,7 +57,7 @@
 (define-key cua--rectangle-keymap (kbd "<return>") 'c-cua-sequence-rectangle)
 (define-key cua--rectangle-keymap (kbd "<right>") 'cua-move-rectangle-right)
 (define-key cua--rectangle-keymap (kbd "<tab>") 'cua-rotate-rectangle)
-(define-key cua--rectangle-keymap (kbd "M-g SPC") 'keyboard-quit)
+(define-key cua--rectangle-keymap (kbd "M-g ;") 'keyboard-quit)
 
 ;; edmacro
 (define-key edmacro-mode-map (kbd "M-g H-i") 'kill-this-buffer)
@@ -65,8 +65,8 @@
 ;; ess
 (defun f-ess-mode ()
   (local-set-key (kbd "C-c C-c") 'ess-eval-buffer)
-  (local-set-key (kbd "M-g y") 'ess-eval-line)
-  (local-set-key (kbd "M-g Y") 'ess-eval-region)
+  (local-set-key (kbd "M-Y") 'ess-eval-region)
+  (local-set-key (kbd "M-y") 'ess-eval-line)
   (local-unset-key (kbd "_"))
   (setq ess-indent-level 2)
   )
@@ -176,8 +176,8 @@
 ;; python
 (defun f-python-mode ()
   (local-set-key (kbd "C-c r") 'run-python)
-  (local-set-key (kbd "M-g y") 'c-python-shell-send-line)
-  (local-set-key (kbd "M-g Y") 'python-shell-send-region)
+  (local-set-key (kbd "M-Y") 'python-shell-send-region)
+  (local-set-key (kbd "M-y") 'c-python-shell-send-line)
   (setq python-shell-interpreter "ipython"))
 (add-hook 'python-mode-hook 'f-python-mode)
 
@@ -186,7 +186,7 @@
 (setq racket-raco-program "raco")
 (defun f-racket-mode ()
   (local-set-key (kbd "C-c C-c") 'c-racket-send-buffer)
-  (local-set-key (kbd "M-g y") 'racket-send-last-sexp)
+  (local-set-key (kbd "M-y") 'racket-send-last-sexp)
   )
 (add-hook 'racket-mode-hook 'f-racket-mode)
 

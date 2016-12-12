@@ -102,7 +102,6 @@
 (define-key isearch-mode-map (kbd "M-g M-i") 'c-isearch-yank)
 (define-key isearch-mode-map (kbd "M-g M-u") 'isearch-repeat-backward)
 (define-key isearch-mode-map (kbd "M-g M-o") 'isearch-repeat-forward)
-(define-key isearch-mode-map (kbd "M-g M-k") 'isearch-yank-kill)
 
 ;; latex
 (defun f-latex-mode ()

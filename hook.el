@@ -60,21 +60,19 @@
 (define-key cua--rectangle-keymap (kbd "M-g SPC") 'keyboard-quit)
 
 ;; edmacro
-(define-key edmacro-mode-map (kbd "M-g H-i") 'kill-this-buffer)
+(define-key edmacro-mode-map (kbd "H-i") 'kill-this-buffer)
 
 ;; ess
 (defun f-ess-mode ()
   (local-set-key (kbd "C-c C-c") 'ess-eval-buffer)
-  (local-set-key (kbd "H-h") 'ess-eval-region)
-  (local-set-key (kbd "H-y") 'ess-eval-line)
+  (local-set-key (kbd "C-c y") 'ess-eval-region)
+  (local-set-key (kbd "M-y") 'ess-eval-line)
   (local-unset-key (kbd "_"))
-  (setq ess-indent-level 2)
-  )
+  (setq ess-indent-level 2))
 (add-hook 'ess-mode-hook 'f-ess-mode)
 (defun f-ess-post-run ()
   (local-unset-key (kbd "_"))
-  (setq skip/chars (concat ">" skip/chars))
-  )
+  (setq skip/chars (concat ">" skip/chars)))
 (add-hook 'ess-R-post-run-hook 'f-ess-post-run)
 
 ;; highlight-symbol
@@ -102,7 +100,7 @@
 (define-key isearch-mode-map (kbd "M-g M-i") 'c-isearch-yank)
 (define-key isearch-mode-map (kbd "M-g M-o") 'isearch-repeat-forward)
 (define-key isearch-mode-map (kbd "M-g M-u") 'isearch-repeat-backward)
-(define-key isearch-mode-map (kbd "M-g SPC") 'isearch-exit)
+(define-key isearch-mode-map (kbd "M-g SPC") 'c-isearch-done)
 
 ;; latex
 (defun f-latex-mode ()
@@ -151,6 +149,7 @@
 
 ;; matlab
 (defun f-matlab-mode ()
+  (local-unset-key (kbd "C-c ."))
   (setq auto-fill-function nil))
 (add-hook 'matlab-mode-hook 'f-matlab-mode)
 
@@ -161,23 +160,22 @@
     (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
 (add-hook 'org-after-todo-statistics-hook 'f-org-summary-todo)
 (defun f-org-mode ()
+  (local-set-key (kbd "C-<down>") 'org-forward-element)
+  (local-set-key (kbd "C-<up>") 'org-backward-element)
   (local-set-key (kbd "C-c d") 'org-sparse-tree)
   (local-set-key (kbd "C-c e") 'org-edit-special)
   (local-set-key (kbd "C-c s") 'org-sort)
   (local-set-key (kbd "C-c t") 'org-table-toggle-coordinate-overlays)
-  ;; (local-set-key (kbd "C-c d") 'org-deadline)
-  ;; (local-set-key (kbd "C-c e") 'c-org-evaluate-time-range)
-  ;; (local-set-key (kbd "C-c s") 'org-schedule)
-  ;; (local-set-key (kbd "C-c t") 'org-time-stamp)
-  (setq skip/chars (concat "*" skip/chars)
-	move/pos 1))
+  (local-unset-key (kbd "C-c ,"))
+  (local-unset-key (kbd "C-c ."))
+  (setq skip/chars (concat "*" skip/chars)))
 (add-hook 'org-mode-hook 'f-org-mode)
 
 ;; python
 (defun f-python-mode ()
   (local-set-key (kbd "C-c r") 'run-python)
-  (local-set-key (kbd "H-h") 'python-shell-send-region)
-  (local-set-key (kbd "H-y") 'c-python-shell-send-line)
+  (local-set-key (kbd "C-c y") 'python-shell-send-region)
+  (local-set-key (kbd "M-y") 'c-python-shell-send-line)
   (setq python-shell-interpreter "ipython"))
 (add-hook 'python-mode-hook 'f-python-mode)
 
@@ -186,7 +184,7 @@
 (setq racket-raco-program "raco")
 (defun f-racket-mode ()
   (local-set-key (kbd "C-c C-c") 'c-racket-send-buffer)
-  (local-set-key (kbd "H-y") 'racket-send-last-sexp)
+  (local-set-key (kbd "M-y") 'racket-send-last-sexp)
   )
 (add-hook 'racket-mode-hook 'f-racket-mode)
 

@@ -30,7 +30,6 @@
 (m-key-to-command C-y)
 (m-key-to-command DEL)
 (m-key-to-command M-DEL)
-(m-key-to-command M-Y)
 (m-key-to-command M-^)
 (m-key-to-command M-h)
 (m-key-to-command M-y)
@@ -89,19 +88,19 @@
 
 (defun c-cycle-paren-shapes ()
   (interactive)
-  (save-excursion
-    (unless (looking-at-p (rx (any "(["))) (backward-up-list))
-    (let ((pt (point))
-	  (new (cond ((looking-at-p (rx "(")) (cons "[" "]"))
-		     ((looking-at-p (rx "[")) (cons "(" ")"))
-		     (t (beep) nil))))
-      (when new
-	(forward-sexp)
-	(delete-char -1)
-	(insert (cdr new))
-	(goto-char pt)
-	(delete-char 1)
-	(insert (car new))))))
+  (let ((pt (point))
+	(pr (progn (backward-up-list) (point)))
+	(new (cond ((looking-at-p (rx "(")) (cons "[" "]"))
+		   ((looking-at-p (rx "[")) (cons "(" ")"))
+		   (t (beep) nil))))
+    (when new
+      (forward-sexp)
+      (delete-char -1)
+      (insert (cdr new))
+      (goto-char pr)
+      (delete-char 1)
+      (insert (car new)))
+    (goto-char pt)))
 
 (defun c-cycle-search-whitespace-regexp ()
   (interactive)
@@ -111,7 +110,7 @@
 
 (defun c-delete-pair ()
   (interactive)
-  (when (re-search-backward "[([{<'\"]" nil t)
+  (when (re-search-backward (rx (any "([{<'\"")) nil t)
     (save-excursion (forward-sexp) (delete-char -1))
     (delete-char 1)))
 
@@ -165,6 +164,10 @@
     (mark-paragraph)
     (indent-region (region-beginning) (region-end)))
   (when (bolp) (skip-chars-forward skip/chars)))
+
+(defun c-isearch-done ()
+  (interactive)
+  (isearch-done))
 
 (defun c-isearch-yank ()
   (interactive)
@@ -247,23 +250,6 @@
     (cond ((and (eolp) (not (bolp))) (beginning-of-line))
 	  ((>= (current-column) (f-beginning-of-line 1)) (end-of-line))
 	  (t (f-beginning-of-line)))))
-
-(defun c-org-evaluate-time-range ()
-  (interactive)
-  (or
-   (org-clock-update-time-maybe)
-   (save-excursion
-     (unless (org-at-timestamp-p)
-       (beginning-of-line)
-       (re-search-forward org-tsr-regexp (line-end-position) t))
-     (unless (org-at-timestamp-p)
-       (user-error "")))
-   (let* ((ts1 (match-string 0))
-	  (time1 (org-time-string-to-time ts1))
-	  (t1 (time-to-days time1))
-	  (t2 (time-to-days (current-time)))
-	  (diff (- t2 t1)))
-     (message "%s" (f-org-make-tdiff-string diff)))))
 
 (defun c-other-window ()
   (interactive)
@@ -406,6 +392,13 @@
   (interactive)
   (visual-mode (and visual-mode -1)))
 
+(defun c-visual-mode-lock ()
+  (interactive)
+  (let ((p visual/mode))
+    (setq visual/mode (not p))
+    (visual-mode (and p -1))
+    (global-set-key (kbd "M-g SPC") (if p 'self-insert-command 'c-visual-mode))))
+
 (defun c-word-capitalize ()
   (interactive)
   (capitalize-word -1))
@@ -460,21 +453,6 @@
   (or (buffer-file-name)
       (string-match "*scratch\\|shell*" (buffer-name))))
 
-(defun f-org-make-tdiff-string (diff)
-  (let ((y (floor (/ diff 365))) (d (mod diff 365)) (fmt "") (l nil))
-    (cond ((= diff 0) (setq fmt "today"))
-	  ((< diff 0)
-	   (if (< y 0) (setq fmt (concat fmt "%d year"  (if (< y -1) "s") " ")
-			     l (push (- y) l)))
-	   (setq fmt (concat fmt "%d day"  (if (< d 364) "s") " until")
-		 l (push (- 365 d) l)))
-	  ((> diff 0)
-	   (if (> y 0) (setq fmt (concat fmt "%d year"  (if (> y 1) "s") " ")
-			     l (push y l)))
-	   (setq fmt (concat fmt "%d day"  (if (> d 1) "s") " since")
-		 l (push d l))))
-    (apply 'format fmt (nreverse l))))
-
 (defun f-paragraph-set ()
   (setq paragraph-start "\f\\|[ \t]*$"
 	paragraph-separate "[ \t\f]*$"))
@@ -492,3 +470,5 @@
 
 (defvar symbol/pos nil)
 (make-variable-buffer-local 'symbol/pos)
+
+(defvar visual/mode t)

@@ -122,11 +122,9 @@
 (defun c-highlight-symbol ()
   (interactive)
   (unless (minibufferp)
-    (let ((s (highlight-symbol-get-symbol)))
-      (if (or (not s) (highlight-symbol-symbol-highlighted-p s))
-	  (highlight-symbol-remove-all)
-	(highlight-symbol)
-	(setq symbol/pos (point))))))
+    (when (highlight-symbol-get-symbol)
+      (highlight-symbol)
+      (setq symbol/pos (point)))))
 
 (defun c-highlight-symbol-definition ()
   (interactive)
@@ -251,18 +249,18 @@
 	  ((>= (current-column) (f-beginning-of-line 1)) (end-of-line))
 	  (t (f-beginning-of-line)))))
 
+(defun c-open-current-folder ()
+  (interactive)
+  (if (not buffer-file-name) (error-not-a-file)
+    (w32-shell-execute
+     "open" "explorer"
+     (concat "/e,/select,"
+	     (convert-standard-filename buffer-file-name)))))
+
 (defun c-other-window ()
   (interactive)
   (other-window 1)
   (when visual-mode (visual-mode)))
-
-(defun c-page-down ()
-  (interactive)
-  (unless (minibufferp) (beginning-of-line (1+ page/range))))
-
-(defun c-page-up ()
-  (interactive)
-  (unless (minibufferp) (beginning-of-line (- (1- page/range)))))
 
 (defun c-python-shell-send-line ()
   (interactive)
@@ -281,6 +279,20 @@
   (interactive)
   (racket-send-region
    (point-min) (point-max)))
+
+(defun c-reload-current-mode ()
+  (interactive)
+  (funcall major-mode))
+
+(defun c-rename-file-and-buffer ()
+  (interactive)
+  (let ((old buffer-file-name) new)
+    (if (not old) (error-not-a-file)
+      (when (buffer-modified-p) (user-error "Buffer modified!")))
+    (setq new (read-file-name "Rename: " old))
+    (when (file-exists-p new) (user-error "File already exists!"))
+    (rename-file old new)
+    (set-visited-file-name new t t)))
 
 (defun c-revert-buffer ()
   (interactive)
@@ -333,12 +345,6 @@
   (interactive)
   (m-cycle-values frame/transparency '(100 70))
   (set-frame-parameter (selected-frame) 'alpha frame/transparency))
-
-(defun c-toggle-page ()
-  (interactive)
-  (unless (minibufferp)
-    (m-cycle-values page/range '(10 20 50))
-    (message "page/range: %s" page/range)))
 
 (defun c-transpose-lines-down ()
   (interactive)
@@ -411,6 +417,9 @@
   (interactive)
   (upcase-word -1))
 
+(defun error-not-a-file ()
+  (user-error "Not a file!"))
+
 (defun f-beginning-of-line (&optional arg)
   (let (pt co)
     (save-excursion
@@ -450,7 +459,7 @@
     (+ (or first 1) (* (or incr 1) index))))
 
 (defun f-normal-buffer-p ()
-  (or (buffer-file-name)
+  (or buffer-file-name
       (string-match "*scratch\\|shell*" (buffer-name))))
 
 (defun f-paragraph-set ()
@@ -458,9 +467,6 @@
 	paragraph-separate "[ \t\f]*$"))
 
 (defvar frame/transparency 100)
-
-(defvar page/range 10)
-(make-variable-buffer-local 'page/range)
 
 (defvar skip/chars " \t")
 (make-variable-buffer-local 'skip/chars)

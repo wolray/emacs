@@ -51,17 +51,6 @@
   )
 (add-hook 'bs-mode-hook 'f-bs-mode)
 
-;; cua
-(require 'cua-rect)
-(define-key cua--rectangle-keymap (kbd "<left>") 'cua-move-rectangle-left)
-(define-key cua--rectangle-keymap (kbd "<return>") 'c-cua-sequence-rectangle)
-(define-key cua--rectangle-keymap (kbd "<right>") 'cua-move-rectangle-right)
-(define-key cua--rectangle-keymap (kbd "<tab>") 'cua-rotate-rectangle)
-(define-key cua--rectangle-keymap (kbd "M-g SPC") 'keyboard-quit)
-
-;; edmacro
-(define-key edmacro-mode-map (kbd "H-i") 'kill-this-buffer)
-
 ;; ess
 (defun f-ess-mode ()
   (local-set-key (kbd "C-c C-c") 'ess-eval-buffer)
@@ -95,12 +84,6 @@
 	try-expand-line
 	try-complete-lisp-symbol-partially
 	try-complete-lisp-symbol))
-
-;; isearch
-(define-key isearch-mode-map (kbd "M-g M-i") 'c-isearch-yank)
-(define-key isearch-mode-map (kbd "M-g M-o") 'isearch-repeat-forward)
-(define-key isearch-mode-map (kbd "M-g M-u") 'isearch-repeat-backward)
-(define-key isearch-mode-map (kbd "M-g SPC") 'c-isearch-done)
 
 ;; latex
 (defun f-latex-mode ()
@@ -162,8 +145,9 @@
 (defun f-org-mode ()
   (local-set-key (kbd "C-<down>") 'org-forward-element)
   (local-set-key (kbd "C-<up>") 'org-backward-element)
-  (local-set-key (kbd "C-c d") 'org-sparse-tree)
+  (local-set-key (kbd "C-c d") 'org-toggle-link-display)
   (local-set-key (kbd "C-c e") 'org-edit-special)
+  (local-set-key (kbd "C-c i") 'org-open-at-point)
   (local-set-key (kbd "C-c s") 'org-sort)
   (local-set-key (kbd "C-c t") 'org-table-toggle-coordinate-overlays)
   (local-unset-key (kbd "C-c ,"))

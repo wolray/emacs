@@ -105,8 +105,13 @@
 (defun c-cycle-search-whitespace-regexp ()
   (interactive)
   (unless (minibufferp)
-    (m-cycle-values search-whitespace-regexp '("\\s-+" ".*?"))
+    (m-cycle-values search-whitespace-regexp '(".*?" "\\s-+"))
     (message "search-whitespace-regexp: \"%s\"" search-whitespace-regexp)))
+
+(defun c-cycle-timestamp-format ()
+  (interactive)
+  (m-cycle-values timestamp/format '(" (%Y%m%d %H:%M)" " (%Y%m%d)"))
+  (message "timestamp/format: \"%s\"" timestamp/format))
 
 (defun c-delete-pair ()
   (interactive)
@@ -162,6 +167,11 @@
     (mark-paragraph)
     (indent-region (region-beginning) (region-end)))
   (when (bolp) (skip-chars-forward skip/chars)))
+
+(defun c-insert-time-stamp ()
+  (interactive)
+  (insert-before-markers
+   (format-time-string timestamp/format (current-time))))
 
 (defun c-isearch-done ()
   (interactive)
@@ -251,16 +261,17 @@
 
 (defun c-open-current-folder ()
   (interactive)
-  (if (not buffer-file-name) (error-not-a-file)
+  (when buffer-file-name
     (w32-shell-execute
      "open" "explorer"
      (concat "/e,/select,"
 	     (convert-standard-filename buffer-file-name)))))
 
-(defun c-other-window ()
+(defun c-open-the-org ()
   (interactive)
-  (other-window 1)
-  (when visual-mode (visual-mode)))
+  (let ((file "..org"))
+    (unless (file-exists-p file) (user-error "No ..org!"))
+    (find-file-other-window file)))
 
 (defun c-python-shell-send-line ()
   (interactive)
@@ -287,12 +298,11 @@
 (defun c-rename-file-and-buffer ()
   (interactive)
   (let ((old buffer-file-name) new)
-    (if (not old) (error-not-a-file)
-      (when (buffer-modified-p) (user-error "Buffer modified!")))
-    (setq new (read-file-name "Rename: " old))
-    (when (file-exists-p new) (user-error "File already exists!"))
-    (rename-file old new)
-    (set-visited-file-name new t t)))
+    (when (and old (not (buffer-modified-p)))
+      (setq new (read-file-name "Rename: " old))
+      (when (file-exists-p new) (user-error "File already exists!"))
+      (rename-file old new)
+      (set-visited-file-name new t t))))
 
 (defun c-revert-buffer ()
   (interactive)
@@ -417,9 +427,6 @@
   (interactive)
   (upcase-word -1))
 
-(defun error-not-a-file ()
-  (user-error "Not a file!"))
-
 (defun f-beginning-of-line (&optional arg)
   (let (pt co)
     (save-excursion
@@ -476,5 +483,8 @@
 
 (defvar symbol/pos nil)
 (make-variable-buffer-local 'symbol/pos)
+
+(defvar timestamp/format " (%Y%m%d)")
+(make-variable-buffer-local 'timestamp/format)
 
 (defvar visual/mode t)

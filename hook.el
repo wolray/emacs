@@ -152,6 +152,7 @@
   (local-set-key (kbd "C-c t") 'org-table-toggle-coordinate-overlays)
   (local-unset-key (kbd "C-c ,"))
   (local-unset-key (kbd "C-c ."))
+  (local-unset-key (kbd "C-c \\"))
   (setq skip/chars (concat "*" skip/chars)))
 (add-hook 'org-mode-hook 'f-org-mode)
 

@@ -108,11 +108,6 @@
     (m-cycle-values search-whitespace-regexp '(".*?" "\\s-+"))
     (message "search-whitespace-regexp: \"%s\"" search-whitespace-regexp)))
 
-(defun c-cycle-timestamp-format ()
-  (interactive)
-  (m-cycle-values timestamp/format '(" (%Y%m%d %H:%M)" " (%Y%m%d)"))
-  (message "timestamp/format: \"%s\"" timestamp/format))
-
 (defun c-delete-pair ()
   (interactive)
   (when (re-search-backward (rx (any "([{<'\"")) nil t)
@@ -168,10 +163,10 @@
     (indent-region (region-beginning) (region-end)))
   (when (bolp) (skip-chars-forward skip/chars)))
 
-(defun c-insert-time-stamp ()
+(defun c-time-stamp ()
   (interactive)
   (insert-before-markers
-   (format-time-string timestamp/format (current-time))))
+   (format-time-string ".%y%m%d" (current-time))))
 
 (defun c-isearch-done ()
   (interactive)
@@ -236,7 +231,6 @@
 
 (defun c-kmacro-start-macro (arg)
   (interactive "P")
-  (visual-mode)
   (cond ((minibufferp) (insert "\\,(f-incf)") (left-char))
 	(t (setq defining-kbd-macro nil)
 	   (kmacro-start-macro arg))))
@@ -483,8 +477,5 @@
 
 (defvar symbol/pos nil)
 (make-variable-buffer-local 'symbol/pos)
-
-(defvar timestamp/format " (%Y%m%d)")
-(make-variable-buffer-local 'timestamp/format)
 
 (defvar visual/mode t)

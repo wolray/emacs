@@ -94,6 +94,7 @@
 ;; magit
 (setenv "GIT_ASKPASS" "git-gui--askpass")
 (defun f-magit-mode ()
+  (local-set-key (kbd "4") 'recenter-top-bottom)
   (local-set-key (kbd "[") 'magit-section-toggle)
   (local-set-key (kbd "]") 'magit-section-forward)
   (local-unset-key (kbd "n"))

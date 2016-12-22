@@ -123,6 +123,7 @@
   (interactive)
   (unless (minibufferp)
     (when (highlight-symbol-get-symbol)
+      (deactivate-mark)
       (highlight-symbol)
       (setq symbol/pos (point)))))
 
@@ -162,11 +163,6 @@
     (mark-paragraph)
     (indent-region (region-beginning) (region-end)))
   (when (bolp) (skip-chars-forward skip/chars)))
-
-(defun c-time-stamp ()
-  (interactive)
-  (insert-before-markers
-   (format-time-string ".%y%m%d" (current-time))))
 
 (defun c-isearch-done ()
   (interactive)
@@ -264,7 +260,7 @@
 (defun c-open-the-org ()
   (interactive)
   (let ((file "..org"))
-    (unless (file-exists-p file) (user-error "No ..org!"))
+    (unless (file-exists-p file) (error "No ..org!"))
     (find-file-other-window file)))
 
 (defun c-python-shell-send-line ()
@@ -275,10 +271,12 @@
 (defun c-query-replace ()
   (interactive)
   (unless (minibufferp)
-    (if (highlight-symbol-symbol-highlighted-p
-	 (highlight-symbol-get-symbol))
-	(call-interactively 'highlight-symbol-query-replace)
-      (call-interactively 'query-replace))))
+    (cond ((use-region-p) (f-query-replace-region))
+	  ((region-active-p) (error "Region activated!"))
+	  ((highlight-symbol-symbol-highlighted-p
+	    (highlight-symbol-get-symbol))
+	   (call-interactively 'highlight-symbol-query-replace))
+	  (t (call-interactively 'query-replace)))))
 
 (defun c-racket-send-buffer ()
   (interactive)
@@ -294,7 +292,7 @@
   (let ((old buffer-file-name) new)
     (when (and old (not (buffer-modified-p)))
       (setq new (read-file-name "Rename: " old))
-      (when (file-exists-p new) (user-error "File already exists!"))
+      (when (file-exists-p new) (error "File already exists!"))
       (rename-file old new)
       (set-visited-file-name new t t))))
 
@@ -337,6 +335,11 @@
 (defun c-switch-to-scratch ()
   (interactive)
   (switch-to-buffer "*scratch*"))
+
+(defun c-time-stamp ()
+  (interactive)
+  (insert-before-markers
+   (format-time-string ".%y%m%d" (current-time))))
 
 (defun c-toggle-comment (bg ed)
   (interactive
@@ -466,6 +469,16 @@
 (defun f-paragraph-set ()
   (setq paragraph-start "\f\\|[ \t]*$"
 	paragraph-separate "[ \t\f]*$"))
+
+(defun f-query-replace-region ()
+  (let ((region (buffer-substring-no-properties
+		 (region-beginning) (region-end)))
+	(replacement (read-from-minibuffer "Replacement: " nil nil nil)))
+    (set query-replace-to-history-variable
+	 (cons region (eval query-replace-to-history-variable)))
+    (goto-char (region-beginning))
+    (deactivate-mark)
+    (query-replace region replacement)))
 
 (defvar frame/transparency 100)
 

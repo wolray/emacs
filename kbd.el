@@ -113,7 +113,6 @@
 (define-key cua--rectangle-keymap (kbd "M-g SPC") 'keyboard-quit)
 
 (setq w32-apps-modifier 'hyper)
-(global-set-key (kbd "H-.") 'c-time-stamp)
 (global-set-key (kbd "H-0") 'c-transpose-paragraphs-down)
 (global-set-key (kbd "H-7") 'c-transpose-paragraphs-up)
 (global-set-key (kbd "H-8") 'C-<up>)

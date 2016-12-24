@@ -151,6 +151,8 @@
   (local-set-key (kbd "C-c i") 'org-open-at-point)
   (local-set-key (kbd "C-c s") 'org-sort)
   (local-set-key (kbd "C-c t") 'org-table-toggle-coordinate-overlays)
+  (local-set-key (kbd "H-,") 'c-org-occur)
+  (local-set-key (kbd "H-.") 'c-org-time-stamp)
   (local-unset-key (kbd "C-c ,"))
   (local-unset-key (kbd "C-c ."))
   (local-unset-key (kbd "C-c \\"))

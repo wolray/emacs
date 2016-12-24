@@ -260,8 +260,32 @@
 (defun c-open-the-org ()
   (interactive)
   (let ((file "..org"))
-    (unless (file-exists-p file) (error "No ..org!"))
+    (unless (file-exists-p file) (user-error "No ..org!"))
     (find-file-other-window file)))
+
+(defun c-org-occur ()
+  (interactive)
+  (org-remove-occur-highlights nil nil t)
+  (let ((regexp "* +[0-9]+\\.[0-9]+\\.[0-9][0-9][01][012][0-3][0-9]")
+	(cnt 0))
+    (push regexp org-occur-parameters)
+    (save-excursion
+      (goto-char (point-min))
+      (org-overview)
+      (while (re-search-forward regexp nil t)
+	(setq cnt (1+ cnt))
+	(when org-highlight-sparse-tree-matches
+	  (org-highlight-new-match (+ 2 (match-beginning 0)) (match-end 0)))
+	(org-show-context 'occur-tree)))
+    (when org-remove-highlights-with-change
+      (org-add-hook 'before-change-functions
+		    'org-remove-occur-highlights nil 'local))
+    (message "%d match(es)" cnt)))
+
+(defun c-org-time-stamp ()
+  (interactive)
+  (insert-before-markers
+   (format-time-string ".%y%m%d" (current-time))))
 
 (defun c-python-shell-send-line ()
   (interactive)
@@ -272,10 +296,10 @@
   (interactive)
   (unless (minibufferp)
     (cond ((use-region-p) (f-query-replace-region))
-	  ((region-active-p) (error "Region activated!"))
+	  ((region-active-p) (user-error "Region activated!"))
 	  ((highlight-symbol-symbol-highlighted-p
 	    (highlight-symbol-get-symbol))
-	   (call-interactively 'highlight-symbol-query-replace))
+	   (f-query-replace-hs))
 	  (t (call-interactively 'query-replace)))))
 
 (defun c-racket-send-buffer ()
@@ -292,7 +316,7 @@
   (let ((old buffer-file-name) new)
     (when (and old (not (buffer-modified-p)))
       (setq new (read-file-name "Rename: " old))
-      (when (file-exists-p new) (error "File already exists!"))
+      (when (file-exists-p new) (user-error "File already exists!"))
       (rename-file old new)
       (set-visited-file-name new t t))))
 
@@ -335,11 +359,6 @@
 (defun c-switch-to-scratch ()
   (interactive)
   (switch-to-buffer "*scratch*"))
-
-(defun c-time-stamp ()
-  (interactive)
-  (insert-before-markers
-   (format-time-string ".%y%m%d" (current-time))))
 
 (defun c-toggle-comment (bg ed)
   (interactive
@@ -470,15 +489,21 @@
   (setq paragraph-start "\f\\|[ \t]*$"
 	paragraph-separate "[ \t\f]*$"))
 
+(defun f-query-replace-hs ()
+  (let ((hs (highlight-symbol-get-symbol))
+	(replacement (read-from-minibuffer "Replacement: " nil nil nil)))
+    (goto-char (beginning-of-thing 'symbol))
+    (query-replace-regexp hs replacement)
+    (setq query-replace-defaults (cons hs replacement))))
+
 (defun f-query-replace-region ()
   (let ((region (buffer-substring-no-properties
 		 (region-beginning) (region-end)))
 	(replacement (read-from-minibuffer "Replacement: " nil nil nil)))
-    (set query-replace-to-history-variable
-	 (cons region (eval query-replace-to-history-variable)))
     (goto-char (region-beginning))
     (deactivate-mark)
-    (query-replace region replacement)))
+    (query-replace region replacement)
+    (setq query-replace-defaults (cons region replacement))))
 
 (defvar frame/transparency 100)
 

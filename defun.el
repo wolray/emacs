@@ -123,9 +123,8 @@
   (interactive)
   (unless (minibufferp)
     (when (highlight-symbol-get-symbol)
-      (deactivate-mark)
       (highlight-symbol)
-      (setq symbol/pos (point)))))
+      (setq mark-active nil symbol/pos (point)))))
 
 (defun c-highlight-symbol-definition ()
   (interactive)
@@ -134,7 +133,7 @@
       (when s
 	(highlight-symbol-count s t)
 	(unless (f-highlight-symbol-def-p s)
-	  (setq symbol/pos pt)
+	  (setq mark-active nil symbol/pos pt)
 	  (while (and p (not (f-highlight-symbol-def-p s)))
 	    (highlight-symbol-jump 1)
 	    (when (= pt (point)) (setq p nil))))))))
@@ -142,12 +141,14 @@
 (defun c-highlight-symbol-next ()
   (interactive)
   (unless (minibufferp)
+    (setq mark-active nil)
     (highlight-symbol-jump 1)
     (setq symbol/pos (point))))
 
 (defun c-highlight-symbol-prev ()
   (interactive)
   (unless (minibufferp)
+    (setq mark-active nil)
     (highlight-symbol-jump -1)
     (setq symbol/pos (point))))
 
@@ -171,7 +172,7 @@
 (defun c-isearch-yank ()
   (interactive)
   (if (not (use-region-p)) (isearch-yank-string (current-kill 0))
-    (deactivate-mark)
+    (setq mark-active nil)
     (isearch-yank-internal (lambda () (mark)))))
 
 (defun c-kill-region ()
@@ -257,35 +258,17 @@
      (concat "/e,/select,"
 	     (convert-standard-filename buffer-file-name)))))
 
-(defun c-open-the-org ()
-  (interactive)
-  (let ((file "..org"))
-    (unless (file-exists-p file) (user-error "No ..org!"))
-    (find-file-other-window file)))
-
 (defun c-org-occur ()
   (interactive)
-  (org-remove-occur-highlights nil nil t)
-  (let ((regexp "* +[0-9]+\\.[0-9]+\\.[0-9][0-9][01][012][0-3][0-9]")
-	(cnt 0))
-    (push regexp org-occur-parameters)
-    (save-excursion
-      (goto-char (point-min))
-      (org-overview)
-      (while (re-search-forward regexp nil t)
-	(setq cnt (1+ cnt))
-	(when org-highlight-sparse-tree-matches
-	  (org-highlight-new-match (+ 2 (match-beginning 0)) (match-end 0)))
-	(org-show-context 'occur-tree)))
-    (when org-remove-highlights-with-change
-      (org-add-hook 'before-change-functions
-		    'org-remove-occur-highlights nil 'local))
-    (message "%d match(es)" cnt)))
+  (if (string= buffer-file-name the/org/file)
+      (let ((link (f-org-occur-get-link)))
+	(when link
+	  (f-org-occur (regexp-quote link) t)))
+    (f-org-occur "* +[0-9]+\\.[0-9]+\\.[0-9][0-9][01][0-9][0-3][0-9]" t 2)))
 
 (defun c-org-time-stamp ()
   (interactive)
-  (insert-before-markers
-   (format-time-string ".%y%m%d" (current-time))))
+  (insert (format-time-string ".%y%m%d" (current-time))))
 
 (defun c-python-shell-send-line ()
   (interactive)
@@ -296,7 +279,7 @@
   (interactive)
   (unless (minibufferp)
     (cond ((use-region-p) (f-query-replace-region))
-	  ((region-active-p) (user-error "Region activated!"))
+	  ((and (region-active-p) (setq mark-active nil)))
 	  ((highlight-symbol-symbol-highlighted-p
 	    (highlight-symbol-get-symbol))
 	   (f-query-replace-hs))
@@ -375,21 +358,19 @@
 (defun c-transpose-lines-down ()
   (interactive)
   (unless (minibufferp)
-    (let ((co (current-column)))
-      (delete-trailing-whitespace)
-      (end-of-line)
-      (unless (eobp)
-	(forward-line)
-	(unless (eobp)
-	  (transpose-lines 1)
-	  (forward-line -1)))
-      (move-to-column co))))
+    (let ((pt (point)) (co (current-column)))
+      (f-delete-trailing-whitespace)
+      (end-of-line 2)
+      (if (eobp) (goto-char pt)
+	(transpose-lines 1)
+	(forward-line -1)
+	(move-to-column co)))))
 
 (defun c-transpose-lines-up ()
   (interactive)
   (unless (minibufferp)
     (let ((co (current-column)))
-      (delete-trailing-whitespace)
+      (f-delete-trailing-whitespace)
       (beginning-of-line)
       (or (bobp) (eobp)
 	  (progn (forward-line)
@@ -401,7 +382,7 @@
   (interactive)
   (unless (minibufferp)
     (let (p)
-      (delete-trailing-whitespace)
+      (f-delete-trailing-whitespace)
       (backward-paragraph)
       (when (bobp) (setq p t) (newline))
       (forward-paragraph)
@@ -412,13 +393,41 @@
   (interactive)
   (or (minibufferp) (save-excursion (backward-paragraph) (bobp))
       (let (p)
-	(delete-trailing-whitespace)
+	(f-delete-trailing-whitespace)
 	(backward-paragraph 2)
 	(when (bobp) (setq p t) (newline))
 	(forward-paragraph 2)
 	(transpose-paragraphs -1)
 	(backward-paragraph)
 	(when p (save-excursion (goto-char (point-min)) (kill-line))))))
+
+(defun c-update-version ()
+  (interactive)
+  (let ((this-buffer-file-name buffer-file-name)
+	(this-buffer-name (buffer-name)))
+    (find-file-other-window the/org/file)
+    (org-remove-occur-highlights nil nil t)
+    (progn (goto-char 3) (org-content))
+    (let* ((old (and (re-search-forward (concat " \\[\\[" this-buffer-file-name) nil t)
+		     (re-search-backward " +")
+		     (buffer-substring (f-beginning-of-line 0) (point))))
+	   (old-split (and old (mapcar 'string-to-number (split-string old "\\."))))
+	   (link (or (f-org-occur-get-link)
+		     (concat "[[" this-buffer-file-name "][" this-buffer-name "]]")))
+	   (temp (f-org-occur (regexp-quote link)))
+	   (prompt (concat (when old (concat "Last version: " old ". ")) "New version: "))
+	   (new (read-string prompt))
+	   (new-split (mapcar 'string-to-number (split-string new "\\.")))
+	   (date (format-time-string ".%y%m%d" (current-time))))
+      (when (or (not old)
+		(> (car new-split) (car old-split))
+		(and (= (car new-split) (car old-split))
+		     (> (elt new-split 1) (elt old-split 1))))
+	(progn (goto-char 3) (org-content))
+	(call-interactively 'org-insert-subheading)
+	(insert (concat new date " " link))
+	(align-regexp 3 (point-max) "\\(\\s-*\\)\\[\\[")
+	(save-buffer)))))
 
 (defun c-visual-mode ()
   (interactive)
@@ -485,13 +494,41 @@
   (or buffer-file-name
       (string-match "*scratch\\|shell*" (buffer-name))))
 
+(defun f-org-occur (regexp &optional msg beg end)
+  (let ((cnt 0) (para org-occur-parameters))
+    (org-remove-occur-highlights nil nil t)
+    (if para (org-content)
+      (push regexp org-occur-parameters)
+      (save-excursion
+	(goto-char (point-min))
+	(org-overview)
+	(while (re-search-forward regexp nil t)
+	  (setq cnt (1+ cnt))
+	  (when org-highlight-sparse-tree-matches
+	    (org-highlight-new-match
+	     (+ (or beg 0) (match-beginning 0))
+	     (+ (or end 0) (match-end 0))))
+	  (org-show-context 'occur-tree)))
+      (when org-remove-highlights-with-change
+	(org-add-hook 'before-change-functions
+		      'org-remove-occur-highlights nil 'local))
+      (recenter)
+      (when msg (message "%d match(es)" cnt)))))
+
+(defun f-org-occur-get-link ()
+  (save-excursion
+    (end-of-line)
+    (when (re-search-backward "\\[\\[[a-z]:/.*\\]\\]" nil t)
+      (buffer-substring-no-properties
+       (match-beginning 0) (match-end 0)))))
+
 (defun f-paragraph-set ()
   (setq paragraph-start "\f\\|[ \t]*$"
 	paragraph-separate "[ \t\f]*$"))
 
 (defun f-query-replace-hs ()
   (let ((hs (highlight-symbol-get-symbol))
-	(replacement (read-from-minibuffer "Replacement: " nil nil nil)))
+	(replacement (read-string "Replacement: ")))
     (goto-char (beginning-of-thing 'symbol))
     (query-replace-regexp hs replacement)
     (setq query-replace-defaults (cons hs replacement))))
@@ -499,9 +536,9 @@
 (defun f-query-replace-region ()
   (let ((region (buffer-substring-no-properties
 		 (region-beginning) (region-end)))
-	(replacement (read-from-minibuffer "Replacement: " nil nil nil)))
+	(replacement (read-string "Replacement: ")))
     (goto-char (region-beginning))
-    (deactivate-mark)
+    (setq mark-active nil)
     (query-replace region replacement)
     (setq query-replace-defaults (cons region replacement))))
 
@@ -515,5 +552,7 @@
 
 (defvar symbol/pos nil)
 (make-variable-buffer-local 'symbol/pos)
+
+(defvar the/org/file (concat default/directory "..org"))
 
 (defvar visual/mode t)

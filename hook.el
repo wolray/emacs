@@ -67,8 +67,7 @@
 ;; highlight-symbol
 (require 'highlight-symbol)
 (setq highlight-symbol-colors
-      '(;; "yellow"
-	"DeepPink" ;; "cyan"
+      '(;; "yellow" "DeepPink" "cyan"
 	"MediumPurple1" "SpringGreen1" "DarkOrange" "HotPink1" "RoyalBlue1" "OliveDrab"))
 
 ;; hippie-expand
@@ -151,8 +150,8 @@
   (local-set-key (kbd "C-c i") 'org-open-at-point)
   (local-set-key (kbd "C-c s") 'org-sort)
   (local-set-key (kbd "C-c t") 'org-table-toggle-coordinate-overlays)
-  (local-set-key (kbd "H-,") 'c-org-occur)
-  (local-set-key (kbd "H-.") 'c-org-time-stamp)
+  (local-set-key (kbd "C-x ,") 'c-org-occur)
+  (local-set-key (kbd "M-g M-.") 'c-org-time-stamp)
   (local-unset-key (kbd "C-c ,"))
   (local-unset-key (kbd "C-c ."))
   (local-unset-key (kbd "C-c \\"))

@@ -41,7 +41,7 @@
 (winner-mode 1)
 
 ;; ~load
-(setq default-directory "d:/sync/")
+(setq default-directory default/directory)
 (load "kbd.el")
 (load "defun.el")
 (load "hook.el")

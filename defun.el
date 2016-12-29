@@ -17,10 +17,10 @@
 (m-key-to-command <right>)
 (m-key-to-command <up>)
 (m-key-to-command C-/)
-(m-key-to-command C-<down> nil (skip-chars-forward skip/chars))
+(m-key-to-command C-<down> nil (skip-chars-forward _chars))
 (m-key-to-command C-<left>)
 (m-key-to-command C-<right>)
-(m-key-to-command C-<up> (beginning-of-line) (skip-chars-forward skip/chars))
+(m-key-to-command C-<up> (beginning-of-line) (skip-chars-forward _chars))
 (m-key-to-command C-M-b)
 (m-key-to-command C-M-f)
 (m-key-to-command C-c+C-z)
@@ -34,7 +34,6 @@
 (m-key-to-command M-h)
 (m-key-to-command M-y)
 (m-key-to-command RET)
-(m-key-to-command SPC nil (visual-mode -1))
 
 (defun c-backward-kill-line ()
   (interactive)
@@ -86,22 +85,6 @@
 			      (insert (format fmt first))
 			      (setq first (+ first incr)))))
 
-(defun c-cycle-paren-shapes ()
-  (interactive)
-  (let ((pt (point))
-	(pr (progn (backward-up-list) (point)))
-	(new (cond ((looking-at-p (rx "(")) (cons "[" "]"))
-		   ((looking-at-p (rx "[")) (cons "(" ")"))
-		   (t (beep) nil))))
-    (when new
-      (forward-sexp)
-      (delete-char -1)
-      (insert (cdr new))
-      (goto-char pr)
-      (delete-char 1)
-      (insert (car new)))
-    (goto-char pt)))
-
 (defun c-cycle-search-whitespace-regexp ()
   (interactive)
   (unless (minibufferp)
@@ -110,60 +93,53 @@
 
 (defun c-delete-pair ()
   (interactive)
-  (when (re-search-backward (rx (any "([{<'\"")) nil t)
-    (save-excursion (forward-sexp) (delete-char -1))
-    (delete-char 1)))
+  (backward-up-list)
+  (while (not (looking-at-p (rx (any "([{<'\""))))
+    (backward-up-list))
+  (save-excursion (forward-sexp) (delete-char -1))
+  (delete-char 1))
 
 (defun c-dired ()
   (interactive)
   (switch-to-buffer (dired-noselect default-directory))
   (revert-buffer))
 
-(defun c-highlight-symbol ()
+(defun c-hs ()
   (interactive)
   (unless (minibufferp)
     (when (highlight-symbol-get-symbol)
-      (highlight-symbol)
-      (setq mark-active nil symbol/pos (point)))))
+      (highlight-symbol))))
 
-(defun c-highlight-symbol-definition ()
+(defun c-hs-definition ()
   (interactive)
   (unless (minibufferp)
     (let ((p t) (pt (point)) (s (highlight-symbol-get-symbol)))
       (when s
 	(highlight-symbol-count s t)
-	(unless (f-highlight-symbol-def-p s)
-	  (setq mark-active nil symbol/pos pt)
-	  (while (and p (not (f-highlight-symbol-def-p s)))
+	(unless (f-hs-definition-p s)
+	  (setq mark-active nil _marker (point))
+	  (while (and p (not (f-hs-definition-p s)))
 	    (highlight-symbol-jump 1)
 	    (when (= pt (point)) (setq p nil))))))))
 
-(defun c-highlight-symbol-next ()
+(defun c-hs-next ()
   (interactive)
   (unless (minibufferp)
     (setq mark-active nil)
-    (highlight-symbol-jump 1)
-    (setq symbol/pos (point))))
+    (highlight-symbol-jump 1)))
 
-(defun c-highlight-symbol-prev ()
+(defun c-hs-prev ()
   (interactive)
   (unless (minibufferp)
     (setq mark-active nil)
-    (highlight-symbol-jump -1)
-    (setq symbol/pos (point))))
-
-(defun c-highlight-symbol-recall ()
-  (interactive)
-  (when symbol/pos
-    (goto-char symbol/pos)
-    (highlight-symbol-count (highlight-symbol-get-symbol) t)))
+    (highlight-symbol-jump -1)))
 
 (defun c-indent-paragraph ()
   (interactive)
   (save-excursion
     (mark-paragraph)
     (indent-region (region-beginning) (region-end)))
-  (when (bolp) (skip-chars-forward skip/chars)))
+  (when (bolp) (skip-chars-forward _chars)))
 
 (defun c-isearch-done ()
   (interactive)
@@ -180,7 +156,7 @@
   (if (use-region-p)
       (kill-region (region-beginning) (region-end))
     (kill-whole-line)
-    (skip-chars-forward skip/chars)))
+    (skip-chars-forward _chars)))
 
 (defun c-kill-ring-save (bg ed)
   (interactive
@@ -237,7 +213,7 @@
   (let ((co (f-beginning-of-line 1)))
     (if (eq major-mode 'org-mode)
 	(if (or (> (current-column) co) (= co 2)) (f-beginning-of-line)
-	  (org-up-element) (skip-chars-forward skip/chars))
+	  (org-up-element) (skip-chars-forward _chars))
       (cond ((and (bolp) (not (eolp))) (end-of-line))
 	    ((<= (current-column) co) (beginning-of-line))
 	    (t (f-beginning-of-line))))))
@@ -257,14 +233,6 @@
      "open" "explorer"
      (concat "/e,/select,"
 	     (convert-standard-filename buffer-file-name)))))
-
-(defun c-org-occur ()
-  (interactive)
-  (if (string= buffer-file-name the/org/file)
-      (let ((link (f-org-occur-get-link)))
-	(when link
-	  (f-org-occur (regexp-quote link) t)))
-    (f-org-occur "* +[0-9]+\\.[0-9]+\\.[0-9][0-9][01][0-9][0-3][0-9]" t 2)))
 
 (defun c-org-time-stamp ()
   (interactive)
@@ -290,6 +258,12 @@
   (racket-send-region
    (point-min) (point-max)))
 
+(defun c-marker-recall ()
+  (interactive)
+  (let ((marker (point)))
+    (goto-char _marker)
+    (setq _marker marker)))
+
 (defun c-reload-current-mode ()
   (interactive)
   (funcall major-mode))
@@ -307,6 +281,10 @@
   (interactive)
   (and (not (minibufferp)) (buffer-modified-p)
        (revert-buffer t t)))
+
+(defun c-marker-set ()
+  (interactive)
+  (setq _marker (point)))
 
 (defun c-set-or-exchange-mark (arg)
   (interactive "P")
@@ -352,8 +330,8 @@
 
 (defun c-toggle-frame ()
   (interactive)
-  (m-cycle-values frame/transparency '(100 70))
-  (set-frame-parameter (selected-frame) 'alpha frame/transparency))
+  (m-cycle-values _transparency '(100 70))
+  (set-frame-parameter (selected-frame) 'alpha _transparency))
 
 (defun c-transpose-lines-down ()
   (interactive)
@@ -401,45 +379,6 @@
 	(backward-paragraph)
 	(when p (save-excursion (goto-char (point-min)) (kill-line))))))
 
-(defun c-update-version ()
-  (interactive)
-  (let ((this-buffer-file-name buffer-file-name)
-	(this-buffer-name (buffer-name)))
-    (find-file-other-window the/org/file)
-    (org-remove-occur-highlights nil nil t)
-    (progn (goto-char 3) (org-content))
-    (let* ((old (and (re-search-forward (concat " \\[\\[" this-buffer-file-name) nil t)
-		     (re-search-backward " +")
-		     (buffer-substring (f-beginning-of-line 0) (point))))
-	   (old-split (and old (mapcar 'string-to-number (split-string old "\\."))))
-	   (link (or (f-org-occur-get-link)
-		     (concat "[[" this-buffer-file-name "][" this-buffer-name "]]")))
-	   (temp (f-org-occur (regexp-quote link)))
-	   (prompt (concat (when old (concat "Last version: " old ". ")) "New version: "))
-	   (new (read-string prompt))
-	   (new-split (mapcar 'string-to-number (split-string new "\\.")))
-	   (date (format-time-string ".%y%m%d" (current-time))))
-      (when (or (not old)
-		(> (car new-split) (car old-split))
-		(and (= (car new-split) (car old-split))
-		     (> (elt new-split 1) (elt old-split 1))))
-	(progn (goto-char 3) (org-content))
-	(call-interactively 'org-insert-subheading)
-	(insert (concat new date " " link))
-	(align-regexp 3 (point-max) "\\(\\s-*\\)\\[\\[")
-	(save-buffer)))))
-
-(defun c-visual-mode ()
-  (interactive)
-  (visual-mode (and visual-mode -1)))
-
-(defun c-visual-mode-lock ()
-  (interactive)
-  (let ((p visual/mode))
-    (setq visual/mode (not p))
-    (visual-mode (and p -1))
-    (global-set-key (kbd "M-g SPC") (if p 'self-insert-command 'c-visual-mode))))
-
 (defun c-word-capitalize ()
   (interactive)
   (capitalize-word -1))
@@ -456,7 +395,7 @@
   (let (pt co)
     (save-excursion
       (beginning-of-line)
-      (skip-chars-forward skip/chars)
+      (skip-chars-forward _chars)
       (setq pt (point) co (current-column)))
     (cond ((eq arg 0) pt)
 	  ((eq arg 1) co)
@@ -481,10 +420,10 @@
     (if (< index (length ls)) (elt ls index)
       (keyboard-quit))))
 
-(defun f-highlight-symbol-def-p (symbol)
+(defun f-hs-definition-p (symbol)
   (save-excursion
     (f-beginning-of-line)
-    (looking-at-p (concat symbol/def symbol))))
+    (looking-at-p (concat _definition symbol))))
 
 (defun f-incf (&optional first incr repeat)
   (let ((index (/ (cl-incf count 0) (or repeat 1))))
@@ -493,34 +432,6 @@
 (defun f-normal-buffer-p ()
   (or buffer-file-name
       (string-match "*scratch\\|shell*" (buffer-name))))
-
-(defun f-org-occur (regexp &optional msg beg end)
-  (let ((cnt 0) (para org-occur-parameters))
-    (org-remove-occur-highlights nil nil t)
-    (if para (org-content)
-      (push regexp org-occur-parameters)
-      (save-excursion
-	(goto-char (point-min))
-	(org-overview)
-	(while (re-search-forward regexp nil t)
-	  (setq cnt (1+ cnt))
-	  (when org-highlight-sparse-tree-matches
-	    (org-highlight-new-match
-	     (+ (or beg 0) (match-beginning 0))
-	     (+ (or end 0) (match-end 0))))
-	  (org-show-context 'occur-tree)))
-      (when org-remove-highlights-with-change
-	(org-add-hook 'before-change-functions
-		      'org-remove-occur-highlights nil 'local))
-      (recenter)
-      (when msg (message "%d match(es)" cnt)))))
-
-(defun f-org-occur-get-link ()
-  (save-excursion
-    (end-of-line)
-    (when (re-search-backward "\\[\\[[a-z]:/.*\\]\\]" nil t)
-      (buffer-substring-no-properties
-       (match-beginning 0) (match-end 0)))))
 
 (defun f-paragraph-set ()
   (setq paragraph-start "\f\\|[ \t]*$"
@@ -542,17 +453,13 @@
     (query-replace region replacement)
     (setq query-replace-defaults (cons region replacement))))
 
-(defvar frame/transparency 100)
+(defvar _chars " \t")
+(make-variable-buffer-local '_chars)
 
-(defvar skip/chars " \t")
-(make-variable-buffer-local 'skip/chars)
+(defvar _definition "(?def[a-z-]* ")
+(make-variable-buffer-local '_definition)
 
-(defvar symbol/def "(?def[a-z-]* ")
-(make-variable-buffer-local 'symbol/def)
+(defvar _marker (point-min))
+(make-variable-buffer-local '_marker)
 
-(defvar symbol/pos nil)
-(make-variable-buffer-local 'symbol/pos)
-
-(defvar the/org/file (concat default/directory "..org"))
-
-(defvar visual/mode t)
+(defvar _transparency 100)

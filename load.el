@@ -41,7 +41,8 @@
 (winner-mode 1)
 
 ;; ~load
-(setq default-directory default/directory)
+(setq default-directory default_dir)
 (load "kbd.el")
 (load "defun.el")
+(load "version-lite.el")
 (load "hook.el")

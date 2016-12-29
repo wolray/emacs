@@ -54,14 +54,14 @@
 ;; ess
 (defun f-ess-mode ()
   (local-set-key (kbd "C-c C-c") 'ess-eval-buffer)
-  (local-set-key (kbd "C-c y") 'ess-eval-region)
-  (local-set-key (kbd "M-y") 'ess-eval-line)
+  (local-set-key (kbd "C-c h") 'ess-eval-region)
+  (local-set-key (kbd "C-c y") 'ess-eval-line)
   (local-unset-key (kbd "_"))
   (setq ess-indent-level 2))
 (add-hook 'ess-mode-hook 'f-ess-mode)
 (defun f-ess-post-run ()
   (local-unset-key (kbd "_"))
-  (setq skip/chars (concat ">" skip/chars)))
+  (setq _chars (concat ">" _chars)))
 (add-hook 'ess-R-post-run-hook 'f-ess-post-run)
 
 ;; highlight-symbol
@@ -94,6 +94,7 @@
 (setenv "GIT_ASKPASS" "git-gui--askpass")
 (defun f-magit-mode ()
   (local-set-key (kbd "4") 'recenter-top-bottom)
+  (local-set-key (kbd ";") 'other-window)
   (local-set-key (kbd "[") 'magit-section-toggle)
   (local-set-key (kbd "]") 'magit-section-forward)
   (local-unset-key (kbd "n"))
@@ -152,17 +153,15 @@
   (local-set-key (kbd "C-c t") 'org-table-toggle-coordinate-overlays)
   (local-set-key (kbd "C-x ,") 'c-org-occur)
   (local-set-key (kbd "M-g M-.") 'c-org-time-stamp)
-  (local-unset-key (kbd "C-c ,"))
-  (local-unset-key (kbd "C-c ."))
   (local-unset-key (kbd "C-c \\"))
-  (setq skip/chars (concat "*" skip/chars)))
+  (setq _chars (concat "*" _chars)))
 (add-hook 'org-mode-hook 'f-org-mode)
 
 ;; python
 (defun f-python-mode ()
+  (local-set-key (kbd "C-c h") 'python-shell-send-region)
   (local-set-key (kbd "C-c r") 'run-python)
-  (local-set-key (kbd "C-c y") 'python-shell-send-region)
-  (local-set-key (kbd "M-y") 'c-python-shell-send-line)
+  (local-set-key (kbd "C-c y") 'c-python-shell-send-line)
   (setq python-shell-interpreter "ipython"))
 (add-hook 'python-mode-hook 'f-python-mode)
 
@@ -171,7 +170,7 @@
 (setq racket-raco-program "raco")
 (defun f-racket-mode ()
   (local-set-key (kbd "C-c C-c") 'c-racket-send-buffer)
-  (local-set-key (kbd "M-y") 'racket-send-last-sexp)
+  (local-set-key (kbd "C-c y") 'racket-send-last-sexp)
   )
 (add-hook 'racket-mode-hook 'f-racket-mode)
 

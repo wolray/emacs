@@ -20,9 +20,10 @@
  'matlab-mode
  )
 (defun f-package-menu-mode ()
-  (local-set-key (kbd "[") 'package-menu-describe-package)
+  (local-set-key (kbd "[") 'previous-line)
   (local-set-key (kbd "]") 'next-line)
   (local-unset-key (kbd "n"))
+  (local-unset-key (kbd "p"))
   )
 (add-hook 'package-menu-mode-hook 'f-package-menu-mode)
 
@@ -30,7 +31,7 @@
 (defun f-bs-mode ()
   (local-set-key (kbd "-") 'bs-set-current-buffer-to-show-never)
   (local-set-key (kbd "=") 'bs-set-current-buffer-to-show-always)
-  (local-set-key (kbd "[") 'bs-select)
+  (local-set-key (kbd "[") 'bs-up)
   (local-set-key (kbd "]") 'bs-down)
   (local-set-key (kbd "i") 'bs-select)
   (local-set-key (kbd "o") 'bs-down)
@@ -46,6 +47,7 @@
   (local-unset-key (kbd "f"))
   (local-unset-key (kbd "k"))
   (local-unset-key (kbd "n"))
+  (local-unset-key (kbd "p"))
   (local-unset-key (kbd "t"))
   (local-unset-key (kbd "~"))
   )
@@ -61,7 +63,7 @@
 (add-hook 'ess-mode-hook 'f-ess-mode)
 (defun f-ess-post-run ()
   (local-unset-key (kbd "_"))
-  (setq _chars (concat ">" _chars)))
+  (setq skip_chars (concat ">" skip_chars)))
 (add-hook 'ess-R-post-run-hook 'f-ess-post-run)
 
 ;; highlight-symbol
@@ -94,10 +96,10 @@
 (setenv "GIT_ASKPASS" "git-gui--askpass")
 (defun f-magit-mode ()
   (local-set-key (kbd "4") 'recenter-top-bottom)
-  (local-set-key (kbd ";") 'other-window)
-  (local-set-key (kbd "[") 'magit-section-toggle)
+  (local-set-key (kbd "[") 'magit-section-backward)
   (local-set-key (kbd "]") 'magit-section-forward)
   (local-unset-key (kbd "n"))
+  (local-unset-key (kbd "p"))
   )
 (add-hook 'magit-mode-hook 'f-magit-mode)
 (defun f-magit-status-sections ()
@@ -154,7 +156,7 @@
   (local-set-key (kbd "C-x ,") 'c-org-occur)
   (local-set-key (kbd "M-g M-.") 'c-org-time-stamp)
   (local-unset-key (kbd "C-c \\"))
-  (setq _chars (concat "*" _chars)))
+  (setq skip_chars (concat "*" skip_chars)))
 (add-hook 'org-mode-hook 'f-org-mode)
 
 ;; python

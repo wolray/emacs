@@ -17,10 +17,10 @@
 (m-key-to-command <right>)
 (m-key-to-command <up>)
 (m-key-to-command C-/)
-(m-key-to-command C-<down> nil (skip-chars-forward _chars))
+(m-key-to-command C-<down> nil (skip-chars-forward skip_chars))
 (m-key-to-command C-<left>)
 (m-key-to-command C-<right>)
-(m-key-to-command C-<up> (beginning-of-line) (skip-chars-forward _chars))
+(m-key-to-command C-<up> (beginning-of-line) (skip-chars-forward skip_chars))
 (m-key-to-command C-M-b)
 (m-key-to-command C-M-f)
 (m-key-to-command C-c+C-z)
@@ -93,11 +93,9 @@
 
 (defun c-delete-pair ()
   (interactive)
-  (backward-up-list)
-  (while (not (looking-at-p (rx (any "([{<'\""))))
-    (backward-up-list))
-  (save-excursion (forward-sexp) (delete-char -1))
-  (delete-char 1))
+  (when (re-search-backward (rx (any "([{<'\"")))
+    (save-excursion (forward-sexp) (delete-char -1))
+    (delete-char 1)))
 
 (defun c-dired ()
   (interactive)
@@ -117,7 +115,7 @@
       (when s
 	(highlight-symbol-count s t)
 	(unless (f-hs-definition-p s)
-	  (setq mark-active nil _marker (point))
+	  (setq mark-active nil pt_marker (point))
 	  (while (and p (not (f-hs-definition-p s)))
 	    (highlight-symbol-jump 1)
 	    (when (= pt (point)) (setq p nil))))))))
@@ -139,7 +137,7 @@
   (save-excursion
     (mark-paragraph)
     (indent-region (region-beginning) (region-end)))
-  (when (bolp) (skip-chars-forward _chars)))
+  (when (bolp) (skip-chars-forward skip_chars)))
 
 (defun c-isearch-done ()
   (interactive)
@@ -156,7 +154,7 @@
   (if (use-region-p)
       (kill-region (region-beginning) (region-end))
     (kill-whole-line)
-    (skip-chars-forward _chars)))
+    (skip-chars-forward skip_chars)))
 
 (defun c-kill-ring-save (bg ed)
   (interactive
@@ -213,7 +211,7 @@
   (let ((co (f-beginning-of-line 1)))
     (if (eq major-mode 'org-mode)
 	(if (or (> (current-column) co) (= co 2)) (f-beginning-of-line)
-	  (org-up-element) (skip-chars-forward _chars))
+	  (org-up-element) (skip-chars-forward skip_chars))
       (cond ((and (bolp) (not (eolp))) (end-of-line))
 	    ((<= (current-column) co) (beginning-of-line))
 	    (t (f-beginning-of-line))))))
@@ -233,10 +231,6 @@
      "open" "explorer"
      (concat "/e,/select,"
 	     (convert-standard-filename buffer-file-name)))))
-
-(defun c-org-time-stamp ()
-  (interactive)
-  (insert (format-time-string ".%y%m%d" (current-time))))
 
 (defun c-python-shell-send-line ()
   (interactive)
@@ -258,11 +252,11 @@
   (racket-send-region
    (point-min) (point-max)))
 
-(defun c-marker-recall ()
+(defun c-marker-exchange ()
   (interactive)
   (let ((marker (point)))
-    (goto-char _marker)
-    (setq _marker marker)))
+    (goto-char pt_marker)
+    (setq pt_marker marker)))
 
 (defun c-reload-current-mode ()
   (interactive)
@@ -284,7 +278,7 @@
 
 (defun c-marker-set ()
   (interactive)
-  (setq _marker (point)))
+  (setq pt_marker (point)))
 
 (defun c-set-or-exchange-mark (arg)
   (interactive "P")
@@ -330,8 +324,8 @@
 
 (defun c-toggle-frame ()
   (interactive)
-  (m-cycle-values _transparency '(100 70))
-  (set-frame-parameter (selected-frame) 'alpha _transparency))
+  (m-cycle-values frame_alpha '(100 70))
+  (set-frame-parameter (selected-frame) 'alpha frame_alpha))
 
 (defun c-transpose-lines-down ()
   (interactive)
@@ -395,7 +389,7 @@
   (let (pt co)
     (save-excursion
       (beginning-of-line)
-      (skip-chars-forward _chars)
+      (skip-chars-forward skip_chars)
       (setq pt (point) co (current-column)))
     (cond ((eq arg 0) pt)
 	  ((eq arg 1) co)
@@ -423,7 +417,7 @@
 (defun f-hs-definition-p (symbol)
   (save-excursion
     (f-beginning-of-line)
-    (looking-at-p (concat _definition symbol))))
+    (looking-at-p (concat sym_def symbol))))
 
 (defun f-incf (&optional first incr repeat)
   (let ((index (/ (cl-incf count 0) (or repeat 1))))
@@ -431,7 +425,8 @@
 
 (defun f-normal-buffer-p ()
   (or buffer-file-name
-      (string-match "*scratch\\|shell*" (buffer-name))))
+      visual-mode
+      (eq (key-binding (kbd "q")) 'self-insert-command)))
 
 (defun f-paragraph-set ()
   (setq paragraph-start "\f\\|[ \t]*$"
@@ -453,13 +448,13 @@
     (query-replace region replacement)
     (setq query-replace-defaults (cons region replacement))))
 
-(defvar _chars " \t")
-(make-variable-buffer-local '_chars)
+(defvar skip_chars " \t")
+(make-variable-buffer-local 'skip_chars)
 
-(defvar _definition "(?def[a-z-]* ")
-(make-variable-buffer-local '_definition)
+(defvar sym_def "(?def[a-z-]* ")
+(make-variable-buffer-local 'sym_def)
 
-(defvar _marker (point-min))
-(make-variable-buffer-local '_marker)
+(defvar pt_marker (point-min))
+(make-variable-buffer-local 'pt_marker)
 
-(defvar _transparency 100)
+(defvar frame_alpha 100)

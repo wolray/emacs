@@ -2,39 +2,6 @@
   `(let ((i (cl-position ,var ,values)))
      (setq ,var (elt ,values (if (and i (< (1+ i) (length ,values))) (1+ i) 0)))))
 
-(defmacro m-key-to-command (func &optional before after)
-  (let ((ks (symbol-name func)))
-    (and (> (length ks) 3) (string= (substring ks 3 4) "+")
-	 (setq ks (concat (substring ks 0 3) " " (substring ks 4))))
-    `(defun ,func ()
-       (interactive)
-       (let ((cmd (key-binding (kbd ,ks))))
-	 ,before
-	 (when (commandp cmd) (call-interactively cmd))
-	 ,after))))
-(m-key-to-command <down>)
-(m-key-to-command <left>)
-(m-key-to-command <right>)
-(m-key-to-command <up>)
-(m-key-to-command C-/)
-(m-key-to-command C-<down> nil (skip-chars-forward skip_chars))
-(m-key-to-command C-<left>)
-(m-key-to-command C-<right>)
-(m-key-to-command C-<up> (beginning-of-line) (skip-chars-forward skip_chars))
-(m-key-to-command C-M-b)
-(m-key-to-command C-M-f)
-(m-key-to-command C-c+C-z)
-(m-key-to-command C-g)
-(m-key-to-command C-k)
-(m-key-to-command C-s)
-(m-key-to-command C-y)
-(m-key-to-command DEL)
-(m-key-to-command M-DEL)
-(m-key-to-command M-^)
-(m-key-to-command M-h)
-(m-key-to-command M-y)
-(m-key-to-command RET)
-
 (defun c-backward-kill-line ()
   (interactive)
   (kill-region (f-beginning-of-line 0) (point)))
@@ -88,7 +55,7 @@
 (defun c-cycle-search-whitespace-regexp ()
   (interactive)
   (unless (minibufferp)
-    (m-cycle-values search-whitespace-regexp '(".*?" "\\s-+"))
+    (m-cycle-values search-whitespace-regexp '(" -+" ".*?"))
     (message "search-whitespace-regexp: \"%s\"" search-whitespace-regexp)))
 
 (defun c-delete-pair ()
@@ -102,6 +69,12 @@
   (switch-to-buffer (dired-noselect default-directory))
   (revert-buffer))
 
+(defun c-exchange-mark ()
+  (interactive)
+  (let ((marker (mark)))
+    (push-mark nil t)
+    (when marker (goto-char marker))))
+
 (defun c-hs ()
   (interactive)
   (unless (minibufferp)
@@ -111,14 +84,15 @@
 (defun c-hs-definition ()
   (interactive)
   (unless (minibufferp)
-    (let ((p t) (pt (point)) (s (highlight-symbol-get-symbol)))
+    (let ((p t) (pt (point)) (s (highlight-symbol-get-symbol))
+	  (highlight-symbol-occurrence-message nil))
       (when s
-	(highlight-symbol-count s t)
 	(unless (f-hs-definition-p s)
-	  (setq mark-active nil pt_marker (point))
+	  (setq mark-active nil)
 	  (while (and p (not (f-hs-definition-p s)))
 	    (highlight-symbol-jump 1)
-	    (when (= pt (point)) (setq p nil))))))))
+	    (when (= pt (point)) (setq p nil)))
+	  (highlight-symbol-count s t))))))
 
 (defun c-hs-next ()
   (interactive)
@@ -232,6 +206,10 @@
      (concat "/e,/select,"
 	     (convert-standard-filename buffer-file-name)))))
 
+(defun c-push-mark ()
+  (interactive)
+  (push-mark))
+
 (defun c-python-shell-send-line ()
   (interactive)
   (python-shell-send-region
@@ -252,12 +230,6 @@
   (racket-send-region
    (point-min) (point-max)))
 
-(defun c-marker-exchange ()
-  (interactive)
-  (let ((marker (point)))
-    (goto-char pt_marker)
-    (setq pt_marker marker)))
-
 (defun c-reload-current-mode ()
   (interactive)
   (funcall major-mode))
@@ -267,7 +239,7 @@
   (let ((old buffer-file-name) new)
     (when (and old (not (buffer-modified-p)))
       (setq new (read-file-name "Rename: " old))
-      (when (file-exists-p new) (user-error "File already exists!"))
+      (when (file-exists-p new) (error "File already exists!"))
       (rename-file old new)
       (set-visited-file-name new t t))))
 
@@ -275,10 +247,6 @@
   (interactive)
   (and (not (minibufferp)) (buffer-modified-p)
        (revert-buffer t t)))
-
-(defun c-marker-set ()
-  (interactive)
-  (setq pt_marker (point)))
 
 (defun c-set-or-exchange-mark (arg)
   (interactive "P")
@@ -424,8 +392,8 @@
     (+ (or first 1) (* (or incr 1) index))))
 
 (defun f-normal-buffer-p ()
-  (or buffer-file-name
-      visual-mode
+  (or visual-mode
+      buffer-file-name
       (eq (key-binding (kbd "q")) 'self-insert-command)))
 
 (defun f-paragraph-set ()
@@ -448,13 +416,10 @@
     (query-replace region replacement)
     (setq query-replace-defaults (cons region replacement))))
 
+(defvar frame_alpha 100)
+
 (defvar skip_chars " \t")
 (make-variable-buffer-local 'skip_chars)
 
 (defvar sym_def "(?def[a-z-]* ")
 (make-variable-buffer-local 'sym_def)
-
-(defvar pt_marker (point-min))
-(make-variable-buffer-local 'pt_marker)
-
-(defvar frame_alpha 100)

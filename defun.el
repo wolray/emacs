@@ -69,12 +69,6 @@
   (switch-to-buffer (dired-noselect default-directory))
   (revert-buffer))
 
-(defun c-exchange-mark ()
-  (interactive)
-  (let ((marker (mark)))
-    (push-mark nil t)
-    (when marker (goto-char marker))))
-
 (defun c-hs ()
   (interactive)
   (unless (minibufferp)
@@ -206,9 +200,21 @@
      (concat "/e,/select,"
 	     (convert-standard-filename buffer-file-name)))))
 
-(defun c-push-mark ()
+(defun c-pt-exchange-mark ()
   (interactive)
-  (push-mark))
+  (let ((pt pt_mark))
+    (setq pt_mark (point))
+    (when pt (goto-char pt))))
+
+(defun c-pt-recall-mark ()
+  (interactive)
+  (let ((pt (mark)))
+    (push-mark nil t)
+    (when pt (goto-char pt))))
+
+(defun c-pt-set-mark ()
+  (interactive)
+  (setq pt_mark (point)))
 
 (defun c-python-shell-send-line ()
   (interactive)
@@ -266,7 +272,7 @@
   (unless (minibufferp)
     (let ((p t) (bn (buffer-name)))
       (switch-to-next-buffer)
-      (while (and p (not (f-normal-buffer-p)))
+      (while (and p (not (or visual-mode buffer-file-name)))
 	(switch-to-next-buffer)
 	(when (string= bn (buffer-name)) (setq p nil))))))
 
@@ -275,7 +281,7 @@
   (unless (minibufferp)
     (let ((p t) (bn (buffer-name)))
       (switch-to-prev-buffer)
-      (while (and p (not (f-normal-buffer-p)))
+      (while (and p (not (or visual-mode buffer-file-name)))
 	(switch-to-prev-buffer)
 	(when (string= bn (buffer-name)) (setq p nil))))))
 
@@ -391,11 +397,6 @@
   (let ((index (/ (cl-incf count 0) (or repeat 1))))
     (+ (or first 1) (* (or incr 1) index))))
 
-(defun f-normal-buffer-p ()
-  (or visual-mode
-      buffer-file-name
-      (eq (key-binding (kbd "q")) 'self-insert-command)))
-
 (defun f-paragraph-set ()
   (setq paragraph-start "\f\\|[ \t]*$"
 	paragraph-separate "[ \t\f]*$"))
@@ -417,6 +418,9 @@
     (setq query-replace-defaults (cons region replacement))))
 
 (defvar frame_alpha 100)
+
+(defvar pt_mark nil)
+(make-variable-buffer-local 'pt_mark)
 
 (defvar skip_chars " \t")
 (make-variable-buffer-local 'skip_chars)

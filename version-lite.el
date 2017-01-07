@@ -1,10 +1,7 @@
 (defun c-vl-align ()
   (interactive)
   (when (string= buffer-file-name vl_log_file)
-    (let ((pt (point-max)) (s 4))
-      (align-regexp 3 pt ":[0-9][0-9]\\( +\\)[0-9]+\\." nil s)
-      (align-regexp 3 pt "\\.[0-9]+\\( +\\)\\* \\[\\[" nil s)
-      (align-regexp 3 pt "\\]\\]\\( +\\)\\*" nil s))))
+    (align-regexp 3 (point-max) "\\.[0-9]+\\( +\\)\\* \\[\\[" nil 4)))
 
 (defun c-vl-occur ()
   (interactive)
@@ -32,7 +29,7 @@
 	     (new (read-string prompt)))
 	(goto-char 3) (org-content)
 	(call-interactively 'org-insert-subheading)
-	(insert (concat date " " new " * " link))
+	(insert (concat date (make-string 4 ?\s) new " * " link))
 	(c-vl-align)))))
 
 (defun c-vl-update-current ()

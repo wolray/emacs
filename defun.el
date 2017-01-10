@@ -105,7 +105,7 @@
   (save-excursion
     (mark-paragraph)
     (indent-region (region-beginning) (region-end)))
-  (when (bolp) (skip-chars-forward skip_chars)))
+  (when (bolp) (f-skip-chars)))
 
 (defun c-isearch-done ()
   (interactive)
@@ -122,7 +122,7 @@
   (if (use-region-p)
       (kill-region (region-beginning) (region-end))
     (kill-whole-line)
-    (skip-chars-forward skip_chars)))
+    (f-skip-chars)))
 
 (defun c-kill-ring-save (bg ed)
   (interactive
@@ -176,21 +176,15 @@
 
 (defun c-move-backward-line ()
   (interactive)
-  (let ((co (f-beginning-of-line 1)))
-    (if (eq major-mode 'org-mode)
-	(if (or (> (current-column) co) (= co 2)) (f-beginning-of-line)
-	  (org-up-element) (skip-chars-forward skip_chars))
-      (cond ((and (bolp) (not (eolp))) (end-of-line))
-	    ((<= (current-column) co) (beginning-of-line))
-	    (t (f-beginning-of-line))))))
+  (cond ((bolp) (end-of-line))
+	((<= (current-column) (f-beginning-of-line 1)) (beginning-of-line))
+	(t (f-beginning-of-line))))
 
 (defun c-move-forward-line ()
   (interactive)
-  (if (eq major-mode 'org-mode)
-      (if (eolp) (f-beginning-of-line) (end-of-line))
-    (cond ((and (eolp) (not (bolp))) (beginning-of-line))
-	  ((>= (current-column) (f-beginning-of-line 1)) (end-of-line))
-	  (t (f-beginning-of-line)))))
+  (cond ((eolp) (beginning-of-line))
+	((>= (current-column) (f-beginning-of-line 1)) (end-of-line))
+	(t (f-beginning-of-line))))
 
 (defun c-open-current-folder ()
   (interactive)
@@ -363,7 +357,7 @@
   (let (pt co)
     (save-excursion
       (beginning-of-line)
-      (skip-chars-forward skip_chars)
+      (f-skip-chars)
       (setq pt (point) co (current-column)))
     (cond ((eq arg 0) pt)
 	  ((eq arg 1) co)
@@ -417,12 +411,15 @@
     (query-replace region replacement)
     (setq query-replace-defaults (cons region replacement))))
 
+(defun f-skip-chars (&optional chars)
+  (skip-chars-forward (concat " \t" skip_chars chars)))
+
 (defvar frame_alpha 100)
 
 (defvar pt_mark nil)
 (make-variable-buffer-local 'pt_mark)
 
-(defvar skip_chars " \t")
+(defvar skip_chars nil)
 (make-variable-buffer-local 'skip_chars)
 
 (defvar sym_def "(?def[a-z-]* ")

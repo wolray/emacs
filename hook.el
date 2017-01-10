@@ -63,14 +63,16 @@
 (add-hook 'ess-mode-hook 'f-ess-mode)
 (defun f-ess-post-run ()
   (local-unset-key (kbd "_"))
-  (setq skip_chars (concat ">" skip_chars)))
+  (setq skip_chars ">"))
 (add-hook 'ess-R-post-run-hook 'f-ess-post-run)
 
 ;; highlight-symbol
 (require 'highlight-symbol)
 (setq highlight-symbol-colors
       '(;; "yellow" "DeepPink" "cyan"
-	"MediumPurple1" "SpringGreen1" "DarkOrange" "HotPink1" "RoyalBlue1" "OliveDrab"))
+	"MediumPurple1" "SpringGreen1" "DarkOrange" "HotPink1" "RoyalBlue1"
+	;; "OliveDrab"
+	))
 
 ;; hippie-expand
 (setq hippie-expand-try-functions-list
@@ -146,18 +148,14 @@
     (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
 (add-hook 'org-after-todo-statistics-hook 'f-org-summary-todo)
 (defun f-org-mode ()
-  (local-set-key (kbd "C-<down>") 'org-forward-element)
-  (local-set-key (kbd "C-<up>") 'org-backward-element)
   (local-set-key (kbd "C-c ,") 'c-vl-occur)
-  (local-set-key (kbd "C-c .") 'c-vl-align)
   (local-set-key (kbd "C-c d") 'org-toggle-link-display)
   (local-set-key (kbd "C-c e") 'org-edit-special)
   (local-set-key (kbd "C-c i") 'org-open-at-point)
   (local-set-key (kbd "C-c s") 'org-sort)
   (local-set-key (kbd "C-c t") 'org-table-toggle-coordinate-overlays)
-  (local-set-key (kbd "C-x ,") 'c-vl-update-current)
   (local-unset-key (kbd "C-c \\"))
-  (setq skip_chars (concat "*" skip_chars)))
+  )
 (add-hook 'org-mode-hook 'f-org-mode)
 
 ;; python

@@ -63,7 +63,7 @@
 (add-hook 'ess-mode-hook 'f-ess-mode)
 (defun f-ess-post-run ()
   (local-unset-key (kbd "_"))
-  (setq skip_chars ">"))
+  (setq v-skip-chars ">"))
 (add-hook 'ess-R-post-run-hook 'f-ess-post-run)
 
 ;; highlight-symbol
@@ -155,7 +155,7 @@
   (local-set-key (kbd "C-c s") 'org-sort)
   (local-set-key (kbd "C-c t") 'org-table-toggle-coordinate-overlays)
   (local-unset-key (kbd "C-c \\"))
-  )
+  (linum-mode -1))
 (add-hook 'org-mode-hook 'f-org-mode)
 
 ;; python
@@ -163,7 +163,8 @@
   (local-set-key (kbd "C-c h") 'python-shell-send-region)
   (local-set-key (kbd "C-c r") 'run-python)
   (local-set-key (kbd "C-c y") 'c-python-shell-send-line)
-  (setq python-shell-interpreter "ipython"))
+  (setq python-shell-interpreter "ipython")
+  (add-to-list 'python-shell-completion-native-disabled-interpreters "ipython"))
 (add-hook 'python-mode-hook 'f-python-mode)
 
 ;; racket

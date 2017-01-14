@@ -40,7 +40,7 @@
    (let ((seq (split-string
 	       (read-string (concat "1 (+1) ("
 				    (substring cua--rectangle-seq-format 1)
-				    "): ") nil nil))))
+				    "): ")))))
      (list (string-to-number (or (car seq) "1"))
     	   (string-to-number (or (cadr seq) "1"))
 	   (concat "%" (cadr (cdr seq))))))
@@ -72,21 +72,8 @@
 (defun c-hs ()
   (interactive)
   (unless (minibufferp)
-    (when (highlight-symbol-get-symbol)
-      (highlight-symbol))))
-
-(defun c-hs-definition ()
-  (interactive)
-  (unless (minibufferp)
-    (let ((p t) (pt (point)) (s (highlight-symbol-get-symbol))
-	  (highlight-symbol-occurrence-message nil))
-      (when s
-	(unless (f-hs-definition-p s)
-	  (setq mark-active nil)
-	  (while (and p (not (f-hs-definition-p s)))
-	    (highlight-symbol-jump 1)
-	    (when (= pt (point)) (setq p nil)))
-	  (highlight-symbol-count s t))))))
+    (let ((symbol (highlight-symbol-get-symbol)))
+      (when symbol (highlight-symbol symbol)))))
 
 (defun c-hs-next ()
   (interactive)
@@ -196,8 +183,8 @@
 
 (defun c-pt-exchange-mark ()
   (interactive)
-  (let ((pt pt_mark))
-    (setq pt_mark (point))
+  (let ((pt v-pt-mark))
+    (setq v-pt-mark (point))
     (when pt (goto-char pt))))
 
 (defun c-pt-recall-mark ()
@@ -208,7 +195,7 @@
 
 (defun c-pt-set-mark ()
   (interactive)
-  (setq pt_mark (point)))
+  (setq v-pt-mark (point)))
 
 (defun c-python-shell-send-line ()
   (interactive)
@@ -220,9 +207,7 @@
   (unless (minibufferp)
     (cond ((use-region-p) (f-query-replace-region))
 	  ((and (region-active-p) (setq mark-active nil)))
-	  ((highlight-symbol-symbol-highlighted-p
-	    (highlight-symbol-get-symbol))
-	   (f-query-replace-hs))
+	  ((assoc (f-hs-get-s) v-hs-keywords-alist) (f-hs-query-replace))
 	  (t (call-interactively 'query-replace)))))
 
 (defun c-racket-send-buffer ()
@@ -292,8 +277,8 @@
 
 (defun c-toggle-frame ()
   (interactive)
-  (m-cycle-values frame_alpha '(100 70))
-  (set-frame-parameter (selected-frame) 'alpha frame_alpha))
+  (m-cycle-values v-frame-alpha '(100 70))
+  (set-frame-parameter (selected-frame) 'alpha v-frame-alpha))
 
 (defun c-transpose-lines-down ()
   (interactive)
@@ -315,7 +300,7 @@
       (or (bobp) (eobp)
 	  (progn (forward-line)
 		 (transpose-lines -1)
-		 (beginning-of-line -1)))
+		 (beginning-of-line 0)))
       (move-to-column co))))
 
 (defun c-transpose-paragraphs-down ()
@@ -338,7 +323,6 @@
 	(when (bobp) (setq p t) (newline))
 	(forward-paragraph 2)
 	(transpose-paragraphs -1)
-	(backward-paragraph)
 	(when p (save-excursion (goto-char (point-min)) (kill-line))))))
 
 (defun c-word-capitalize ()
@@ -382,11 +366,6 @@
     (if (< index (length ls)) (elt ls index)
       (keyboard-quit))))
 
-(defun f-hs-definition-p (symbol)
-  (save-excursion
-    (f-beginning-of-line)
-    (looking-at-p (concat sym_def symbol))))
-
 (defun f-incf (&optional first incr repeat)
   (let ((index (/ (cl-incf count 0) (or repeat 1))))
     (+ (or first 1) (* (or incr 1) index))))
@@ -395,13 +374,6 @@
   (setq paragraph-start "\f\\|[ \t]*$"
 	paragraph-separate "[ \t\f]*$"))
 
-(defun f-query-replace-hs ()
-  (let ((hs (highlight-symbol-get-symbol))
-	(replacement (read-string "Replacement: ")))
-    (goto-char (beginning-of-thing 'symbol))
-    (query-replace-regexp hs replacement)
-    (setq query-replace-defaults (cons hs replacement))))
-
 (defun f-query-replace-region ()
   (let ((region (buffer-substring-no-properties
 		 (region-beginning) (region-end)))
@@ -409,18 +381,15 @@
     (goto-char (region-beginning))
     (setq mark-active nil)
     (query-replace region replacement)
-    (setq query-replace-defaults (cons region replacement))))
+    (setq query-replace-defaults `(,(cons region replacement)))))
 
 (defun f-skip-chars (&optional chars)
-  (skip-chars-forward (concat " \t" skip_chars chars)))
+  (skip-chars-forward (concat " \t" v-skip-chars chars)))
 
-(defvar frame_alpha 100)
+(defvar v-frame-alpha 100)
 
-(defvar pt_mark nil)
-(make-variable-buffer-local 'pt_mark)
+(defvar v-pt-mark nil)
+(make-variable-buffer-local 'v-pt-mark)
 
-(defvar skip_chars nil)
-(make-variable-buffer-local 'skip_chars)
-
-(defvar sym_def "(?def[a-z-]* ")
-(make-variable-buffer-local 'sym_def)
+(defvar v-skip-chars nil)
+(make-variable-buffer-local 'v-skip-chars)

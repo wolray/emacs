@@ -45,5 +45,4 @@
 (load "kbd.el")
 (load "defun.el")
 (load "hs.el")
-(load "version-lite.el")
 (load "mode.el")

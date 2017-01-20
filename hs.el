@@ -31,7 +31,7 @@
 	(while (and p (not (save-excursion
 			     (f-beginning-of-line)
 			     (looking-at-p (concat v-hs-definition s)))))
-	  (f-hs-jump s -1 t t)
+	  (f-hs-jump s 1 t t)
 	  (when (= pt (point)) (setq p nil)))
 	(f-hs-count s)))))
 
@@ -43,7 +43,8 @@
 
 (defun f-hs-add-s (s)
   (unless (assoc s v-hs-keywords-alist)
-    (let* ((color (m-cycle-values v-hs-color v-hs-colors))
+    (let* ((limit (length v-hs-colors))
+	   (color (elt v-hs-colors (random limit)))
 	   (face `((background-color . ,color)
 		   (foreground-color . "black")))
 	   (keywords `(,s 0 ',face prepend)))
@@ -77,13 +78,11 @@
 	(goto-char (if (> dir 0) (point-min) (point-max)))
 	(setq target (re-search-forward s nil nil dir)))
       (goto-char (+ target offset)))
-    (unless no-msg (f-hs-count s))
-    (setq this-command 'f-hs-jump)))
+    (unless no-msg (f-hs-count s))))
 
-(defun f-hs-query-replace ()
-  (let ((s (f-hs-get-s))
-	(replacement (read-string "Replacement: ")))
-    (goto-char (beginning-of-thing 'symbol))
+(defun f-hs-query-replace (s)
+  (let ((replacement (read-string "Replacement: ")))
+    (beginning-of-thing 'symbol)
     (query-replace-regexp s replacement)
     (setq query-replace-defaults `(,(cons s replacement)))))
 
@@ -92,13 +91,10 @@
     (setq v-hs-keywords-alist
           (delq keywords v-hs-keywords-alist))
     (font-lock-remove-keywords nil (list keywords))
-    (f-hs-flush)))
-
-(defvar v-hs-color nil)
+    (font-lock-fontify-buffer)))
 
 (defvar v-hs-colors)
 (setq v-hs-colors '(
-		    "dark orange"
 		    "dodger blue"
 		    "hot pink"
 		    "orchid"

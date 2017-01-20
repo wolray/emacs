@@ -31,7 +31,8 @@
 
 (defun c-cua-rectangle-mark-mode (arg)
   (interactive "P")
-  (unless (minibufferp)
+  (if (minibufferp)
+      (progn (insert "\\,(f-incf)") (left-char))
     (visual-mode -1)
     (cua-rectangle-mark-mode)))
 
@@ -55,7 +56,7 @@
 (defun c-cycle-search-whitespace-regexp ()
   (interactive)
   (unless (minibufferp)
-    (m-cycle-values search-whitespace-regexp '(" -+" ".*?"))
+    (m-cycle-values search-whitespace-regexp '("\\s-+" ".*?"))
     (message "search-whitespace-regexp: \"%s\"" search-whitespace-regexp)))
 
 (defun c-delete-pair ()
@@ -68,24 +69,6 @@
   (interactive)
   (switch-to-buffer (dired-noselect default-directory))
   (revert-buffer))
-
-(defun c-hs ()
-  (interactive)
-  (unless (minibufferp)
-    (let ((symbol (highlight-symbol-get-symbol)))
-      (when symbol (highlight-symbol symbol)))))
-
-(defun c-hs-next ()
-  (interactive)
-  (unless (minibufferp)
-    (setq mark-active nil)
-    (highlight-symbol-jump 1)))
-
-(defun c-hs-prev ()
-  (interactive)
-  (unless (minibufferp)
-    (setq mark-active nil)
-    (highlight-symbol-jump -1)))
 
 (defun c-indent-paragraph ()
   (interactive)
@@ -142,24 +125,25 @@
 
 (defun c-kmacro-edit-macro ()
   (interactive)
-  (unless (minibufferp) (kmacro-edit-macro)))
+  (if (minibufferp)
+      (progn (if (eq last-command this-command) (insert "'()")
+	       (insert "\\,(f-each )"))
+	     (left-char))
+    (kmacro-edit-macro)))
 
 (defun c-kmacro-end-or-call-macro (arg)
   (interactive "P")
-  (cond ((minibufferp)
-	 (if (eq last-command 'c-kmacro-end-or-call-macro) (insert "'()")
-	   (insert "\\,(f-each )"))
-	 (left-char))
-	(defining-kbd-macro (kmacro-end-macro arg))
-	((use-region-p)
-	 (apply-macro-to-region-lines (region-beginning) (region-end)))
-	(t (kmacro-call-macro arg t))))
+  (unless (minibufferp)
+    (cond (defining-kbd-macro (kmacro-end-macro arg))
+	  ((use-region-p)
+	   (apply-macro-to-region-lines (region-beginning) (region-end)))
+	  (t (kmacro-call-macro arg t)))))
 
 (defun c-kmacro-start-macro (arg)
   (interactive "P")
-  (cond ((minibufferp) (insert "\\,(f-incf)") (left-char))
-	(t (setq defining-kbd-macro nil)
-	   (kmacro-start-macro arg))))
+  (unless (minibufferp)
+    (setq defining-kbd-macro nil)
+    (kmacro-start-macro arg)))
 
 (defun c-move-backward-line ()
   (interactive)
@@ -173,7 +157,7 @@
 	((>= (current-column) (f-beginning-of-line 1)) (end-of-line))
 	(t (f-beginning-of-line))))
 
-(defun c-open-current-folder ()
+(defun c-open-folder ()
   (interactive)
   (when buffer-file-name
     (w32-shell-execute
@@ -205,10 +189,11 @@
 (defun c-query-replace ()
   (interactive)
   (unless (minibufferp)
-    (cond ((use-region-p) (f-query-replace-region))
-	  ((and (region-active-p) (setq mark-active nil)))
-	  ((assoc (f-hs-get-s) v-hs-keywords-alist) (f-hs-query-replace))
-	  (t (call-interactively 'query-replace)))))
+    (if (use-region-p) (f-query-replace-region)
+      (setq mark-active nil)
+      (let ((s (f-hs-get-s)))
+	(if (assoc s v-hs-keywords-alist) (f-hs-query-replace s)
+	  (call-interactively 'query-replace))))))
 
 (defun c-racket-send-buffer ()
   (interactive)
@@ -348,12 +333,12 @@
 	  (t (move-to-column co)))))
 
 (defun f-clear-shell ()
-  (if (not (get-buffer-process (current-buffer)))
-      (message "No inferior process")
-    (delete-region (point-min) (point-max))
-    (comint-send-input)
-    (goto-char (point-min))
-    (kill-line)))
+  (unless (get-buffer-process (current-buffer))
+    (error "No inferior process!"))
+  (delete-region (point-min) (point-max))
+  (comint-send-input)
+  (goto-char (point-min))
+  (kill-line))
 
 (defun f-delete-trailing-whitespace ()
   (save-excursion

@@ -66,14 +66,6 @@
   (setq v-skip-chars ">"))
 (add-hook 'ess-R-post-run-hook 'f-ess-post-run)
 
-;; highlight-symbol
-(require 'highlight-symbol)
-(setq highlight-symbol-colors
-      '(;; "yellow" "DeepPink" "cyan"
-	"MediumPurple1" "SpringGreen1" "DarkOrange" "HotPink1" "RoyalBlue1"
-	;; "OliveDrab"
-	))
-
 ;; hippie-expand
 (setq hippie-expand-try-functions-list
       '(try-expand-dabbrev
@@ -148,7 +140,6 @@
     (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
 (add-hook 'org-after-todo-statistics-hook 'f-org-summary-todo)
 (defun f-org-mode ()
-  (local-set-key (kbd "C-c ,") 'c-vl-occur)
   (local-set-key (kbd "C-c d") 'org-toggle-link-display)
   (local-set-key (kbd "C-c e") 'org-edit-special)
   (local-set-key (kbd "C-c i") 'org-open-at-point)

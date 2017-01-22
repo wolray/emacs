@@ -51,7 +51,6 @@
   `(let* ((ks (cadr ',key)) (mk (kbd (concat "M-g " ks))))
      (define-key key-translation-map
        ,key (if (symbolp ,obj) (progn (global-set-key mk ,obj) mk) ,obj))))
-(m-map-key (kbd ";") 'c-visual-mode)
 (m-map-key (kbd "<f10>") 'toggle-truncate-lines)
 (m-map-key (kbd "<f12>") 'c-toggle-frame)
 (m-map-key (kbd "<f1>") (kbd "SPC"))
@@ -106,9 +105,9 @@
 (defun c-visual-mode-turn ()
   (interactive)
   (visual-mode -1)
-  (if (eq (key-binding (kbd "M-g ;")) 'c-visual-mode)
-      (local-set-key (kbd "M-g ;") 'self-insert-command)
-    (local-set-key (kbd "M-g ;") 'c-visual-mode)
+  (if (eq (key-binding (kbd ";")) 'c-visual-mode)
+      (local-set-key (kbd ";") 'self-insert-command)
+    (local-set-key (kbd ";") 'c-visual-mode)
     (visual-mode)))
 
 (global-set-key (kbd "C-c C-c") 'eval-buffer)
@@ -155,7 +154,7 @@
 (define-key visual-mode-map (kbd "7") 'C-<up>)
 (define-key visual-mode-map (kbd "8") '<up>)
 (define-key visual-mode-map (kbd "9") '<down>)
-(define-key visual-mode-map (kbd "M-g ;") 'self-insert-command)
+(define-key visual-mode-map (kbd ";") 'self-insert-command)
 (define-key visual-mode-map (kbd "a") 'C-k)
 (define-key visual-mode-map (kbd "b") 'bs-show)
 (define-key visual-mode-map (kbd "d") 'c-kill-region)
@@ -181,6 +180,7 @@
 (define-key visual-mode-map (kbd "z") 'C-/)
 
 (setq w32-apps-modifier 'hyper)
+(global-set-key (kbd ";") 'c-visual-mode)
 (global-set-key (kbd "H-,") 'backward-up-list)
 (global-set-key (kbd "H-.") 'up-list)
 (global-set-key (kbd "H-<down>") 'enlarge-window)

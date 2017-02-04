@@ -73,6 +73,7 @@
 (defun c-haskell-load-module ()
   (interactive)
   (let ((module (buffer-name)))
+    (save-buffer)
     (other-window 1)
     (switch-to-buffer "*shell*")
     (insert (concat ":load " module))
@@ -84,6 +85,22 @@
     (mark-paragraph)
     (indent-region (region-beginning) (region-end)))
   (when (bolp) (f-skip-chars)))
+
+(defun c-insert-arrow-1 ()
+  (interactive)
+  (let (p)
+    (save-excursion
+      (backward-sexp)
+      (cond ((looking-at-p "\<\-")
+	     (insert "->") (delete-char 2))
+	    ((looking-at-p "\-\>")
+	     (insert "<-") (delete-char 2))
+	    (t (setq p t))))
+    (when p (insert "->"))))
+
+(defun c-insert-arrow-2 ()
+  (interactive)
+  (insert "=>"))
 
 (defun c-isearch-done ()
   (interactive)

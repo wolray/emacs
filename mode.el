@@ -67,13 +67,13 @@
 (add-hook 'ess-R-post-run-hook 'f-ess-post-run)
 
 ;; haskell
-(defun f-haskell-mode ()
-  (local-set-key (kbd "C-c C-c") 'c-haskell-load-module)
-  (setq haskell-indentation-mode-map
+(setq haskell-indentation-mode-map
 	(let ((map (make-sparse-keymap)))
 	  (define-key map (kbd "RET") #'haskell-indentation-newline-and-indent)
 	  (define-key map (kbd "<backtab>") #'haskell-indentation-indent-backwards)
-	  map)))
+	  map))
+(defun f-haskell-mode ()
+  (local-set-key (kbd "C-c C-c") 'c-haskell-load-module))
 (add-hook 'haskell-mode-hook 'f-haskell-mode)
 
 ;; hippie-expand

@@ -2,8 +2,8 @@
 (setq package-archives
       '(("gnu"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
 	;; ("melpa" . "http://elpa.zilongshanren.com/melpa/")
-	("melpa" . "http://melpa.org/packages/")
-	;; ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
+	;; ("melpa" . "http://melpa.org/packages/")
+	("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
         ))
 (package-initialize)
 ((lambda (&rest packages)
@@ -11,10 +11,10 @@
      (unless (package-installed-p pkg)
        (when (y-or-n-p (format "Package \"%s\" not found. Install it? " pkg))
 	 (package-install pkg)))))
+ 'auto-complete
  'color-theme-solarized
  'ess
  'ghc
- 'highlight-symbol
  'magit
  'markdown-mode
  'matlab-mode
@@ -23,9 +23,37 @@
   (local-set-key (kbd "[") 'previous-line)
   (local-set-key (kbd "]") 'next-line)
   (local-unset-key (kbd "n"))
-  (local-unset-key (kbd "p"))
-  )
+  (local-unset-key (kbd "p")))
 (add-hook 'package-menu-mode-hook 'f-package-menu-mode)
+
+;; auto-complete
+(setq
+ ac-completing-map (let ((map (make-sparse-keymap)))
+		     (define-key map (kbd ",") 'ac-previous)
+		     (define-key map (kbd ".") 'ac-next)
+		     (define-key map (kbd "<tab>") 'ac-expand)
+		     (define-key map (kbd "TAB") 'ac-expand)
+		     map)
+ ac-auto-start nil
+ hippie-expand-try-functions-list
+      '(try-expand-dabbrev
+	try-expand-dabbrev-visible
+	try-expand-dabbrev-all-buffers
+	try-expand-dabbrev-from-kill
+	try-complete-file-name-partially
+	try-complete-file-name
+	try-expand-all-abbrevs
+	try-expand-list
+	try-expand-line
+	try-complete-lisp-symbol-partially
+	try-complete-lisp-symbol))
+(setq-default
+ ac-sources '(ac-source-words-in-same-mode-buffers
+	      ac-source-files-in-current-dir
+	      ac-source-functions))
+(global-auto-complete-mode)
+(add-to-list 'ac-modes 'org-mode)
+(ac-linum-workaround)
 
 ;; bs
 (defun f-bs-mode ()
@@ -49,8 +77,7 @@
   (local-unset-key (kbd "n"))
   (local-unset-key (kbd "p"))
   (local-unset-key (kbd "t"))
-  (local-unset-key (kbd "~"))
-  )
+  (local-unset-key (kbd "~")))
 (add-hook 'bs-mode-hook 'f-bs-mode)
 
 ;; ess
@@ -68,27 +95,13 @@
 
 ;; haskell
 (setq haskell-indentation-mode-map
-	(let ((map (make-sparse-keymap)))
-	  (define-key map (kbd "RET") #'haskell-indentation-newline-and-indent)
-	  (define-key map (kbd "<backtab>") #'haskell-indentation-indent-backwards)
-	  map))
+      (let ((map (make-sparse-keymap)))
+	(define-key map (kbd "RET") #'haskell-indentation-newline-and-indent)
+	(define-key map (kbd "<backtab>") #'haskell-indentation-indent-backwards)
+	map))
 (defun f-haskell-mode ()
   (local-set-key (kbd "C-c C-c") 'c-haskell-load-module))
 (add-hook 'haskell-mode-hook 'f-haskell-mode)
-
-;; hippie-expand
-(setq hippie-expand-try-functions-list
-      '(try-expand-dabbrev
-	try-expand-dabbrev-visible
-	try-expand-dabbrev-all-buffers
-	try-expand-dabbrev-from-kill
-	try-complete-file-name-partially
-	try-complete-file-name
-	try-expand-all-abbrevs
-	try-expand-list
-	try-expand-line
-	try-complete-lisp-symbol-partially
-	try-complete-lisp-symbol))
 
 ;; latex
 (defun f-latex-mode ()
@@ -155,8 +168,7 @@
   (local-set-key (kbd "C-c i") 'org-open-at-point)
   (local-set-key (kbd "C-c s") 'org-sort)
   (local-set-key (kbd "C-c t") 'org-table-toggle-coordinate-overlays)
-  (local-unset-key (kbd "C-c \\"))
-  (linum-mode -1))
+  (local-unset-key (kbd "C-c \\")))
 (add-hook 'org-mode-hook 'f-org-mode)
 
 ;; python

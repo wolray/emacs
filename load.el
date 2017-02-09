@@ -35,7 +35,6 @@
 
 ;; window
 (column-number-mode 1)
-(global-linum-mode 1)
 (line-number-mode 1)
 (scroll-bar-mode 0)
 (winner-mode 1)

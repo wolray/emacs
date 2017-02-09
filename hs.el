@@ -41,6 +41,10 @@
     (mapc 'f-hs-remove-s
 	  (mapcar 'car v-hs-keywords-alist))))
 
+(defun f-font-lock-fontify ()
+  (save-excursion
+    (font-lock-default-fontify-region (point-min) (point-max) nil)))
+
 (defun f-hs-add-s (s)
   (unless (assoc s v-hs-keywords-alist)
     (let* ((limit (length v-hs-colors))
@@ -50,7 +54,7 @@
 	   (keywords `(,s 0 ',face prepend)))
       (push keywords v-hs-keywords-alist)
       (font-lock-add-keywords nil (list keywords) 'append)
-      (font-lock-fontify-buffer)
+      (f-font-lock-fontify)
       color)))
 
 (defun f-hs-count (s &optional note)
@@ -91,7 +95,7 @@
     (setq v-hs-keywords-alist
           (delq keywords v-hs-keywords-alist))
     (font-lock-remove-keywords nil (list keywords))
-    (font-lock-fontify-buffer)))
+    (f-font-lock-fontify)))
 
 (defvar v-hs-colors)
 (setq v-hs-colors '(

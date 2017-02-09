@@ -2,6 +2,11 @@
   `(let ((i (cl-position ,var ,values)))
      (setq ,var (elt ,values (if (and i (< (1+ i) (length ,values))) (1+ i) 0)))))
 
+(defun c-auto-complete ()
+  (interactive)
+  (if (minibufferp) (call-interactively 'hippie-expand)
+    (auto-complete)))
+
 (defun c-backward-kill-line ()
   (interactive)
   (kill-region (f-beginning-of-line 0) (point)))

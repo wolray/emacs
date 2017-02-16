@@ -2,11 +2,6 @@
   `(let ((i (cl-position ,var ,values)))
      (setq ,var (elt ,values (if (and i (< (1+ i) (length ,values))) (1+ i) 0)))))
 
-(defun c-auto-complete ()
-  (interactive)
-  (if (minibufferp) (call-interactively 'hippie-expand)
-    (auto-complete)))
-
 (defun c-backward-kill-line ()
   (interactive)
   (kill-region (f-beginning-of-line 0) (point)))
@@ -286,6 +281,14 @@
 (defun c-switch-to-scratch ()
   (interactive)
   (switch-to-buffer "*scratch*"))
+
+(defun c-tab ()
+  (interactive)
+  (if (or (minibufferp) buffer-read-only (not auto-complete-mode)
+	  (bobp)
+	  (save-excursion (left-char) (looking-at-p "[^[:alnum:]-_]")))
+      (TAB)
+    (auto-complete)))
 
 (defun c-toggle-comment (bg ed)
   (interactive

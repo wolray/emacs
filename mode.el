@@ -31,28 +31,16 @@
  ac-completing-map (let ((map (make-sparse-keymap)))
 		     (define-key map (kbd ",") 'ac-previous)
 		     (define-key map (kbd ".") 'ac-next)
-		     (define-key map (kbd "<tab>") 'ac-expand)
-		     (define-key map (kbd "TAB") 'ac-expand)
+		     (define-key map (kbd "M-g <tab>") 'ac-expand)
+		     (define-key map (kbd "M-g TAB") 'ac-expand)
 		     map)
- ac-auto-start nil
- hippie-expand-try-functions-list
-      '(try-expand-dabbrev
-	try-expand-dabbrev-visible
-	try-expand-dabbrev-all-buffers
-	try-expand-dabbrev-from-kill
-	try-complete-file-name-partially
-	try-complete-file-name
-	try-expand-all-abbrevs
-	try-expand-list
-	try-expand-line
-	try-complete-lisp-symbol-partially
-	try-complete-lisp-symbol))
+ ac-auto-start nil)
 (setq-default
  ac-sources '(ac-source-words-in-same-mode-buffers
 	      ac-source-files-in-current-dir
-	      ac-source-functions))
+	      ac-source-functions
+	      ac-source-words-in-all-buffer))
 (global-auto-complete-mode)
-(add-to-list 'ac-modes 'org-mode)
 (ac-linum-workaround)
 
 ;; bs
@@ -102,6 +90,20 @@
 (defun f-haskell-mode ()
   (local-set-key (kbd "C-c C-c") 'c-haskell-load-module))
 (add-hook 'haskell-mode-hook 'f-haskell-mode)
+
+;; hippie-expand
+(setq hippie-expand-try-functions-list
+      '(try-expand-dabbrev
+	try-expand-dabbrev-visible
+	try-expand-dabbrev-all-buffers
+	try-expand-dabbrev-from-kill
+	try-complete-file-name-partially
+	try-complete-file-name
+	try-expand-all-abbrevs
+	try-expand-list
+	try-expand-line
+	try-complete-lisp-symbol-partially
+	try-complete-lisp-symbol))
 
 ;; latex
 (defun f-latex-mode ()

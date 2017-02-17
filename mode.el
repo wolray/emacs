@@ -88,8 +88,11 @@
 	(define-key map (kbd "<backtab>") #'haskell-indentation-indent-backwards)
 	map))
 (defun f-haskell-mode ()
-  (local-set-key (kbd "C-c C-c") 'c-haskell-load-module))
+  (local-set-key (kbd "C-c C-c") 'c-haskell-load-module)
+  (local-set-key (kbd "C-c C-z") 'switch-to-haskell)
+  )
 (add-hook 'haskell-mode-hook 'f-haskell-mode)
+(add-hook 'inferior-haskell-mode-hook 'auto-complete-mode)
 
 ;; hippie-expand
 (setq hippie-expand-try-functions-list

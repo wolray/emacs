@@ -74,8 +74,7 @@
   (interactive)
   (let ((module (buffer-name)))
     (save-buffer)
-    (other-window 1)
-    (switch-to-buffer "*shell*")
+    (switch-to-haskell)
     (insert (concat ":load " module))
     (comint-send-input)))
 
@@ -217,7 +216,7 @@
     (if (use-region-p) (f-query-replace-region)
       (setq mark-active nil)
       (let ((s (f-hs-get-s)))
-	(if (assoc s v-hs-keywords-alist) (f-hs-query-replace s)
+	(if (assoc s v-hs-kws) (f-hs-query-replace s)
 	  (call-interactively 'query-replace))))))
 
 (defun c-racket-send-buffer ()

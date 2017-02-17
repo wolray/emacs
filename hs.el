@@ -1,11 +1,11 @@
-(defun c-hs-higlight ()
+(defun c-hs-highlight ()
   (interactive)
   (unless (minibufferp)
     (let ((s (f-hs-get-s)))
       (when s
-	(if (assoc s v-hs-keywords-alist)
-	    (f-hs-remove-s s)
-	  (f-hs-count s (f-hs-add-s s)))))))
+	(if (assoc s v-hs-kws) (f-hs-remove-s s)
+	  (f-hs-highlight-s s)
+	  (f-hs-count s))))))
 
 (defun c-hs-jump-next ()
   (interactive)
@@ -38,38 +38,32 @@
 (defun c-hs-remove-all ()
   (interactive)
   (unless (minibufferp)
-    (mapc 'f-hs-remove-s
-	  (mapcar 'car v-hs-keywords-alist))))
-
-(defun f-font-lock-fontify ()
-  (save-excursion
-    (font-lock-default-fontify-region (point-min) (point-max) nil)))
-
-(defun f-hs-add-s (s)
-  (unless (assoc s v-hs-keywords-alist)
-    (let* ((limit (length v-hs-colors))
-	   (color (elt v-hs-colors (random limit)))
-	   (face `((background-color . ,color)
-		   (foreground-color . "black")))
-	   (keywords `(,s 0 ',face prepend)))
-      (push keywords v-hs-keywords-alist)
-      (font-lock-add-keywords nil (list keywords) 'append)
-      (f-font-lock-fontify)
-      color)))
+    (mapc 'f-hs-remove-s (mapcar 'car v-hs-kws))))
 
 (defun f-hs-count (s &optional note)
   (let* ((case-fold-search nil)
          (count (how-many s (point-min) (point-max))))
     (when (stringp note) (setq note (concat " (" note ")")))
-    (if (= count 0)
-	(message (concat "Only occurrence in buffer" note))
-      (message (concat "Occurrence %d/%d in buffer" note)
-	       (1+ (how-many s (point-min) (1- (point))))
-	       count))))
+    (message (concat (substring s 3 -3) ": %d/%d" note)
+	     (1+ (how-many s (point-min) (1- (point))))
+	     count)))
 
 (defun f-hs-get-s ()
   (let ((s (thing-at-point 'symbol)))
     (when s (concat "\\_<" (regexp-quote s) "\\_>"))))
+
+(defun f-hs-highlight-s (s)
+  (let* ((case-fold-search nil)
+	 (face `((bold) (underline)))
+	 (kw `(,s))
+	 overlay)
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward s nil t)
+	(setq overlay (make-overlay (match-beginning 0) (match-end 0))
+	      kw (append kw `(,overlay)))
+	(overlay-put overlay 'face face))
+      (push kw v-hs-kws))))
 
 (defun f-hs-jump (s dir &optional no-mark no-msg)
   (let* ((case-fold-search nil)
@@ -91,26 +85,15 @@
     (setq query-replace-defaults `(,(cons s replacement)))))
 
 (defun f-hs-remove-s (s)
-  (let ((keywords (assoc s v-hs-keywords-alist)))
-    (setq v-hs-keywords-alist
-          (delq keywords v-hs-keywords-alist))
-    (font-lock-remove-keywords nil (list keywords))
-    (f-font-lock-fontify)))
+  (let ((kw (assoc s v-hs-kws)))
+    (setq v-hs-kws (delq kw v-hs-kws))
+    (mapc 'delete-overlay (cdr kw))))
 
 (defvar v-hs-colors)
-(setq v-hs-colors '(
-		    "dodger blue"
-		    "hot pink"
-		    "orchid"
-		    "red"
-		    "salmon"
-		    "spring green"
-		    "tomato"
-		    "turquoise"
-		    ))
+(setq v-hs-colors '("dodger blue" "hot pink" "orchid" "red" "salmon" "spring green" "tomato" "turquoise"))
 
 (defvar v-hs-definition "(?def[a-z-]* ")
 (make-variable-buffer-local 'v-hs-definition)
 
-(defvar v-hs-keywords-alist nil)
-(make-variable-buffer-local 'v-hs-keywords-alist)
+(defvar v-hs-kws)
+(make-variable-buffer-local 'v-hs-kws)

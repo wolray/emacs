@@ -75,6 +75,8 @@
   (let ((module (buffer-name)))
     (save-buffer)
     (switch-to-haskell)
+    (goto-char (point-max))
+    (kill-region (line-beginning-position) (line-end-position))
     (insert (concat ":load " module))
     (comint-send-input)))
 
@@ -189,6 +191,22 @@
      (concat "/e,/select,"
 	     (convert-standard-filename buffer-file-name)))))
 
+(defun c-package-check ()
+  (interactive)
+  (let ((packages '(
+		    auto-complete
+		    color-theme-solarized
+		    ess
+		    haskell-mode
+		    magit
+		    markdown-mode
+		    matlab-mode
+		    )))
+    (dolist (pkg packages)
+      (unless (package-installed-p pkg)
+	(when (y-or-n-p (format "Package \"%s\" not found. Install it? " pkg))
+	  (package-install pkg))))))
+
 (defun c-pt-exchange-mark ()
   (interactive)
   (let ((pt v-pt-mark))
@@ -233,7 +251,7 @@
   (let ((old buffer-file-name) new)
     (when (and old (not (buffer-modified-p)))
       (setq new (read-file-name "Rename: " old))
-      (when (file-exists-p new) (error "File already exists!"))
+      (when (file-exists-p new) (error "File already exists"))
       (rename-file old new)
       (set-visited-file-name new t t))))
 
@@ -258,22 +276,20 @@
 (defun c-switch-to-next-buffer ()
   (interactive)
   (unless (minibufferp)
-    (let ((bn (buffer-name)) bf p)
+    (let ((bn (buffer-name)) p)
       (switch-to-next-buffer)
       (while (not (or visual-mode buffer-file-name p))
-	(setq bf (current-buffer))
-	(unless (get-buffer-process bf) (kill-buffer bf))
+	(unless (get-buffer-process (current-buffer)) (kill-buffer))
 	(switch-to-next-buffer)
 	(when (string= bn (buffer-name)) (setq p t))))))
 
 (defun c-switch-to-prev-buffer ()
   (interactive)
   (unless (minibufferp)
-    (let ((bn (buffer-name)) bf p)
+    (let ((bn (buffer-name)) p)
       (switch-to-prev-buffer)
       (while (not (or visual-mode buffer-file-name p))
-        (setq bf (current-buffer))
-	(unless (get-buffer-process bf) (kill-buffer bf))
+	(unless (get-buffer-process (current-buffer)) (kill-buffer))
 	(switch-to-prev-buffer)
 	(when (string= bn (buffer-name)) (setq p t))))))
 
@@ -370,7 +386,7 @@
 
 (defun f-clear-shell ()
   (unless (get-buffer-process (current-buffer))
-    (error "No inferior process!"))
+    (error "No inferior process"))
   (delete-region (point-min) (point-max))
   (comint-send-input)
   (goto-char (point-min))

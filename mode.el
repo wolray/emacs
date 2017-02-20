@@ -5,20 +5,6 @@
 	;; ("melpa" . "http://melpa.org/packages/")
 	("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
         ))
-(package-initialize)
-((lambda (&rest packages)
-   (dolist (pkg packages)
-     (unless (package-installed-p pkg)
-       (when (y-or-n-p (format "Package \"%s\" not found. Install it? " pkg))
-	 (package-install pkg)))))
- 'auto-complete
- 'color-theme-solarized
- 'ess
- 'ghc
- 'magit
- 'markdown-mode
- 'matlab-mode
- )
 (defun f-package-menu-mode ()
   (local-set-key (kbd "[") 'previous-line)
   (local-set-key (kbd "]") 'next-line)
@@ -40,6 +26,7 @@
 	      ac-source-files-in-current-dir
 	      ac-source-functions
 	      ac-source-words-in-all-buffer))
+(fset 'ac-symbol-documentation nil)
 (global-auto-complete-mode)
 (ac-linum-workaround)
 

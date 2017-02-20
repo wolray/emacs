@@ -48,15 +48,23 @@
 	     (1+ (how-many s (point-min) (1- (point))))
 	     count)))
 
-(defun f-hs-get-s ()
-  (let ((s (thing-at-point 'symbol)))
+(defun f-hs-get-s (&optional str)
+  (let ((s (or str (thing-at-point 'symbol))))
     (when s (concat "\\_<" (regexp-quote s) "\\_>"))))
 
 (defun f-hs-highlight-s (s)
   (let* ((case-fold-search nil)
-	 (face `((bold) (underline)))
-	 (kw `(,s))
-	 overlay)
+	 (limit (length v-hs-colors))
+	 (ind (random limit))
+	 (inds (mapcar 'cadr v-hs-kws))
+	 color face kw overlay)
+    (unless (< (length v-hs-kws) limit) (error "No more color"))
+    (while (cl-find ind inds)
+      (setq ind (random limit)))
+    (setq color (elt v-hs-colors ind)
+	  face `((foreground-color . "black")
+		 (background-color . ,color))
+	  kw `(,s ,ind))
     (save-excursion
       (goto-char (point-min))
       (while (re-search-forward s nil t)
@@ -80,17 +88,28 @@
 
 (defun f-hs-query-replace (s)
   (let ((replacement (read-string "Replacement: ")))
+    (f-hs-remove-s s)
     (beginning-of-thing 'symbol)
     (query-replace-regexp s replacement)
-    (setq query-replace-defaults `(,(cons s replacement)))))
+    (setq query-replace-defaults `(,(cons s replacement)))
+    (f-hs-highlight-s (f-hs-get-s replacement))))
 
 (defun f-hs-remove-s (s)
   (let ((kw (assoc s v-hs-kws)))
     (setq v-hs-kws (delq kw v-hs-kws))
-    (mapc 'delete-overlay (cdr kw))))
+    (mapc 'delete-overlay (cddr kw))))
 
 (defvar v-hs-colors)
-(setq v-hs-colors '("dodger blue" "hot pink" "orchid" "red" "salmon" "spring green" "tomato" "turquoise"))
+(setq v-hs-colors '(
+		    "dodger blue"
+		    "hot pink"
+		    "orchid"
+		    "red"
+		    "salmon"
+		    "spring green"
+		    "tomato"
+		    "turquoise"
+		    ))
 
 (defvar v-hs-definition "(?def[a-z-]* ")
 (make-variable-buffer-local 'v-hs-definition)

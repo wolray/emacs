@@ -4,8 +4,7 @@
     (let ((s (f-hs-get-s)))
       (when s
 	(if (assoc s v-hs-kws) (f-hs-remove-s s)
-	  (f-hs-highlight-s s)
-	  (f-hs-count s))))))
+	  (f-hs-count s (f-hs-highlight-s s)))))))
 
 (defun c-hs-jump-next ()
   (interactive)
@@ -70,20 +69,21 @@
       (while (re-search-forward s nil t)
 	(setq overlay (make-overlay (match-beginning 0) (match-end 0))
 	      kw (append kw `(,overlay)))
-	(overlay-put overlay 'face face))
-      (push kw v-hs-kws))))
+	(overlay-put overlay 'face face)))
+    (push kw v-hs-kws)
+    color))
 
 (defun f-hs-jump (s dir &optional no-mark no-msg)
   (let* ((case-fold-search nil)
 	 (bounds (bounds-of-thing-at-point 'symbol))
 	 (offset (- (point) (if (> dir 0) (cdr bounds) (car bounds)))))
-    (unless no-mark (push-mark nil t))
     (goto-char (- (point) offset))
     (let ((target (re-search-forward s nil t dir)))
       (unless target
 	(goto-char (if (> dir 0) (point-min) (point-max)))
 	(setq target (re-search-forward s nil nil dir)))
       (goto-char (+ target offset)))
+    (unless no-mark (push-mark nil t))
     (unless no-msg (f-hs-count s))))
 
 (defun f-hs-query-replace (s)
@@ -104,10 +104,10 @@
 		    "dodger blue"
 		    "hot pink"
 		    "orchid"
+		    "orange"
 		    "red"
 		    "salmon"
 		    "spring green"
-		    "tomato"
 		    "turquoise"
 		    ))
 

@@ -1,9 +1,9 @@
 ;; !package
 (setq package-archives
       '(("gnu"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
-	;; ("melpa" . "http://elpa.zilongshanren.com/melpa/")
+	("melpa" . "http://elpa.zilongshanren.com/melpa/")
 	;; ("melpa" . "http://melpa.org/packages/")
-	("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
+	;; ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
         ))
 (defun f-package-menu-mode ()
   (local-set-key (kbd "[") 'previous-line)
@@ -26,9 +26,9 @@
 	      ac-source-files-in-current-dir
 	      ac-source-functions
 	      ac-source-words-in-all-buffer))
-(fset 'ac-symbol-documentation nil)
 (global-auto-complete-mode)
 (ac-linum-workaround)
+(fset 'ac-symbol-documentation nil)
 
 ;; bs
 (defun f-bs-mode ()
@@ -145,6 +145,7 @@
 ;; matlab
 (defun f-matlab-mode ()
   (local-unset-key (kbd "C-c ."))
+  (auto-complete-mode)
   (setq auto-fill-function nil))
 (add-hook 'matlab-mode-hook 'f-matlab-mode)
 

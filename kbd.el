@@ -206,11 +206,12 @@
 (global-set-key (kbd "H-y") 'c-hs-jump-to-definition)
 
 ;; cua
-(require 'cua-rect)
-(define-key cua--rectangle-keymap (kbd "<left>") 'cua-move-rectangle-left)
-(define-key cua--rectangle-keymap (kbd "<return>") 'c-cua-sequence-rectangle)
-(define-key cua--rectangle-keymap (kbd "<right>") 'cua-move-rectangle-right)
-(define-key cua--rectangle-keymap (kbd "<tab>") 'cua-rotate-rectangle)
+(with-eval-after-load 'cua-rect
+  (define-key cua--rectangle-keymap (kbd "<left>") 'cua-move-rectangle-left)
+  (define-key cua--rectangle-keymap (kbd "<return>") 'c-cua-sequence-rectangle)
+  (define-key cua--rectangle-keymap (kbd "<right>") 'cua-move-rectangle-right)
+  (define-key cua--rectangle-keymap (kbd "<tab>") 'cua-rotate-rectangle)
+  )
 
 ;; edmacro
 (define-key edmacro-mode-map (kbd "M-g M-p") 'kill-this-buffer)

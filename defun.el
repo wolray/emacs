@@ -2,25 +2,14 @@
   `(let ((i (cl-position ,var ,values)))
      (setq ,var (elt ,values (if (and i (< (1+ i) (length ,values))) (1+ i) 0)))))
 
-(defun c-backward-kill-line ()
-  (interactive)
-  (kill-region (f-beginning-of-line 0) (point)))
-
-(defun c-backward-kill-sexp ()
-  (interactive)
-  (let ((pt (point))) (C-M-b) (kill-region (point) pt)))
-
 (defun c-clear-shell ()
   (interactive)
   (unless (minibufferp)
-    (let* ((modes '(python-mode ess-mode))
-	   (buffers '("*Python*" "*R*"))
-	   (i (cl-position major-mode modes)))
-      (if i (with-temp-buffer
-	      (switch-to-buffer (elt buffers i))
-	      (f-clear-shell)
-	      (switch-to-prev-buffer))
-	(f-clear-shell)))))
+    (when (get-buffer-process (current-buffer))
+      (delete-region (point-min) (point-max))
+      (comint-send-input)
+      (goto-char (point-min))
+      (kill-line))))
 
 (defun c-copy-buffer ()
   (interactive)
@@ -257,8 +246,9 @@
 
 (defun c-revert-buffer ()
   (interactive)
-  (and (not (minibufferp)) (buffer-modified-p)
-       (revert-buffer t t)))
+  (when (and (not (minibufferp)) (buffer-modified-p))
+    (c-hs-remove-all)
+    (revert-buffer t t)))
 
 (defun c-set-or-exchange-mark (arg)
   (interactive "P")
@@ -383,14 +373,6 @@
     (cond ((eq arg 0) pt)
 	  ((eq arg 1) co)
 	  (t (move-to-column co)))))
-
-(defun f-clear-shell ()
-  (unless (get-buffer-process (current-buffer))
-    (error "No inferior process"))
-  (delete-region (point-min) (point-max))
-  (comint-send-input)
-  (goto-char (point-min))
-  (kill-line))
 
 (defun f-delete-trailing-whitespace ()
   (save-excursion

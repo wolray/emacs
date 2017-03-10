@@ -81,9 +81,9 @@
   (let (p)
     (save-excursion
       (backward-sexp)
-      (cond ((looking-at-p "\<\-")
+      (cond ((looking-at-p "<-")
 	     (insert "->") (delete-char 2))
-	    ((looking-at-p "\-\>")
+	    ((looking-at-p "->")
 	     (insert "<-") (delete-char 2))
 	    (t (setq p t))))
     (when p (insert "->"))))
@@ -212,6 +212,15 @@
   (interactive)
   (setq v-pt-mark (point)))
 
+(defun c-python-config-pandas ()
+  (interactive)
+  (insert (substring "
+pd.set_option('display.max_rows',10)
+pd.set_option('expand_frame_repr',False)
+pd.set_option('max_colwidth',20)
+pd.set_option('precision',4)
+" 1)))
+
 (defun c-python-shell-send-line ()
   (interactive)
   (python-shell-send-region
@@ -233,6 +242,7 @@
 
 (defun c-reload-current-mode ()
   (interactive)
+  (c-hs-remove-all)
   (funcall major-mode))
 
 (defun c-rename-file-and-buffer ()
@@ -240,7 +250,7 @@
   (let ((old buffer-file-name) new)
     (when (and old (not (buffer-modified-p)))
       (setq new (read-file-name "Rename: " old))
-      (when (file-exists-p new) (error "File already exists"))
+      (when (file-exists-p new) (user-error "File already exists"))
       (rename-file old new)
       (set-visited-file-name new t t))))
 

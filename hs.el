@@ -57,7 +57,7 @@
 	 (ind (random limit))
 	 (inds (mapcar 'cadr v-hs-kws))
 	 color face kw overlay)
-    (unless (< (length v-hs-kws) limit) (error "No more color"))
+    (unless (< (length v-hs-kws) limit) (user-error "No more color"))
     (while (cl-find ind inds)
       (setq ind (random limit)))
     (setq color (elt v-hs-colors ind)
@@ -103,8 +103,8 @@
 (setq v-hs-colors '(
 		    "dodger blue"
 		    "hot pink"
-		    "orchid"
 		    "orange"
+		    "orchid"
 		    "red"
 		    "salmon"
 		    "spring green"

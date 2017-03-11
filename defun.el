@@ -18,30 +18,6 @@
     (kill-ring-save (point-min) (point-max))
     (message "Current buffer copied")))
 
-(defun c-cua-rectangle-mark-mode (arg)
-  (interactive "P")
-  (if (minibufferp)
-      (progn (insert "\\,(f-incf)") (left-char))
-    (visual-mode -1)
-    (cua-rectangle-mark-mode)))
-
-(defun c-cua-sequence-rectangle (first incr fmt)
-  (interactive
-   (let ((seq (split-string
-	       (read-string (concat "1 (+1) ("
-				    (substring cua--rectangle-seq-format 1)
-				    "): ")))))
-     (list (string-to-number (or (car seq) "1"))
-    	   (string-to-number (or (cadr seq) "1"))
-	   (concat "%" (cadr (cdr seq))))))
-  (if (string= fmt "%") (setq fmt cua--rectangle-seq-format)
-    (setq cua--rectangle-seq-format fmt))
-  (cua--rectangle-operation 'clear nil t 1 nil
-			    (lambda (s e _l _r)
-			      (delete-region s e)
-			      (insert (format fmt first))
-			      (setq first (+ first incr)))))
-
 (defun c-cycle-search-whitespace-regexp ()
   (interactive)
   (unless (minibufferp)
@@ -59,38 +35,12 @@
   (switch-to-buffer (dired-noselect default-directory))
   (revert-buffer))
 
-(defun c-haskell-load-module ()
-  (interactive)
-  (let ((module (buffer-name)))
-    (save-buffer)
-    (switch-to-haskell)
-    (goto-char (point-max))
-    (kill-region (line-beginning-position) (line-end-position))
-    (insert (concat ":load " module))
-    (comint-send-input)))
-
 (defun c-indent-paragraph ()
   (interactive)
   (save-excursion
     (mark-paragraph)
     (indent-region (region-beginning) (region-end)))
   (when (bolp) (f-skip-chars)))
-
-(defun c-insert-arrow-1 ()
-  (interactive)
-  (let (p)
-    (save-excursion
-      (backward-sexp)
-      (cond ((looking-at-p "<-")
-	     (insert "->") (delete-char 2))
-	    ((looking-at-p "->")
-	     (insert "<-") (delete-char 2))
-	    (t (setq p t))))
-    (when p (insert "->"))))
-
-(defun c-insert-arrow-2 ()
-  (interactive)
-  (insert "=>"))
 
 (defun c-isearch-done ()
   (interactive)
@@ -160,6 +110,22 @@
     (setq defining-kbd-macro nil)
     (kmacro-start-macro arg)))
 
+(defun c-marker-exchange-mark ()
+  (interactive)
+  (let ((pt v-marker))
+    (setq v-marker (point))
+    (when pt (goto-char pt))))
+
+(defun c-marker-recall-mark ()
+  (interactive)
+  (let ((pt (mark)))
+    (push-mark nil t)
+    (when pt (goto-char pt))))
+
+(defun c-marker-set-mark ()
+  (interactive)
+  (setq v-marker (point)))
+
 (defun c-move-backward-line ()
   (interactive)
   (cond ((bolp) (end-of-line))
@@ -179,52 +145,6 @@
      "open" "explorer"
      (concat "/e,/select,"
 	     (convert-standard-filename buffer-file-name)))))
-
-(defun c-package-check ()
-  (interactive)
-  (let ((packages '(
-		    auto-complete
-		    color-theme-solarized
-		    ess
-		    haskell-mode
-		    magit
-		    markdown-mode
-		    matlab-mode
-		    )))
-    (dolist (pkg packages)
-      (unless (package-installed-p pkg)
-	(when (y-or-n-p (format "Package \"%s\" not found. Install it? " pkg))
-	  (package-install pkg))))))
-
-(defun c-pt-exchange-mark ()
-  (interactive)
-  (let ((pt v-pt-mark))
-    (setq v-pt-mark (point))
-    (when pt (goto-char pt))))
-
-(defun c-pt-recall-mark ()
-  (interactive)
-  (let ((pt (mark)))
-    (push-mark nil t)
-    (when pt (goto-char pt))))
-
-(defun c-pt-set-mark ()
-  (interactive)
-  (setq v-pt-mark (point)))
-
-(defun c-python-config-pandas ()
-  (interactive)
-  (insert (substring "
-pd.set_option('display.max_rows',10)
-pd.set_option('expand_frame_repr',False)
-pd.set_option('max_colwidth',20)
-pd.set_option('precision',4)
-" 1)))
-
-(defun c-python-shell-send-line ()
-  (interactive)
-  (python-shell-send-region
-   (line-beginning-position) (line-end-position)))
 
 (defun c-query-replace ()
   (interactive)
@@ -271,6 +191,7 @@ pd.set_option('precision',4)
     (if (use-region-p)
 	(sort-lines nil (region-beginning) (region-end))
       (when (y-or-n-p "Sort all paragraphs?")
+	(setq v-marker (point))
 	(sort-paragraphs nil (point-min) (point-max))))))
 
 (defun c-switch-to-next-buffer ()
@@ -417,8 +338,8 @@ pd.set_option('precision',4)
 
 (defvar v-frame-alpha 100)
 
-(defvar v-pt-mark nil)
-(make-variable-buffer-local 'v-pt-mark)
+(defvar v-marker)
+(make-variable-buffer-local 'v-marker)
 
-(defvar v-skip-chars nil)
+(defvar v-skip-chars)
 (make-variable-buffer-local 'v-skip-chars)

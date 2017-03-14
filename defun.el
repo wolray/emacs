@@ -221,8 +221,8 @@
 (defun c-tab ()
   (interactive)
   (if (or (minibufferp) buffer-read-only (not auto-complete-mode)
-	  (bobp)
-	  (save-excursion (left-char) (looking-at-p "[^[:alnum:]-_]")))
+	  (region-active-p)
+	  (looking-at-p "[[:alnum:]-_]"))
       (TAB)
     (auto-complete)))
 

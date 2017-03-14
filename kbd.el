@@ -131,6 +131,7 @@
 (global-set-key (kbd "C-x 8") 'beginning-of-buffer)
 (global-set-key (kbd "C-x 9") 'end-of-buffer)
 (global-set-key (kbd "C-x DEL") 'nil)
+(global-set-key (kbd "C-x b") 'byte-recompile-directory)
 (global-set-key (kbd "C-x c") 'save-buffers-kill-terminal)
 (global-set-key (kbd "C-x d") 'c-dired)
 (global-set-key (kbd "C-x e") 'eval-last-sexp)
@@ -233,3 +234,8 @@
 (define-key query-replace-map (kbd "4") 'recenter)
 (define-key query-replace-map (kbd "h") 'automatic)
 (define-key query-replace-map (kbd "r") 'backup)
+
+;; with-editor
+(with-eval-after-load 'with-editor
+  (define-key with-editor-mode-map (kbd "C-c k") 'with-editor-cancel)
+  )

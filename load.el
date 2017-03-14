@@ -1,19 +1,19 @@
 ;; buffer
-(delete-selection-mode 1)
-(electric-pair-mode 1)
+(delete-selection-mode)
+(electric-pair-mode)
 (fset 'yes-or-no-p 'y-or-n-p)
-(setq x-select-enable-clipboard t)
+(setq select-enable-clipboard t)
 (setq-default cursor-type 'bar)
 (setq-default indent-tabs-mode t)
-(show-paren-mode 1)
+(show-paren-mode)
 
 ;; font
-(defmacro m-set-font (en cn)
-  `(progn
-     (set-default-font ,en)
-     (set-fontset-font "fontset-default" 'gb18030 ,cn)))
-(m-set-font "monaco-11" "楷体-13")
-;; (m-set-font "ubuntu mono-13" "微软雅黑-12")
+((lambda (en cn)
+   (set-frame-font en)
+   (set-fontset-font "fontset-default" 'gb18030 cn))
+ "monaco-11" "楷体-13"
+ ;; "ubuntu mono-13" "微软雅黑-12"
+ )
 
 ;; frame
 (menu-bar-mode 0)
@@ -33,15 +33,18 @@
 (setq ring-bell-function 'ignore)
 (setq save-abbrevs nil)
 
+;; theme
+(load-theme 'solarized t)
+
 ;; window
-(column-number-mode 1)
-(line-number-mode 1)
+(column-number-mode)
+(line-number-mode)
 (scroll-bar-mode 0)
-(winner-mode 1)
+(winner-mode)
 
 ;; ~load
 (setq default-directory v-default-dir)
-(load "kbd.el")
-(load "defun.el")
-(load "hs.el")
-(load "mode.el")
+(load "kbd")
+(load "defun")
+(load "hs")
+(load "mode")

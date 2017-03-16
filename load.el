@@ -34,7 +34,8 @@
 (setq save-abbrevs nil)
 
 ;; theme
-(load-theme 'solarized t)
+(when (package-installed-p 'color-theme-solarized)
+  (load-theme 'solarized t))
 
 ;; window
 (column-number-mode)
@@ -46,5 +47,5 @@
 (setq default-directory v-default-dir)
 (load "kbd")
 (load "defun")
-(load "hs")
+(load "so")
 (load "mode")

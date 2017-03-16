@@ -2,6 +2,16 @@
   `(let ((i (cl-position ,var ,values)))
      (setq ,var (elt ,values (if (and i (< (1+ i) (length ,values))) (1+ i) 0)))))
 
+(defun c-byte-compile ()
+  (interactive)
+  (let ((file (buffer-name)))
+    (and (eq major-mode 'emacs-lisp-mode)
+	 (file-exists-p file)
+	 (if (not (file-exists-p (concat file "c")))
+	     (when (y-or-n-p "Byte compile this file?") (byte-compile-file file))
+	   (when (y-or-n-p "Byte recompile this directory?")
+	     (byte-recompile-directory default-directory))))))
+
 (defun c-clear-shell ()
   (interactive)
   (unless (minibufferp)
@@ -93,7 +103,7 @@
   (if (minibufferp)
       (progn (if (eq last-command this-command) (insert "'()")
 	       (insert "\\,(f-each )"))
-	     (left-char))
+	     (backward-char))
     (kmacro-edit-macro)))
 
 (defun c-kmacro-end-or-call-macro (arg)
@@ -151,8 +161,8 @@
   (unless (minibufferp)
     (if (use-region-p) (f-query-replace-region)
       (setq mark-active nil)
-      (let ((s (f-hs-get-s)))
-	(if (assoc s v-hs-kws) (f-hs-query-replace s)
+      (let ((s (f-so-get-s)))
+	(if (assoc s v-so-kws) (f-so-query-replace s)
 	  (call-interactively 'query-replace))))))
 
 (defun c-racket-send-buffer ()
@@ -162,7 +172,7 @@
 
 (defun c-reload-current-mode ()
   (interactive)
-  (c-hs-remove-all)
+  (c-so-remove-all)
   (funcall major-mode))
 
 (defun c-rename-file-and-buffer ()
@@ -177,7 +187,7 @@
 (defun c-revert-buffer ()
   (interactive)
   (when (and (not (minibufferp)) (buffer-modified-p))
-    (c-hs-remove-all)
+    (c-so-remove-all)
     (revert-buffer t t)))
 
 (defun c-set-or-exchange-mark (arg)
@@ -220,9 +230,16 @@
 
 (defun c-tab ()
   (interactive)
-  (if (or (minibufferp) buffer-read-only (not auto-complete-mode)
+  (if (or (minibufferp)
+	  buffer-read-only
+	  (not auto-complete-mode)
 	  (region-active-p)
-	  (looking-at-p "[[:alnum:]-_]"))
+	  (let ((re "[[:alnum:]-_]"))
+	    (or (looking-at-p re)
+		(bolp)
+		(save-excursion
+		  (backward-char)
+		  (not (looking-at-p re))))))
       (TAB)
     (auto-complete)))
 

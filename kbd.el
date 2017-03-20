@@ -70,9 +70,9 @@
 (m-map-key (kbd "M-9") 'c-transpose-lines-down)
 (m-map-key (kbd "M-<") nil)
 (m-map-key (kbd "M->") nil)
-(m-map-key (kbd "M-[") 'c-toggle-page)
+(m-map-key (kbd "M-[") nil)
 (m-map-key (kbd "M-\"") nil)
-(m-map-key (kbd "M-]") 'c-page-down)
+(m-map-key (kbd "M-]") nil)
 (m-map-key (kbd "M-a") nil)
 (m-map-key (kbd "M-b") nil)
 (m-map-key (kbd "M-c") nil)
@@ -120,7 +120,7 @@
 (global-set-key (kbd "C-c c") 'C-c+C-c)
 (global-set-key (kbd "C-c g") 'C-g)
 (global-set-key (kbd "C-c h") 'C-c+C-h)
-(global-set-key (kbd "C-c i") 'c-sort-lines-or-paragraphs)
+(global-set-key (kbd "C-c i") 'c-sort-text)
 (global-set-key (kbd "C-c p") 'c-kmacro-start-macro)
 (global-set-key (kbd "C-c y") 'C-c+C-y)
 (global-set-key (kbd "C-c z") 'C-c+C-z)
@@ -215,7 +215,7 @@
   (define-key cua--rectangle-keymap (kbd "<left>") 'cua-move-rectangle-left)
   (define-key cua--rectangle-keymap (kbd "<return>") 'c-cua-sequence-rectangle)
   (define-key cua--rectangle-keymap (kbd "<right>") 'cua-move-rectangle-right)
-  (define-key cua--rectangle-keymap (kbd "<tab>") 'cua-rotate-rectangle)
+  (define-key cua--rectangle-keymap (kbd "M-g TAB") 'cua-rotate-rectangle)
   )
 
 ;; edmacro
@@ -224,9 +224,10 @@
 ;; isearch
 (define-key isearch-mode-map (kbd "H-SPC") 'c-isearch-done)
 (define-key isearch-mode-map (kbd "H-i") 'c-isearch-yank)
-(define-key isearch-mode-map (kbd "H-k") 'isearch-query-replace)
 (define-key isearch-mode-map (kbd "H-o") 'isearch-repeat-forward)
+(define-key isearch-mode-map (kbd "H-p") 'isearch-query-replace)
 (define-key isearch-mode-map (kbd "H-u") 'isearch-repeat-backward)
+(define-key isearch-mode-map (kbd "M-g M-p") 'isearch-query-replace-regexp)
 
 ;; query-replace
 (define-key query-replace-map (kbd "4") 'recenter)

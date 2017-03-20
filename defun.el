@@ -26,7 +26,7 @@
   (unless (minibufferp)
     (f-delete-trailing-whitespace)
     (kill-ring-save (point-min) (point-max))
-    (message "Current buffer copied")))
+    (message "Current buffer saved")))
 
 (defun c-cycle-search-whitespace-regexp ()
   (interactive)
@@ -74,7 +74,7 @@
    (if (use-region-p) (list (region-beginning) (region-end))
      (list (f-beginning-of-line 0) (line-end-position))))
   (kill-ring-save bg ed)
-  (unless (minibufferp) (message "Current line copied")))
+  (unless (minibufferp) (message "Current line saved")))
 
 (defun c-kill-sexp ()
   (interactive)
@@ -100,11 +100,10 @@
 
 (defun c-kmacro-edit-macro ()
   (interactive)
-  (if (minibufferp)
-      (progn (if (eq last-command this-command) (insert "'()")
-	       (insert "\\,(f-each )"))
-	     (backward-char))
-    (kmacro-edit-macro)))
+  (if (not (minibufferp)) (kmacro-edit-macro)
+    (if (eq last-command this-command) (insert "'()")
+      (insert "\\,(f-each )"))
+    (backward-char)))
 
 (defun c-kmacro-end-or-call-macro (arg)
   (interactive "P")
@@ -195,14 +194,26 @@
   (if (use-region-p) (exchange-point-and-mark)
     (set-mark-command arg)))
 
-(defun c-sort-lines-or-paragraphs ()
+(defun c-sort-text ()
   (interactive)
   (unless (minibufferp)
-    (if (use-region-p)
-	(sort-lines nil (region-beginning) (region-end))
-      (when (y-or-n-p "Sort all paragraphs?")
-	(setq v-marker (point))
-	(sort-paragraphs nil (point-min) (point-max))))))
+    (let ((pt (point)) (v-skip-chars "\n"))
+      (if (use-region-p)
+	  (save-restriction
+	    (let ((bg (region-beginning))
+		  (ed (region-end))
+		  recfun)
+	      (goto-char bg)
+	      (setq recfun (if (bolp) (cons 'forward-line 'end-of-line)
+			     (cons 'f-skip-chars 'forward-sexp)))
+	      (narrow-to-region bg ed)
+	      (f-skip-chars)
+	      (sort-subr nil (car recfun) (cdr recfun))))
+	(when (y-or-n-p "Sort all paragraphs?")
+	  (setq v-marker (point))
+	  (goto-char (point-min))
+	  (sort-subr nil 'f-skip-chars 'forward-paragraph)))
+      (goto-char pt))))
 
 (defun c-switch-to-next-buffer ()
   (interactive)
@@ -230,18 +241,18 @@
 
 (defun c-tab ()
   (interactive)
-  (if (or (minibufferp)
-	  buffer-read-only
-	  (not auto-complete-mode)
-	  (region-active-p)
-	  (let ((re "[[:alnum:]-_]"))
-	    (or (looking-at-p re)
-		(bolp)
-		(save-excursion
-		  (backward-char)
-		  (not (looking-at-p re))))))
-      (TAB)
-    (auto-complete)))
+  (let ((re "[[:alnum:]-_]"))
+    (if (or (minibufferp)
+	    buffer-read-only
+	    (not auto-complete-mode)
+	    (region-active-p)
+	    (looking-at-p re)
+	    (bolp)
+	    (save-excursion
+	      (backward-char)
+	      (not (looking-at-p re))))
+	(TAB)
+      (auto-complete))))
 
 (defun c-toggle-comment (bg ed)
   (interactive
@@ -272,10 +283,10 @@
     (let ((co (current-column)))
       (f-delete-trailing-whitespace)
       (beginning-of-line)
-      (or (bobp) (eobp)
-	  (progn (forward-line)
-		 (transpose-lines -1)
-		 (beginning-of-line 0)))
+      (unless (or (bobp) (eobp))
+	(forward-line)
+	(transpose-lines -1)
+	(beginning-of-line 0))
       (move-to-column co))))
 
 (defun c-transpose-paragraphs-down ()
@@ -315,8 +326,7 @@
 (defun f-beginning-of-line (&optional arg)
   (let (pt co)
     (save-excursion
-      (beginning-of-line)
-      (f-skip-chars)
+      (f-skip-chars (line-beginning-position))
       (setq pt (point) co (current-column)))
     (cond ((eq arg 0) pt)
 	  ((eq arg 1) co)
@@ -331,7 +341,7 @@
 (defun f-each (ls &optional repeat)
   (let ((index (/ (cl-incf count 0) (or repeat 1))))
     (if (< index (length ls)) (elt ls index)
-      (keyboard-quit))))
+      (C-g))))
 
 (defun f-incf (&optional first incr repeat)
   (let ((index (/ (cl-incf count 0) (or repeat 1))))
@@ -350,8 +360,9 @@
     (query-replace region replacement)
     (setq query-replace-defaults `(,(cons region replacement)))))
 
-(defun f-skip-chars (&optional chars)
-  (skip-chars-forward (concat " \t" v-skip-chars chars)))
+(defun f-skip-chars (&optional start)
+  (when start (goto-char start))
+  (skip-chars-forward (concat " \t" v-skip-chars)))
 
 (defvar v-frame-alpha 100)
 

@@ -67,16 +67,16 @@
 (defun f-so-put-s (s)
   (let* ((case-fold-search nil)
 	 (limit (length v-so-colors))
-	 (ind (random limit))
-	 (inds (mapcar 'cadr v-so-kws))
+	 (index (random limit))
+	 (indexes (mapcar 'cadr v-so-kws))
 	 color face kw overlay)
     (unless (< (length v-so-kws) limit) (user-error "No more color"))
-    (while (cl-find ind inds)
-      (setq ind (random limit)))
-    (setq color (elt v-so-colors ind)
+    (while (cl-find index indexes)
+      (setq index (random limit)))
+    (setq color (elt v-so-colors index)
 	  face `((foreground-color . "black")
 		 (background-color . ,color))
-	  kw `(,s ,ind))
+	  kw `(,s ,index))
     (save-excursion
       (goto-char (point-min))
       (while (re-search-forward s nil t)
@@ -100,16 +100,14 @@
     (mapc 'delete-overlay (cddr kw))))
 
 (defvar v-so-colors)
-(setq v-so-colors '(
-		    "dodger blue"
+(setq v-so-colors '("dodger blue"
 		    "hot pink"
 		    "orange"
 		    "orchid"
 		    "red"
 		    "salmon"
 		    "spring green"
-		    "turquoise"
-		    ))
+		    "turquoise"))
 
 (defvar v-so-definition "(?def[a-z-]* ")
 (make-variable-buffer-local 'v-so-definition)

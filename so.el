@@ -2,15 +2,21 @@
   (interactive)
   (unless (minibufferp)
     (let ((s (f-so-get-s)))
-      (setq mark-active nil)
-      (when s (f-so-jump s 1)))))
+      (when s
+	(setq mark-active nil)
+	(push-mark nil t)
+	(f-so-jump s 1)
+	(f-so-count s)))))
 
 (defun c-so-jump-prev ()
   (interactive)
   (unless (minibufferp)
     (let ((s (f-so-get-s)))
-      (setq mark-active nil)
-      (when s (f-so-jump s -1)))))
+      (when s
+	(setq mark-active nil)
+	(push-mark nil t)
+	(f-so-jump s -1)
+	(f-so-count s)))))
 
 (defun c-so-jump-to-definition ()
   (interactive)
@@ -22,7 +28,7 @@
 	(while (and p (not (save-excursion
 			     (f-beginning-of-line)
 			     (looking-at-p (concat v-so-definition s)))))
-	  (f-so-jump s 1 t t)
+	  (f-so-jump s 1)
 	  (when (= pt (point)) (setq p nil)))
 	(f-so-count s)))))
 
@@ -40,18 +46,22 @@
     (mapc 'f-so-remove-s (mapcar 'car v-so-kws))))
 
 (defun f-so-count (s &optional note)
-  (let* ((case-fold-search nil)
-         (count (how-many s (point-min) (point-max))))
-    (when (stringp note) (setq note (concat " (" note ")")))
-    (message (concat (substring s 3 -3) ": %d/%d" note)
-	     (1+ (how-many s (point-min) (1- (point))))
-	     count)))
+  (let ((case-fold-search nil)
+	(kw (assoc s v-so-kws))
+	bounds overlay)
+    (when kw
+      (setq bounds (bounds-of-thing-at-point 'symbol)
+	    overlay (car (overlays-at (car bounds))))
+      (when (stringp note) (setq note (concat " (" note ")")))
+      (message (concat (substring s 3 -3) ": %d/%d" note)
+	       (- (cl-position overlay kw) 1)
+	       (- (length kw) 2)))))
 
 (defun f-so-get-s (&optional str)
   (let ((s (or str (thing-at-point 'symbol))))
     (when s (concat "\\_<" (regexp-quote s) "\\_>"))))
 
-(defun f-so-jump (s dir &optional no-mark no-msg)
+(defun f-so-jump (s dir)
   (let* ((case-fold-search nil)
 	 (bounds (bounds-of-thing-at-point 'symbol))
 	 (offset (- (point) (if (> dir 0) (cdr bounds) (car bounds)))))
@@ -60,9 +70,7 @@
       (unless target
 	(goto-char (if (> dir 0) (point-min) (point-max)))
 	(setq target (re-search-forward s nil nil dir)))
-      (goto-char (+ target offset)))
-    (unless no-mark (push-mark nil t))
-    (unless no-msg (f-so-count s))))
+      (goto-char (+ target offset)))))
 
 (defun f-so-put-s (s)
   (let* ((case-fold-search nil)
@@ -70,7 +78,7 @@
 	 (index (random limit))
 	 (indexes (mapcar 'cadr v-so-kws))
 	 color face kw overlay)
-    (unless (< (length v-so-kws) limit) (user-error "No more color"))
+    (when (>= (length v-so-kws) limit) (user-error "No more color"))
     (while (cl-find index indexes)
       (setq index (random limit)))
     (setq color (elt v-so-colors index)

@@ -160,8 +160,8 @@
   (unless (minibufferp)
     (if (use-region-p) (f-query-replace-region)
       (setq mark-active nil)
-      (let ((s (f-so-get-s)))
-	(if (assoc s v-so-kws) (f-so-query-replace s)
+      (let ((s (so-get-s)))
+	(if (assoc s so-keywords) (so-query-replace-s s)
 	  (call-interactively 'query-replace))))))
 
 (defun c-racket-send-buffer ()
@@ -171,7 +171,7 @@
 
 (defun c-reload-current-mode ()
   (interactive)
-  (c-so-remove-all)
+  (so-remove-all)
   (funcall major-mode))
 
 (defun c-rename-file-and-buffer ()
@@ -186,7 +186,7 @@
 (defun c-revert-buffer ()
   (interactive)
   (when (and (not (minibufferp)) (buffer-modified-p))
-    (c-so-remove-all)
+    (so-remove-all)
     (revert-buffer t t)))
 
 (defun c-set-or-exchange-mark (arg)

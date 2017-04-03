@@ -45,6 +45,18 @@
   (switch-to-buffer (dired-noselect default-directory))
   (revert-buffer))
 
+(defun c-each ()
+  (interactive)
+  (when (minibufferp)
+    (if (eq last-command this-command) (insert "'()")
+      (insert "\\,(f-each )"))
+    (backward-char)))
+
+(defun c-incf ()
+  (interactive)
+  (when (minibufferp)
+    (insert "\\,(f-incf)") (backward-char)))
+
 (defun c-indent-paragraph ()
   (interactive)
   (save-excursion
@@ -97,13 +109,6 @@
 (defun c-kmacro-delete-ring-head ()
   (interactive)
   (unless (minibufferp) (kmacro-delete-ring-head)))
-
-(defun c-kmacro-edit-macro ()
-  (interactive)
-  (if (not (minibufferp)) (kmacro-edit-macro)
-    (if (eq last-command this-command) (insert "'()")
-      (insert "\\,(f-each )"))
-    (backward-char)))
 
 (defun c-kmacro-end-or-call-macro (arg)
   (interactive "P")
@@ -160,9 +165,7 @@
   (unless (minibufferp)
     (if (use-region-p) (f-query-replace-region)
       (setq mark-active nil)
-      (let ((s (so-get-s)))
-	(if (assoc s so-keywords) (so-query-replace-s s)
-	  (call-interactively 'query-replace))))))
+      (call-interactively 'query-replace))))
 
 (defun c-racket-send-buffer ()
   (interactive)
@@ -371,3 +374,5 @@
 
 (defvar v-skip-chars)
 (make-variable-buffer-local 'v-skip-chars)
+
+(require 'symbol-overlay)

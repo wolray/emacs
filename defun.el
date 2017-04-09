@@ -174,7 +174,7 @@
 
 (defun c-reload-current-mode ()
   (interactive)
-  (so-remove-all)
+  (symbol-overlay-remove-all)
   (funcall major-mode))
 
 (defun c-rename-file-and-buffer ()
@@ -189,7 +189,7 @@
 (defun c-revert-buffer ()
   (interactive)
   (when (and (not (minibufferp)) (buffer-modified-p))
-    (so-remove-all)
+    (symbol-overlay-remove-all)
     (revert-buffer t t)))
 
 (defun c-set-or-exchange-mark (arg)

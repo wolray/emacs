@@ -59,20 +59,36 @@
 
 (defun c-indent-paragraph ()
   (interactive)
-  (save-excursion
-    (mark-paragraph)
-    (indent-region (region-beginning) (region-end)))
-  (when (bolp) (f-skip-chars)))
+  (unless buffer-read-only
+    (save-excursion
+      (mark-paragraph)
+      (indent-region (region-beginning) (region-end)))
+    (when (bolp) (f-skip-chars))))
 
 (defun c-isearch-done ()
   (interactive)
   (isearch-done))
 
+(defun c-isearch-forward ()
+  (interactive)
+  (if (use-region-p)
+      (let* ((beg (region-beginning))
+	     (text (buffer-substring-no-properties beg (region-end))))
+	(setq mark-active nil)
+	(goto-char beg)
+	(isearch-forward nil t)
+	(isearch-yank-string text))
+    (call-interactively 'isearch-forward)))
+
 (defun c-isearch-yank ()
   (interactive)
-  (if (not (use-region-p)) (isearch-yank-string (current-kill 0))
-    (setq mark-active nil)
-    (isearch-yank-internal (lambda () (mark)))))
+  (isearch-yank-string (current-kill 0)))
+
+(defun c-kill-buffer-other-window ()
+  (interactive)
+  (other-window 1)
+  (kill-this-buffer)
+  (other-window -1))
 
 (defun c-kill-region ()
   (interactive)
@@ -81,11 +97,11 @@
     (kill-whole-line)
     (f-skip-chars)))
 
-(defun c-kill-ring-save (bg ed)
+(defun c-kill-ring-save (beg end)
   (interactive
    (if (use-region-p) (list (region-beginning) (region-end))
      (list (f-beginning-of-line 0) (line-end-position))))
-  (kill-ring-save bg ed)
+  (kill-ring-save beg end)
   (unless (minibufferp) (message "Current line saved")))
 
 (defun c-kill-sexp ()
@@ -96,14 +112,14 @@
   (interactive)
   (unless (minibufferp)
     (if (and last-kbd-macro (not kmacro-ring))
-	(kmacro-display last-kbd-macro nil "Last macro")
+	(kmacro-display last-kbd-macro nil "Macro")
       (kmacro-cycle-ring-next))))
 
 (defun c-kmacro-cycle-ring-previous ()
   (interactive)
   (unless (minibufferp)
     (if (and last-kbd-macro (not kmacro-ring))
-	(kmacro-display last-kbd-macro nil "Last macro")
+	(kmacro-display last-kbd-macro nil "Macro")
       (kmacro-cycle-ring-previous))))
 
 (defun c-kmacro-delete-ring-head ()
@@ -203,14 +219,14 @@
     (let ((pt (point)) (v-skip-chars "\n"))
       (if (use-region-p)
 	  (save-restriction
-	    (let ((bg (region-beginning))
-		  (ed (region-end))
+	    (let ((beg (region-beginning))
+		  (end (region-end))
 		  recfun)
-	      (goto-char bg)
+	      (goto-char beg)
 	      (setq recfun (if (bolp) (cons 'forward-line 'end-of-line)
 			     (f-skip-chars)
 			     (cons 'f-skip-chars 'forward-sexp)))
-	      (narrow-to-region bg ed)
+	      (narrow-to-region beg end)
 	      (sort-subr nil (car recfun) (cdr recfun))))
 	(when (y-or-n-p "Sort all paragraphs?")
 	  (setq v-marker (point))
@@ -244,25 +260,20 @@
 
 (defun c-tab ()
   (interactive)
-  (let ((re "[[:alnum:]-_]"))
-    (if (or (minibufferp)
-	    buffer-read-only
-	    (not auto-complete-mode)
-	    (region-active-p)
-	    (looking-at-p re)
-	    (bolp)
-	    (save-excursion
-	      (backward-char)
-	      (not (looking-at-p re))))
-	(TAB)
-      (auto-complete))))
+  (if (or (minibufferp)
+	  buffer-read-only
+	  (not auto-complete-mode)
+	  (region-active-p)
+	  (not (looking-at-p "\\_>")))
+      (TAB)
+    (auto-complete)))
 
-(defun c-toggle-comment (bg ed)
+(defun c-toggle-comment (beg end)
   (interactive
    (if (use-region-p) (list (region-beginning) (region-end))
      (list (line-beginning-position) (line-beginning-position 2))))
   (unless (minibufferp)
-    (comment-or-uncomment-region bg ed)))
+    (comment-or-uncomment-region beg end)))
 
 (defun c-toggle-frame ()
   (interactive)

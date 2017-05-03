@@ -387,3 +387,4 @@
 (make-variable-buffer-local 'v-skip-chars)
 
 (require 'symbol-overlay)
+(require 'yacua)

@@ -45,4 +45,5 @@
 ;; (setq default-directory "d:/sync/")
 ;; (add-to-list 'load-path (concat default-directory "emacs/init"))
 ;; (add-to-list 'load-path (concat default-directory "emacs/symbol-overlay"))
+;; (add-to-list 'load-path (concat default-directory "emacs/yacua"))
 ;; (load "load" nil t)

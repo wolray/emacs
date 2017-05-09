@@ -179,7 +179,7 @@
 (defun c-query-replace ()
   (interactive)
   (unless (minibufferp)
-    (if (use-region-p) (f-query-replace-region)
+    (if (use-region-p) (f-query-replace-region (region-beginning) (region-end))
       (setq mark-active nil)
       (call-interactively 'query-replace))))
 
@@ -327,15 +327,18 @@
 
 (defun c-word-capitalize ()
   (interactive)
-  (capitalize-word -1))
+  (if (use-region-p) (capitalize-region (region-beginning) (region-end))
+    (capitalize-word 1)))
 
 (defun c-word-downcase ()
   (interactive)
-  (downcase-word -1))
+  (if (use-region-p) (downcase-region (region-beginning) (region-end))
+    (downcase-word 1)))
 
 (defun c-word-upcase ()
   (interactive)
-  (upcase-word -1))
+  (if (use-region-p) (upcase-region (region-beginning) (region-end))
+    (upcase-word 1)))
 
 (defun f-beginning-of-line (&optional arg)
   (let (pt co)
@@ -365,14 +368,13 @@
   (setq paragraph-start "\f\\|[ \t]*$"
 	paragraph-separate "[ \t\f]*$"))
 
-(defun f-query-replace-region ()
-  (let ((region (buffer-substring-no-properties
-		 (region-beginning) (region-end)))
+(defun f-query-replace-region (beg end)
+  (let ((txt (buffer-substring-no-properties beg end))
 	(replacement (read-string "Replacement: ")))
-    (goto-char (region-beginning))
+    (goto-char beg)
     (setq mark-active nil)
-    (query-replace region replacement)
-    (setq query-replace-defaults `(,(cons region replacement)))))
+    (query-replace txt replacement)
+    (setq query-replace-defaults `(,(cons txt replacement)))))
 
 (defun f-skip-chars (&optional start)
   (when start (goto-char start))

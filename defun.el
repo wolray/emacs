@@ -8,9 +8,9 @@
     (and (eq major-mode 'emacs-lisp-mode)
 	 (file-exists-p file)
 	 (if (not (file-exists-p (concat file "c")))
-	     (when (y-or-n-p "Byte compile this file?") (byte-compile-file file))
-	   (when (y-or-n-p "Byte recompile this directory?")
-	     (byte-recompile-directory default-directory))))))
+	     (and (y-or-n-p "Byte compile this file?") (byte-compile-file file))
+	   (and (y-or-n-p "Byte recompile this directory?")
+		(byte-recompile-directory default-directory))))))
 
 (defun c-clear-shell ()
   (interactive)
@@ -54,16 +54,15 @@
 
 (defun c-incf ()
   (interactive)
-  (when (minibufferp)
-    (insert "\\,(f-incf)") (backward-char)))
+  (when (minibufferp) (insert "\\,(f-incf)") (backward-char)))
 
 (defun c-indent-paragraph ()
   (interactive)
-  (unless buffer-read-only
+  (unless (or (minibufferp) buffer-read-only)
     (save-excursion
       (mark-paragraph)
       (indent-region (region-beginning) (region-end)))
-    (when (bolp) (f-skip-chars))))
+    (and (bolp) (f-skip-chars))))
 
 (defun c-isearch-done ()
   (interactive)
@@ -102,7 +101,7 @@
    (if (use-region-p) (list (region-beginning) (region-end))
      (list (f-beginning-of-line 0) (line-end-position))))
   (kill-ring-save beg end)
-  (unless (minibufferp) (message "Current line saved")))
+  (or (minibufferp) (message "Current line saved")))
 
 (defun c-kill-sexp ()
   (interactive)
@@ -122,10 +121,6 @@
 	(kmacro-display last-kbd-macro nil "Macro")
       (kmacro-cycle-ring-previous))))
 
-(defun c-kmacro-delete-ring-head ()
-  (interactive)
-  (unless (minibufferp) (kmacro-delete-ring-head)))
-
 (defun c-kmacro-end-or-call-macro (arg)
   (interactive "P")
   (unless (minibufferp)
@@ -142,19 +137,22 @@
 
 (defun c-marker-exchange-mark ()
   (interactive)
-  (let ((pt v-marker))
-    (setq v-marker (point))
-    (when pt (goto-char pt))))
+  (unless (minibufferp)
+    (let ((pt v-marker))
+      (setq v-marker (point))
+      (and pt (goto-char pt)))))
 
 (defun c-marker-recall-mark ()
   (interactive)
-  (let ((pt (mark)))
-    (push-mark nil t)
-    (when pt (goto-char pt))))
+  (unless (minibufferp)
+    (let ((pt (mark)))
+      (push-mark nil t)
+      (and pt (goto-char pt)))))
 
 (defun c-marker-set-mark ()
   (interactive)
-  (setq v-marker (point)))
+  (unless (minibufferp)
+    (setq v-marker (point))))
 
 (defun c-move-backward-line ()
   (interactive)
@@ -170,11 +168,11 @@
 
 (defun c-open-folder ()
   (interactive)
-  (when buffer-file-name
-    (w32-shell-execute
-     "open" "explorer"
-     (concat "/e,/select,"
-	     (convert-standard-filename buffer-file-name)))))
+  (and buffer-file-name
+       (w32-shell-execute
+	"open" "explorer"
+	(concat "/e,/select,"
+		(convert-standard-filename buffer-file-name)))))
 
 (defun c-query-replace ()
   (interactive)
@@ -185,26 +183,28 @@
 
 (defun c-racket-send-buffer ()
   (interactive)
-  (racket-send-region
-   (point-min) (point-max)))
+  (unless (minibufferp)
+    (racket-send-region
+     (point-min) (point-max))))
 
 (defun c-reload-current-mode ()
   (interactive)
-  (symbol-overlay-remove-all)
-  (funcall major-mode))
+  (unless (minibufferp)
+    (symbol-overlay-remove-all)
+    (funcall major-mode)))
 
 (defun c-rename-file-and-buffer ()
   (interactive)
   (let ((old buffer-file-name) new)
     (when (and old (not (buffer-modified-p)))
       (setq new (read-file-name "Rename: " old))
-      (when (file-exists-p new) (user-error "File already exists"))
+      (and (file-exists-p new) (user-error "File already exists"))
       (rename-file old new)
       (set-visited-file-name new t t))))
 
 (defun c-revert-buffer ()
   (interactive)
-  (when (and (not (minibufferp)) (buffer-modified-p))
+  (unless (minibufferp)
     (symbol-overlay-remove-all)
     (revert-buffer t t)))
 
@@ -240,9 +240,9 @@
     (let ((bn (buffer-name)) p)
       (switch-to-next-buffer)
       (while (not (or visual-mode buffer-file-name p))
-	(unless (get-buffer-process (current-buffer)) (kill-buffer))
+	(or (get-buffer-process (current-buffer)) (kill-buffer))
 	(switch-to-next-buffer)
-	(when (string= bn (buffer-name)) (setq p t))))))
+	(and (string= bn (buffer-name)) (setq p t))))))
 
 (defun c-switch-to-prev-buffer ()
   (interactive)
@@ -250,9 +250,9 @@
     (let ((bn (buffer-name)) p)
       (switch-to-prev-buffer)
       (while (not (or visual-mode buffer-file-name p))
-	(unless (get-buffer-process (current-buffer)) (kill-buffer))
+	(or (get-buffer-process (current-buffer)) (kill-buffer))
 	(switch-to-prev-buffer)
-	(when (string= bn (buffer-name)) (setq p t))))))
+	(and (string= bn (buffer-name)) (setq p t))))))
 
 (defun c-switch-to-scratch ()
   (interactive)
@@ -272,8 +272,7 @@
   (interactive
    (if (use-region-p) (list (region-beginning) (region-end))
      (list (line-beginning-position) (line-beginning-position 2))))
-  (unless (minibufferp)
-    (comment-or-uncomment-region beg end)))
+  (or (minibufferp) (comment-or-uncomment-region beg end)))
 
 (defun c-toggle-frame ()
   (interactive)
@@ -309,10 +308,10 @@
     (let (p)
       (f-delete-trailing-whitespace)
       (backward-paragraph)
-      (when (bobp) (setq p t) (newline))
+      (and (bobp) (setq p t) (newline))
       (forward-paragraph)
-      (unless (eobp) (transpose-paragraphs 1))
-      (when p (save-excursion (goto-char (point-min)) (kill-line))))))
+      (or (eobp) (transpose-paragraphs 1))
+      (and p (save-excursion (goto-char (point-min)) (kill-line))))))
 
 (defun c-transpose-paragraphs-up ()
   (interactive)
@@ -320,10 +319,10 @@
       (let (p)
 	(f-delete-trailing-whitespace)
 	(backward-paragraph 2)
-	(when (bobp) (setq p t) (newline))
+	(and (bobp) (setq p t) (newline))
 	(forward-paragraph 2)
 	(transpose-paragraphs -1)
-	(when p (save-excursion (goto-char (point-min)) (kill-line))))))
+	(and p (save-excursion (goto-char (point-min)) (kill-line))))))
 
 (defun c-word-capitalize ()
   (interactive)
@@ -377,7 +376,7 @@
     (setq query-replace-defaults `(,(cons txt replacement)))))
 
 (defun f-skip-chars (&optional start)
-  (when start (goto-char start))
+  (and start (goto-char start))
   (skip-chars-forward (concat " \t" v-skip-chars)))
 
 (defvar v-frame-alpha 100)

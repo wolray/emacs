@@ -1,4 +1,4 @@
-(defmacro m-cycle-values (var values)
+(defmacro cycle-values (var values)
   `(let ((i (cl-position ,var ,values)))
      (setq ,var (elt ,values (if (and i (< (1+ i) (length ,values))) (1+ i) 0)))))
 
@@ -31,7 +31,7 @@
 (defun c-cycle-search-whitespace-regexp ()
   (interactive)
   (unless (minibufferp)
-    (m-cycle-values search-whitespace-regexp '("\\s-+" ".*?"))
+    (cycle-values search-whitespace-regexp '("\\s-+" ".*?"))
     (message "search-whitespace-regexp: \"%s\"" search-whitespace-regexp)))
 
 (defun c-delete-pair ()
@@ -108,20 +108,6 @@
   (interactive)
   (let ((pt (point))) (C-M-f) (kill-region pt (point))))
 
-(defun c-kmacro-cycle-ring-next ()
-  (interactive)
-  (unless (minibufferp)
-    (if (and last-kbd-macro (not kmacro-ring))
-	(kmacro-display last-kbd-macro nil "Macro")
-      (kmacro-cycle-ring-next))))
-
-(defun c-kmacro-cycle-ring-previous ()
-  (interactive)
-  (unless (minibufferp)
-    (if (and last-kbd-macro (not kmacro-ring))
-	(kmacro-display last-kbd-macro nil "Macro")
-      (kmacro-cycle-ring-previous))))
-
 (defun c-kmacro-end-or-call-macro (arg)
   (interactive "P")
   (unless (minibufferp)
@@ -136,21 +122,25 @@
     (setq defining-kbd-macro nil)
     (kmacro-start-macro arg)))
 
-(defun c-marker-recall-mark-0 ()
+(defun c-marker-recall-mark ()
   (interactive)
-  (unless (minibufferp)
-    (let ((pt (mark))) (and pt (goto-char pt)))))
+  (let ((pt (mark))) (and pt (goto-char pt))))
 
-(defun c-marker-recall-mark-1 ()
+(defun c-marker-recall-overlay ()
   (interactive)
   (unless (minibufferp)
     (push-mark nil t)
-    (let ((pt v-marker)) (and pt (goto-char pt)))))
+    (let ((ov (car (f-marker-get-list))))
+      (and ov (goto-char (overlay-start ov))))))
 
-(defun c-marker-set-mark ()
+(defun c-marker-set-overlay ()
   (interactive)
   (unless (minibufferp)
-    (setq v-marker (point))))
+    (let* ((pt (point))
+	   (ov (make-overlay pt pt)))
+      (mapc 'delete-overlay (f-marker-get-list))
+      (overlay-put ov 'marker t))
+    (message "Current point saved")))
 
 (defun c-move-backward-line ()
   (interactive)
@@ -227,30 +217,17 @@
 	      (narrow-to-region beg end)
 	      (sort-subr nil (car recfun) (cdr recfun))))
 	(when (y-or-n-p "Sort all paragraphs?")
-	  (setq v-marker (point))
 	  (goto-char (point-min))
 	  (sort-subr nil 'f-skip-chars 'forward-paragraph)))
       (goto-char pt))))
 
 (defun c-switch-to-next-buffer ()
   (interactive)
-  (unless (minibufferp)
-    (let ((bn (buffer-name)) p)
-      (switch-to-next-buffer)
-      (while (not (or visual-mode buffer-file-name p))
-	(or (get-buffer-process (current-buffer)) (kill-buffer))
-	(switch-to-next-buffer)
-	(and (string= bn (buffer-name)) (setq p t))))))
+  (f-switch-to-buffer 1))
 
 (defun c-switch-to-prev-buffer ()
   (interactive)
-  (unless (minibufferp)
-    (let ((bn (buffer-name)) p)
-      (switch-to-prev-buffer)
-      (while (not (or visual-mode buffer-file-name p))
-	(or (get-buffer-process (current-buffer)) (kill-buffer))
-	(switch-to-prev-buffer)
-	(and (string= bn (buffer-name)) (setq p t))))))
+  (f-switch-to-buffer 0))
 
 (defun c-switch-to-scratch ()
   (interactive)
@@ -262,6 +239,7 @@
 	  buffer-read-only
 	  (not auto-complete-mode)
 	  (region-active-p)
+	  (eq major-mode 'org-mode)
 	  (not (looking-at-p "\\_>")))
       (TAB)
     (auto-complete)))
@@ -274,7 +252,7 @@
 
 (defun c-toggle-frame ()
   (interactive)
-  (m-cycle-values v-frame-alpha '(100 70))
+  (cycle-values v-frame-alpha '(100 70))
   (set-frame-parameter (selected-frame) 'alpha v-frame-alpha))
 
 (defun c-transpose-lines-down ()
@@ -365,6 +343,12 @@
   (let ((index (/ (cl-incf count 0) (or repeat 1))))
     (+ (or first 1) (* (or incr 1) index))))
 
+(defun f-marker-get-list ()
+  (let ((lists (overlay-lists)))
+    (seq-filter
+     '(lambda (ov) (overlay-get ov 'marker))
+     (append (car lists) (cdr lists)))))
+
 (defun f-paragraph-set ()
   (setq paragraph-start "\f\\|[ \t]*$"
 	paragraph-separate "[ \t\f]*$"))
@@ -381,10 +365,18 @@
   (and start (goto-char start))
   (skip-chars-forward (concat " \t" v-skip-chars)))
 
-(defvar v-frame-alpha 100)
+(defun f-switch-to-buffer (dir)
+  (unless (minibufferp)
+    (let ((bn (buffer-name))
+	  (func (if (> dir 0) 'switch-to-next-buffer 'switch-to-prev-buffer))
+	  p)
+      (funcall func)
+      (while (not (or buffer-file-name (not buffer-read-only) p))
+	(or (get-buffer-process (current-buffer)) (kill-buffer))
+        (funcall func)
+	(and (string= bn (buffer-name)) (setq p t))))))
 
-(defvar v-marker)
-(make-variable-buffer-local 'v-marker)
+(defvar v-frame-alpha 100)
 
 (defvar v-skip-chars)
 (make-variable-buffer-local 'v-skip-chars)

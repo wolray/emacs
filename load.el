@@ -11,8 +11,12 @@
 ((lambda (en cn)
    (set-frame-font en)
    (set-fontset-font "fontset-default" 'gb18030 cn))
- "monaco-11" "楷体-13"
+ ;; "ubuntu mono-11" "微软雅黑-10.5"
  ;; "ubuntu mono-13" "微软雅黑-12"
+ "monaco-10.5" "楷体-11"
+ ;; "monaco-11" "楷体-13"
+ ;; "consolas-10" "微软雅黑-10.5"
+ ;; "consolas-11" "微软雅黑-12"
  )
 
 ;; language

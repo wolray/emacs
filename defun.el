@@ -28,6 +28,18 @@
     (kill-ring-save (point-min) (point-max))
     (message "Current buffer saved")))
 
+(defun c-cycle-left-line ()
+  (interactive)
+  (cond ((bolp) (end-of-line))
+	((<= (current-column) (f-beginning-of-line 1)) (beginning-of-line))
+	(t (f-beginning-of-line))))
+
+(defun c-cycle-right-line ()
+  (interactive)
+  (cond ((eolp) (beginning-of-line))
+	((>= (current-column) (f-beginning-of-line 1)) (end-of-line))
+	(t (f-beginning-of-line))))
+
 (defun c-cycle-search-whitespace-regexp ()
   (interactive)
   (unless (minibufferp)
@@ -122,11 +134,7 @@
     (setq defining-kbd-macro nil)
     (kmacro-start-macro arg)))
 
-(defun c-marker-recall-mark ()
-  (interactive)
-  (let ((pt (mark))) (and pt (goto-char pt))))
-
-(defun c-marker-recall-overlay ()
+(defun c-marker-echo-overlay ()
   (interactive)
   (unless (minibufferp)
     (push-mark nil t)
@@ -141,18 +149,6 @@
       (and ov (delete-overlay ov))
       (overlay-put (make-overlay pt pt) 'marker t))
     (message "Current point saved")))
-
-(defun c-cycle-left-line ()
-  (interactive)
-  (cond ((bolp) (end-of-line))
-	((<= (current-column) (f-beginning-of-line 1)) (beginning-of-line))
-	(t (f-beginning-of-line))))
-
-(defun c-cycle-right-line ()
-  (interactive)
-  (cond ((eolp) (beginning-of-line))
-	((>= (current-column) (f-beginning-of-line 1)) (end-of-line))
-	(t (f-beginning-of-line))))
 
 (defun c-open-folder ()
   (interactive)

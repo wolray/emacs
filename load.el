@@ -42,8 +42,8 @@
 (winner-mode)
 
 ;; ~ (find-file-other-window (concat (getenv "home") "\\.emacs.d\\init.el"))
-(load "kbd" nil t)
 (load "defun" nil t)
+(load "kbd" nil t)
 (load "mode" nil t)
 ;; (package-initialize)
 ;; (setq default-directory "d:/sync/")

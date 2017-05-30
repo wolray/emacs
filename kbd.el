@@ -223,16 +223,6 @@
 (global-set-key (kbd "H-u") 'symbol-overlay-switch-backward)
 (global-set-key (kbd "H-y") 'c-marker-set-overlay)
 
-(let ((map dired-mode-map))
-  (define-key map (kbd "SPC") 'dired-unmark)
-  (define-key map (kbd "k") 'dired-unmark-backward)
-  (define-key map (kbd "n") nil)
-  (define-key map (kbd "o") 'dired-next-line)
-  (define-key map (kbd "p") nil)
-  (define-key map (kbd "r") 'dired-find-file-other-window)
-  (define-key map (kbd "u") 'dired-previous-line)
-  )
-
 (let ((map isearch-mode-map))
   (define-key map (kbd "H-SPC") 'c-isearch-done)
   (define-key map (kbd "H-\\") 'isearch-query-replace)
@@ -304,6 +294,17 @@
   (let ((map java-mode-map))
     (define-key map (kbd ";") nil)
     (define-key map (kbd ",") nil)
+    ))
+
+(with-eval-after-load 'dired
+  (let ((map dired-mode-map))
+    (define-key map (kbd "SPC") 'dired-unmark)
+    (define-key map (kbd "k") 'dired-unmark-backward)
+    (define-key map (kbd "n") nil)
+    (define-key map (kbd "o") 'dired-next-line)
+    (define-key map (kbd "p") nil)
+    (define-key map (kbd "r") 'dired-find-file-other-window)
+    (define-key map (kbd "u") 'dired-previous-line)
     ))
 
 (with-eval-after-load 'ess-mode

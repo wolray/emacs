@@ -22,7 +22,7 @@
 ;; language
 (set-buffer-file-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
-(set-language-environment 'chinese-gbk)
+(set-language-environment 'utf-8)
 
 ;; others
 (column-number-mode)

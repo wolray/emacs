@@ -130,25 +130,25 @@
   (interactive)
   (unless (minibufferp)
     (push-mark nil t)
-    (let ((ov (car (f-marker-get-list))))
+    (let ((ov (f-marker-get-overlay)))
       (and ov (goto-char (overlay-start ov))))))
 
 (defun c-marker-set-overlay ()
   (interactive)
   (unless (minibufferp)
-    (let* ((pt (point))
-	   (ov (make-overlay pt pt)))
-      (mapc 'delete-overlay (f-marker-get-list))
-      (overlay-put ov 'marker t))
+    (let ((pt (point))
+	  (ov (f-marker-get-overlay)))
+      (and ov (delete-overlay ov))
+      (overlay-put (make-overlay pt pt) 'marker t))
     (message "Current point saved")))
 
-(defun c-move-backward-line ()
+(defun c-cycle-left-line ()
   (interactive)
   (cond ((bolp) (end-of-line))
 	((<= (current-column) (f-beginning-of-line 1)) (beginning-of-line))
 	(t (f-beginning-of-line))))
 
-(defun c-move-forward-line ()
+(defun c-cycle-right-line ()
   (interactive)
   (cond ((eolp) (beginning-of-line))
 	((>= (current-column) (f-beginning-of-line 1)) (end-of-line))
@@ -307,17 +307,17 @@
 (defun c-word-capitalize ()
   (interactive)
   (if (use-region-p) (capitalize-region (region-beginning) (region-end))
-    (capitalize-word 1)))
+    (capitalize-word -1)))
 
 (defun c-word-downcase ()
   (interactive)
   (if (use-region-p) (downcase-region (region-beginning) (region-end))
-    (downcase-word 1)))
+    (downcase-word -1)))
 
 (defun c-word-upcase ()
   (interactive)
   (if (use-region-p) (upcase-region (region-beginning) (region-end))
-    (upcase-word 1)))
+    (upcase-word -1)))
 
 (defun f-beginning-of-line (&optional arg)
   (let (pt co)
@@ -343,9 +343,9 @@
   (let ((index (/ (cl-incf count 0) (or repeat 1))))
     (+ (or first 1) (* (or incr 1) index))))
 
-(defun f-marker-get-list ()
+(defun f-marker-get-overlay ()
   (let ((lists (overlay-lists)))
-    (seq-filter
+    (seq-find
      '(lambda (ov) (overlay-get ov 'marker))
      (append (car lists) (cdr lists)))))
 

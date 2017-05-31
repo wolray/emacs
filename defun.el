@@ -12,10 +12,12 @@
 	   (and (y-or-n-p "Byte recompile this directory?")
 		(byte-recompile-directory default-directory))))))
 
-(defun c-clear-shell ()
+(defun c-clear-or-revert-buffer ()
   (interactive)
   (unless (minibufferp)
-    (when (get-buffer-process (current-buffer))
+    (symbol-overlay-remove-all)
+    (if (not (get-buffer-process (current-buffer)))
+	(revert-buffer t t)
       (delete-region (point-min) (point-max))
       (comint-send-input)
       (goto-char (point-min))
@@ -152,11 +154,11 @@
 
 (defun c-open-folder ()
   (interactive)
-  (and buffer-file-name
-       (w32-shell-execute
-	"open" "explorer"
-	(concat "/e,/select,"
-		(convert-standard-filename buffer-file-name)))))
+  (w32-shell-execute
+   "open" "explorer"
+   (if buffer-file-name
+       (concat "/e,/select," (convert-standard-filename buffer-file-name))
+     (convert-standard-filename default-directory))))
 
 (defun c-query-replace ()
   (interactive)
@@ -185,12 +187,6 @@
       (and (file-exists-p new) (user-error "File already exists"))
       (rename-file old new)
       (set-visited-file-name new t t))))
-
-(defun c-revert-buffer ()
-  (interactive)
-  (unless (minibufferp)
-    (symbol-overlay-remove-all)
-    (revert-buffer t t)))
 
 (defun c-set-or-exchange-mark (arg)
   (interactive "P")

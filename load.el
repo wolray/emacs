@@ -22,7 +22,7 @@
 ;; language
 (set-buffer-file-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
-(set-language-environment 'Chinese-GBK)
+(set-language-environment 'chinese-gbk)
 
 ;; others
 (column-number-mode)
@@ -49,5 +49,6 @@
 ;; (setq default-directory "d:/sync/")
 ;; (add-to-list 'load-path (concat default-directory "emacs/init"))
 ;; (add-to-list 'load-path (concat default-directory "emacs/symbol-overlay"))
+;; (add-to-list 'load-path (concat default-directory "emacs/code-style"))
 ;; (add-to-list 'load-path (concat default-directory "emacs/yacua"))
 ;; (load "load" nil t)

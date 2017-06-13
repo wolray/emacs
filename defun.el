@@ -9,8 +9,9 @@
 	 (file-exists-p file)
 	 (if (not (file-exists-p (concat file "c")))
 	     (and (y-or-n-p "Byte compile this file?") (byte-compile-file file))
-	   (and (y-or-n-p "Byte recompile this directory?")
-		(byte-recompile-directory default-directory))))))
+	   (and (y-or-n-p "Byte recompile all?")
+		(byte-recompile-directory
+		 (concat default-directory "..//")))))))
 
 (defun c-clear-or-revert-buffer ()
   (interactive)
@@ -136,21 +137,17 @@
     (setq defining-kbd-macro nil)
     (kmacro-start-macro arg)))
 
-(defun c-marker-echo-overlay ()
-  (interactive)
-  (unless (minibufferp)
-    (push-mark nil t)
-    (let ((ov (f-marker-get-overlay)))
-      (and ov (goto-char (overlay-start ov))))))
-
-(defun c-marker-set-overlay ()
+(defun c-marker-set-or-echo-overlay ()
   (interactive)
   (unless (minibufferp)
     (let ((pt (point))
 	  (ov (f-marker-get-overlay)))
-      (and ov (delete-overlay ov))
-      (overlay-put (make-overlay pt pt) 'marker t))
-    (message "Current point saved")))
+      (if ov (progn (setq visual-mode-cursor (setq cursor-type 'box))
+		    (goto-char (overlay-start ov))
+		    (delete-overlay ov))
+        (setq visual-mode-cursor (setq cursor-type 'hbar))
+	(overlay-put (make-overlay pt pt) 'marker t)
+	(message "Current point saved")))))
 
 (defun c-open-folder ()
   (interactive)
@@ -370,5 +367,4 @@
 
 (defvar v-frame-alpha 100)
 
-(defvar v-skip-chars)
-(make-variable-buffer-local 'v-skip-chars)
+(defvar-local v-skip-chars nil)

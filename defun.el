@@ -16,9 +16,9 @@
 (defun c-clear-or-revert-buffer ()
   (interactive)
   (unless (minibufferp)
-    (symbol-overlay-remove-all)
     (if (not (get-buffer-process (current-buffer)))
 	(revert-buffer t t)
+      (symbol-overlay-remove-all)
       (delete-region (point-min) (point-max))
       (comint-send-input)
       (goto-char (point-min))
@@ -31,13 +31,13 @@
     (kill-ring-save (point-min) (point-max))
     (message "Current buffer saved")))
 
-(defun c-cycle-left-line ()
+(defun c-cycle-line-left ()
   (interactive)
   (cond ((bolp) (end-of-line))
 	((<= (current-column) (f-beginning-of-line 1)) (beginning-of-line))
 	(t (f-beginning-of-line))))
 
-(defun c-cycle-right-line ()
+(defun c-cycle-line-right ()
   (interactive)
   (cond ((eolp) (beginning-of-line))
 	((>= (current-column) (f-beginning-of-line 1)) (end-of-line))
@@ -80,6 +80,12 @@
       (indent-region (region-beginning) (region-end)))
     (and (bolp) (f-skip-chars))))
 
+(defun c-insert-at-eol ()
+  (interactive)
+  (code-style-insert-with " ")
+  (end-of-line)
+  (visual-mode 0))
+
 (defun c-isearch-done ()
   (interactive)
   (isearch-done))
@@ -109,8 +115,9 @@
   (interactive)
   (if (use-region-p)
       (kill-region (region-beginning) (region-end))
-    (kill-whole-line)
-    (f-skip-chars)))
+    (let ((co (current-column)))
+      (kill-whole-line)
+      (move-to-column co))))
 
 (defun c-kill-ring-save (beg end)
   (interactive

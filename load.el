@@ -22,13 +22,14 @@
 ;; language
 (set-buffer-file-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
-(set-language-environment 'chinese-gbk)
+(set-language-environment 'utf-8)
 
 ;; others
 (column-number-mode)
 (delete-selection-mode)
 (electric-pair-mode)
 (fset 'yes-or-no-p 'y-or-n-p)
+(global-eldoc-mode 0)
 (line-number-mode)
 (and (package-installed-p 'nlinum) (global-nlinum-mode))
 (setq initial-scratch-message nil)

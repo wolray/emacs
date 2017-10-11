@@ -43,6 +43,20 @@
 	((>= (current-column) (f-beginning-of-line 1)) (end-of-line))
 	(t (f-beginning-of-line))))
 
+(defun c-cycle-paren-shape ()
+  (interactive)
+  (let ((paren-shapes '((?\( ?\[ ?\])
+                        (?\[ ?\( ?\))))
+        (pt (point)))
+    (unless (eq ?\( (char-syntax (char-after)))
+      (backward-up-list))
+    (pcase (assq (char-after) paren-shapes)
+      (`(,_ ,open ,close)
+       (save-excursion (forward-sexp) (delete-char -1) (insert close))
+       (delete-char 1)
+       (insert open)))
+    (goto-char pt)))
+
 (defun c-cycle-search-whitespace-regexp ()
   (interactive)
   (unless (minibufferp)
@@ -51,9 +65,10 @@
 
 (defun c-delete-pair ()
   (interactive)
-  (when (re-search-backward (rx (any "([{<'\"")))
-    (save-excursion (forward-sexp) (delete-char -1))
-    (delete-char 1)))
+  (unless (eq ?\( (char-syntax (char-after)))
+    (backward-up-list))
+  (save-excursion (forward-sexp) (delete-char -1))
+  (delete-char 1))
 
 (defun c-dired ()
   (interactive)
@@ -80,11 +95,31 @@
       (indent-region (region-beginning) (region-end)))
     (and (bolp) (f-skip-chars))))
 
+(defun c-insert-arrow-1 ()
+  (interactive)
+  (let (p)
+    (save-excursion
+      (backward-sexp)
+      (cond ((looking-at-p "<-")
+	     (insert "->") (delete-char 2))
+	    ((looking-at-p "->")
+	     (insert "<-") (delete-char 2))
+	    (t (setq p t))))
+    (when p (insert "->"))))
+
+(defun c-insert-arrow-2 ()
+  (interactive)
+  (insert "=>"))
+
 (defun c-insert-at-eol ()
   (interactive)
-  (code-style-insert-with " ")
   (end-of-line)
-  (visual-mode 0))
+  (hyper-mode 0))
+
+(defun c-insert-space ()
+  (interactive)
+  (insert ? )
+  (right-char))
 
 (defun c-isearch-done ()
   (interactive)
@@ -164,18 +199,27 @@
        (concat "/e,/select," (convert-standard-filename buffer-file-name))
      (convert-standard-filename default-directory))))
 
+(defun c-phone-test ()
+  (interactive)
+  (let* ((seq [1 3 5 6 7 8 11 13 16 17 18 21 23 24 25 29 30 31 32 33 35 37 38 39 40 41 45 47 48 52 55 57 58 61 63 65 67 68 73 81])
+         (s (thing-at-point 'symbol))
+         (n (string-to-number s))
+         (len (length s))
+         (i 0)
+         (sum 0))
+    (while (< i len)
+      (cl-incf sum (string-to-number (substring s i (cl-incf i)))))
+    (setq mod (% n 80))
+    (message "%d (%s), %d (%s)"
+             mod (if (cl-find mod seq) "y" "n")
+             sum (if (cl-find sum seq) "y" "n"))))
+
 (defun c-query-replace ()
   (interactive)
   (unless (minibufferp)
     (if (use-region-p) (f-query-replace-region (region-beginning) (region-end))
       (setq mark-active nil)
       (call-interactively 'query-replace))))
-
-(defun c-racket-send-buffer ()
-  (interactive)
-  (unless (minibufferp)
-    (racket-send-region
-     (point-min) (point-max))))
 
 (defun c-reload-current-mode ()
   (interactive)
@@ -200,7 +244,7 @@
 (defun c-sort-text ()
   (interactive)
   (unless (minibufferp)
-    (let ((pt (point)) (v-skip-chars "\n"))
+    (let ((pt (point)) (skip-chars-regexp "\n"))
       (if (use-region-p)
 	  (save-restriction
 	    (let ((beg (region-beginning))
@@ -233,12 +277,16 @@
   (interactive)
   (if (or (minibufferp)
 	  buffer-read-only
-	  (not auto-complete-mode)
 	  (region-active-p)
-	  (eq major-mode 'org-mode)
-	  (not (looking-at-p "\\_>")))
+	  (not (looking-at-p "\\_>"))
+          just-tab)
       (TAB)
-    (auto-complete)))
+    (call-interactively 'hippie-expand)))
+(defun c-toggle-tab ()
+  (interactive)
+  (setq just-tab (not just-tab))
+  (message "just-tab: %s" just-tab))
+(defvar-local just-tab nil)
 
 (defun c-toggle-comment (beg end)
   (interactive
@@ -248,8 +296,9 @@
 
 (defun c-toggle-frame ()
   (interactive)
-  (cycle-values v-frame-alpha '(100 70))
-  (set-frame-parameter (selected-frame) 'alpha v-frame-alpha))
+  (cycle-values frame-alpha '(100 70))
+  (set-frame-parameter (selected-frame) 'alpha frame-alpha))
+(defvar frame-alpha 100)
 
 (defun c-transpose-lines-down ()
   (interactive)
@@ -359,7 +408,8 @@
 
 (defun f-skip-chars (&optional start)
   (and start (goto-char start))
-  (skip-chars-forward (concat " \t" v-skip-chars)))
+  (skip-chars-forward (concat " \t" skip-chars-regexp)))
+(defvar-local skip-chars-regexp nil)
 
 (defun f-switch-to-buffer (dir)
   (unless (minibufferp)
@@ -372,6 +422,25 @@
         (funcall func)
 	(and (string= bn (buffer-name)) (setq p t))))))
 
-(defvar v-frame-alpha 100)
+(defun update-indent-offset (func)
+  (let ((pair (assoc major-mode '((python-mode python-indent-offset))))
+        co offset)
+    (when pair
+      (save-excursion
+        (goto-char (point-min))
+        (while (not (eobp))
+          (skip-chars-forward " \n")
+          (setq co (current-column))
+          (and (> co 0) (or (not offset) (< co offset)) (setq offset co))
+          (delete-char (- co))
+          (insert (make-string (funcall func co) ? ))
+          (forward-line)))
+      (set (cadr pair) (funcall func offset)))))
 
-(defvar-local v-skip-chars nil)
+(defun update-indent-offset-double ()
+  (interactive)
+  (update-indent-offset '(lambda (co) (* co 2))))
+
+(defun update-indent-offset-half ()
+  (interactive)
+  (update-indent-offset '(lambda (co) (/ co 2))))

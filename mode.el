@@ -1,77 +1,23 @@
 ;; !package
 (defun c-package-check ()
   (interactive)
-  (let ((packages '(auto-complete
-                    color-theme-solarized
-                    ess
-                    haskell-mode
-                    magit
-                    markdown-mode
-                    matlab-mode)))
+  (let ((packages '(color-theme-solarized
+                    nlinum)))
     (dolist (pkg packages)
-      (unless (package-installed-p pkg)
-        (when (y-or-n-p (format "Package \"%s\" not found. Install it? " package))
-          (package-install pkg))))))
+      (or (package-installed-p pkg)
+          (and (y-or-n-p (format "Package \"%s\" not found. Install it? " pkg))
+               (package-install pkg))))))
 (setq package-archives
       '(("gnu"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
 	("melpa" . "http://elpa.zilongshanren.com/melpa/")
 	;; ("melpa" . "http://melpa.org/packages/")
 	;; ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
         ))
-
-;; auto-complete
-(when (package-installed-p 'auto-complete)
-  (setq ac-auto-start nil)
-  (setq-default
-   ac-sources '(ac-source-words-in-same-mode-buffers
-                ac-source-files-in-current-dir
-                ac-source-functions
-                ac-source-words-in-all-buffer))
-  (global-auto-complete-mode)
-  (ac-linum-workaround)
-  (fset 'ac-symbol-documentation nil))
-
-;; cua
-(defun c-cua-sequence-rectangle (first incr fmt)
-  (interactive
-   (let ((seq (split-string
-	       (read-string (concat "1 (+1) ("
-				    (substring cua--rectangle-seq-format 1)
-				    "): ")))))
-     (list (string-to-number (or (car seq) "1"))
-    	   (string-to-number (or (cadr seq) "1"))
-	   (concat "%" (cadr (cdr seq))))))
-  (if (string= fmt "%") (setq fmt cua--rectangle-seq-format)
-    (setq cua--rectangle-seq-format fmt))
-  (cua--rectangle-operation 'clear nil t 1 nil
-			    (lambda (s e _l _r)
-			      (delete-region s e)
-			      (insert (format fmt first))
-			      (setq first (+ first incr)))))
-
-;; ess
-(add-hook 'ess-mode-hook
-	  '(lambda ()
-	     (setq ess-indent-level 2)))
-(add-hook 'ess-R-post-run-hook
-	  '(lambda ()
-	     (setq v-skip-chars ">")))
+(add-hook 'package-menu-mode-hook
+          '(lambda ()
+             (nlinum-mode 0)))
 
 ;; haskell
-(defun c-insert-arrow-1 ()
-  (interactive)
-  (let (p)
-    (save-excursion
-      (backward-sexp)
-      (cond ((looking-at-p "<-")
-	     (insert "->") (delete-char 2))
-	    ((looking-at-p "->")
-	     (insert "<-") (delete-char 2))
-	    (t (setq p t))))
-    (when p (insert "->"))))
-(defun c-insert-arrow-2 ()
-  (interactive)
-  (insert "=>"))
 (defun c-haskell-load-module ()
   (interactive)
   (let ((module (buffer-name)))
@@ -83,17 +29,21 @@
     (comint-send-input)))
 (add-hook 'haskell-mode-hook
 	  '(lambda ()
-	     (setq symbol-overlay-definition-function
+	     (local-set-key (kbd "C-c C-c") 'c-haskell-load-module)
+             (local-set-key (kbd "C-c C-z") 'switch-to-haskell)
+             (let ((map haskell-indentation-mode-map))
+               (define-key map (kbd ",") nil)
+               (define-key map (kbd ";") nil)
+               )
+             (setq symbol-overlay-definition-function
 		   '(lambda (symbol)
 		      (concat "\\(\\(let\\|type\\) \\)?"
 			      symbol
 			      "[^\n]* =[^>]")))))
-(add-hook 'inferior-haskell-mode-hook 'auto-complete-mode)
 
 ;; hippie-expand
 (setq hippie-expand-try-functions-list
       '(try-expand-dabbrev
-	try-expand-dabbrev-visible
 	try-expand-dabbrev-all-buffers
 	try-expand-dabbrev-from-kill
 	try-complete-file-name-partially
@@ -104,14 +54,16 @@
 	try-complete-lisp-symbol-partially
 	try-complete-lisp-symbol))
 
-;; latex
-(add-hook 'latex-mode-hook
-	  '(lambda ()
-	     (f-paragraph-set)
-	     (setq tab-width 2)))
-
 ;; magit
 (setenv "GIT_ASKPASS" "git-gui--askpass")
+(add-hook 'magit-mode-hook
+          '(lambda ()
+             (local-set-key (kbd "5") 'recenter-top-bottom)
+             (local-set-key (kbd "[") 'magit-section-backward)
+             (local-set-key (kbd "]") 'magit-section-forward)
+             (local-set-key (kbd "n") '~)
+             (local-set-key (kbd "p") '~)
+             ))
 (add-hook 'magit-status-sections-hook
 	  '(lambda ()
 	     (magit-insert-status-headers)
@@ -142,18 +94,18 @@
 	     ;; (magit-insert-push-branch-header)
 	     ;; (magit-insert-upstream-branch-header)
 	     ))
-
-;; matlab
-(add-hook 'matlab-mode-hook
-	  '(lambda ()
-	     (auto-complete-mode)
-	     (setq auto-fill-function nil)))
+(with-eval-after-load 'with-editor
+  (let ((map with-editor-mode-map))
+    (define-key map (kbd "C-c k") 'with-editor-cancel)
+    ))
+(define-key hyper-mode-map (kbd "SPC `") 'magit-status)
 
 ;; org
 (setq org-startup-indented t)
 (add-hook 'org-mode-hook
 	  '(lambda ()
-	     (setq v-skip-chars "*")))
+	     (setq skip-chars-regexp "*"
+                   just-tab t)))
 (add-hook 'org-after-todo-statistics-hook
 	  '(lambda ()
 	     (let (org-log-done org-log-states)
@@ -174,12 +126,20 @@ pd.options.display.precision=4
   (python-shell-send-region (line-beginning-position) (line-end-position)))
 (add-hook 'python-mode-hook
 	  '(lambda ()
-	     (add-to-list 'python-shell-completion-native-disabled-interpreters "ipython")
-	     (setq python-shell-interpreter "ipython")))
+             (local-set-key (kbd "C-c C-c") 'python-shell-send-region)
+             (local-set-key (kbd "C-c C-y") 'c-python-shell-send-line)
+             (local-set-key (kbd "C-c r") 'run-python)
+	     (setq python-shell-interpreter "ipython")
+             (add-to-list 'python-shell-completion-native-disabled-interpreters "ipython")))
 
 ;; racket
 (setq racket-racket-program "racket")
 (setq racket-raco-program "raco")
+(defun c-racket-send-buffer ()
+  (interactive)
+  (unless (minibufferp)
+    (racket-send-region
+     (point-min) (point-max))))
 
 ;; save
 (add-hook 'before-save-hook 'f-delete-trailing-whitespace)

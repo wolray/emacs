@@ -2,6 +2,7 @@
 (defun c-package-check ()
   (interactive)
   (let ((packages '(color-theme-solarized
+                    magit
                     nlinum)))
     (dolist (pkg packages)
       (or (package-installed-p pkg)

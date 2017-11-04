@@ -146,6 +146,15 @@ pd.options.display.precision=4
 (add-hook 'before-save-hook 'f-delete-trailing-whitespace)
 
 ;; sql
+(defun sql-replace ()
+  (interactive)
+  (let ((keywords '("and" "as" "bigint" "by" "case" "count" "create" "distinct" "double" "end" "exists" "from" "if" "insert" "join" "left" "length" "lifecycle" "not" "not" "null" "on" "or" "outer" "overwrite" "partition" "partitioned" "right" "select" "string" "table" "when" "where")))
+    (dolist (word keywords)
+      (save-excursion
+        (goto-char (point-min))
+        (while (re-search-forward (concat "\\_<" (regexp-quote word) "\\_>") nil t)
+          (replace-match (upcase word)))))))
 (add-hook 'sql-mode-hook
 	  '(lambda ()
-	     (setq tab-width 4)))
+	     (local-set-key (kbd "C-c n") 'sql-replace)
+             (setq tab-width 4)))

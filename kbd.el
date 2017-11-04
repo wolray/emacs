@@ -195,6 +195,7 @@
 (global-set-key (kbd "C-c g") 'C-g)
 (global-set-key (kbd "C-c h") 'C-c+C-h)
 (global-set-key (kbd "C-c i") 'c-sort-text)
+(global-set-key (kbd "C-c m") 'c-reload-current-mode)
 (global-set-key (kbd "C-c p") 'c-kmacro-start-macro)
 (global-set-key (kbd "C-c y") 'C-c+C-y)
 (global-set-key (kbd "C-c z") 'C-c+C-z)

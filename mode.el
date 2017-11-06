@@ -127,7 +127,7 @@ pd.options.display.precision=4
   (python-shell-send-region (line-beginning-position) (line-end-position)))
 (add-hook 'python-mode-hook
 	  '(lambda ()
-             (local-set-key (kbd "C-c C-c") 'python-shell-send-region)
+             (local-set-key (kbd "C-c C-h") 'python-shell-send-region)
              (local-set-key (kbd "C-c C-y") 'c-python-shell-send-line)
              (local-set-key (kbd "C-c r") 'run-python)
 	     (setq python-shell-interpreter "ipython")

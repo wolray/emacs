@@ -148,7 +148,7 @@ pd.options.display.precision=4
 ;; sql
 (defun sql-replace ()
   (interactive)
-  (let ((keywords '("and" "as" "bigint" "by" "case" "count" "create" "distinct" "double" "end" "exists" "from" "if" "insert" "join" "left" "length" "lifecycle" "not" "not" "null" "on" "or" "outer" "overwrite" "partition" "partitioned" "right" "select" "string" "table" "when" "where")))
+  (let ((keywords '("and" "as" "bigint" "by" "case" "count" "create" "distinct" "double" "else" "end" "end" "exists" "from" "if" "insert" "join" "left" "length" "lifecycle" "not" "not" "null" "on" "or" "outer" "overwrite" "partition" "partitioned" "right" "select" "string" "table" "when" "where")))
     (dolist (word keywords)
       (save-excursion
         (goto-char (point-min))

@@ -21,6 +21,7 @@
   (define-key map (kbd "SPC 3") 'split-window-horizontally)
   (define-key map (kbd "SPC 4") 'delete-window)
   (define-key map (kbd "SPC 5") 'winner-undo)
+  (define-key map (kbd "SPC M-g TAB") 'c-toggle-tab)
   (define-key map (kbd "SPC SPC") 'c-open-folder)
   (define-key map (kbd "SPC a") 'delete-duplicate-lines)
   (define-key map (kbd "SPC b") 'c-byte-compile)
@@ -230,7 +231,6 @@
 (global-set-key (kbd "H-p") 'kmacro-view-macro)
 (global-set-key (kbd "H-u") 'symbol-overlay-switch-backward)
 (global-set-key (kbd "H-y") 'other-window)
-(global-set-key (kbd "S-<tab>") 'c-toggle-tab)
 
 (let ((map isearch-mode-map))
   (define-key map (kbd "H-SPC") 'c-isearch-done)

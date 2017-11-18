@@ -42,14 +42,20 @@
 (show-paren-mode)
 (winner-mode)
 
-;; ~ (find-file-other-window (concat (getenv "home") "\\.emacs.d\\init.el"))
+;; ~ init
 (load "defun" nil t)
 (load "kbd" nil t)
 (load "mode" nil t)
-;; (package-initialize)
-;; (setq default-directory "d:/")
-;; (add-to-list 'load-path (concat default-directory "emacs/init"))
-;; (add-to-list 'load-path (concat default-directory "emacs/symbol-overlay"))
-;; (add-to-list 'load-path (concat default-directory "emacs/code-style"))
-;; (add-to-list 'load-path (concat default-directory "emacs/yacua"))
-;; (load "load" nil t)
+(defun write-init ()
+  (find-file-other-window (concat (getenv "home") "\\.emacs.d\\init.el"))
+  (delete-region (point-min) (point-max))
+  (insert (mapconcat 'identity
+                     '("(package-initialize)"
+                       "(setq default-directory \"d:/\")"
+                       "(add-to-list 'load-path (concat default-directory \"emacs/init\")))"
+                       "(add-to-list 'load-path (concat default-directory \"emacs/symbol-overlay\"))"
+                       "(add-to-list 'load-path (concat default-directory \"emacs/code-style\"))"
+                       "(add-to-list 'load-path (concat default-directory \"emacs/yacua\"))"
+                       "(load \"load\" nil t)")
+                     "\n")))
+;; (write-init)

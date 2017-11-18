@@ -1,0 +1,32 @@
+* emacs
+** \HHEK_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layout\scancode map
+00 00 00 00  00 00 00 00
+02 00 00 00  5D E0 3A 00
+00 00 00 00
+* everything
+** general
+*** (results B110100111)
+*** (fonts-and-colors default)
+*** keyboard
+**** (copy-name (+ "w"))
+**** (copy-path (+ "d"))
+**** (delete (+ "k"))
+**** (exit (-))
+**** (item-down (+ "o"))
+**** (item-up (+ "u"))
+**** (open-path (+ "i"))
+**** (options "win-n")
+**** (rename (+ "r"))
+**** (toggle-window (+ "win-y"))
+** indexes
+*** (exclude B011)
+* idea
+** idea64.exe.vmoptions
+-Duser.lanugage=en
+-Duser.region=US
+* python
+** env
+C:\Python27\;C:\Python27\Scripts;
+C:\Program Files\Python36;C:\Program Files\Python36\Scripts;
+** pycharm
+*** (settings (editor (general (smart-keys B1{-2}))))

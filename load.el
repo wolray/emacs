@@ -52,7 +52,7 @@
   (insert (mapconcat 'identity
                      '("(package-initialize)"
                        "(setq default-directory \"d:/\")"
-                       "(add-to-list 'load-path (concat default-directory \"emacs/init\")))"
+                       "(add-to-list 'load-path (concat default-directory \"emacs/init\"))"
                        "(add-to-list 'load-path (concat default-directory \"emacs/symbol-overlay\"))"
                        "(add-to-list 'load-path (concat default-directory \"emacs/code-style\"))"
                        "(add-to-list 'load-path (concat default-directory \"emacs/yacua\"))"

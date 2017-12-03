@@ -20,7 +20,21 @@
 **** (toggle-window (+ "win-y"))
 ** indexes
 *** (exclude B011)
+* git
+** branch
+branch -> show local branches
+branch -a -> show all branches
+** checkout
+checkout <branch> -> checkout to the branch
+checkout -b <branch> -> checkout to the new branch
 * idea
+** settings
+*** editor
+**** (file-and-code-templates (includes (file-header ...)))
+/**
+ * Created by yilai.wl on ${DATE}.
+ */
+**** (general (smart-keys B1{-2}))
 ** idea64.exe.vmoptions
 -Duser.lanugage=en
 -Duser.region=US

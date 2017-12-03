@@ -99,7 +99,6 @@
   (let ((map with-editor-mode-map))
     (define-key map (kbd "C-c k") 'with-editor-cancel)
     ))
-(define-key hyper-mode-map (kbd "SPC `") 'magit-status)
 
 ;; org
 (setq org-startup-indented t)

@@ -118,8 +118,7 @@
 
 (defun c-insert-space ()
   (interactive)
-  (insert ? )
-  (right-char))
+  (insert ? ))
 
 (defun c-isearch-done ()
   (interactive)
@@ -399,8 +398,8 @@
   (or (eq last-command this-command) (f-delete-trailing-whitespace)))
 
 (defun f-query-replace-region (beg end)
-  (let ((txt (buffer-substring-no-properties beg end))
-	(replacement (read-string "Replacement: ")))
+  (let* ((txt (buffer-substring-no-properties beg end))
+         (replacement (read-string "Replacement: " txt)))
     (goto-char beg)
     (setq mark-active nil)
     (query-replace txt replacement)
@@ -425,8 +424,8 @@
 (defun f-update-indent-offset (func)
   (let ((pair (assoc major-mode '((python-mode python-indent-offset))))
         co offset)
-    (when pair
-      (save-excursion
+    (unless pair (user-error "Major mode incorrect"))
+    (save-excursion
         (goto-char (point-min))
         (while (not (eobp))
           (skip-chars-forward " \n")
@@ -435,7 +434,7 @@
           (delete-char (- co))
           (insert (make-string (funcall func co) ? ))
           (forward-line)))
-      (set (cadr pair) (funcall func offset)))))
+      (set (cadr pair) (funcall func offset))))
 
 (defun c-update-indent-offset-double ()
   (interactive)

@@ -32,21 +32,25 @@ checkout -b <branch> -> checkout to the new branch
 *** keymap
 **** editor actions
 delete line -> "apps k"
+down -> "apps 9"
 duplicate line or selection -> "apps i"
-move caret to line end -> "apps l"
-move caret to line end with selection -> "apps o"
-move caret to line start -> "apps j"
-move caret to line start with selection -> "apps u"
-move caret to matching brace -> "apps m"
+left -> "apps j"
+move caret to line end -> "apps p"
+move caret to line end with selection -> "alt-p"
+move caret to line start -> "apps y"
+move caret to line start with selection -> "alt-y"
+move caret to matching brace -> "alt-m"
 move caret to next word -> "alt-o"
 move caret to previous word -> "alt-u"
+right -> "apps l"
 select line at caret -> "apps h"
 extend selection -> "alt-i"
 swap selection boundaries -> "apps apps"
+up -> "apps 8"
 **** main menu
 ***** edit
 undo -> "apps n"
-redo -> "apps y"
+redo -> "apps m"
 ***** navigate
 back -> "apps ,"
 forward -> "apps ."

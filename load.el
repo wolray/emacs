@@ -5,18 +5,15 @@
 (setq frame-title-format "")
 (setq inhibit-startup-message t)
 (tool-bar-mode 0)
-(and (package-installed-p 'color-theme-solarized) (load-theme 'solarized t))
+(load-theme 'adwaita t)
 
 ;; font
 ((lambda (en cn)
    (set-frame-font en)
    (set-fontset-font "fontset-default" 'gb18030 cn))
- ;; "ubuntu mono-11" "微软雅黑-10.5"
  ;; "ubuntu mono-13" "微软雅黑-12"
- "monaco-10.5" "楷体-11"
  ;; "monaco-11" "楷体-13"
- ;; "consolas-10" "微软雅黑-10.5"
- ;; "consolas-11" "微软雅黑-12"
+ "consolas-13" "微软雅黑-13.5"
  )
 
 ;; language
@@ -31,7 +28,6 @@
 (fset 'yes-or-no-p 'y-or-n-p)
 (global-eldoc-mode 0)
 (line-number-mode)
-(and (package-installed-p 'nlinum) (global-nlinum-mode))
 (setq initial-scratch-message nil)
 (setq make-backup-files nil)
 (setq ring-bell-function 'ignore)
@@ -51,13 +47,13 @@
   (when overwrite
     (delete-region (point-min) (point-max))
     (insert (mapconcat 'identity
-                       '("(package-initialize)"
-                         "(setq default-directory \"d:/\")"
+                       `("(package-initialize)"
+                         ,(format "(setq default-directory \"%s:/\")" (if (equal (system-name) "MI") "c" "d"))
                          "(add-to-list 'load-path (concat default-directory \"emacs/init\"))"
                          "(add-to-list 'load-path (concat default-directory \"emacs/symbol-overlay\"))"
                          "(add-to-list 'load-path (concat default-directory \"emacs/code-style\"))"
                          "(add-to-list 'load-path (concat default-directory \"emacs/yacua\"))"
                          "(load \"load\" nil t)")
                        "\n"))))
-;; (open-init t)
 ;; (open-init)
+;; (open-init t)

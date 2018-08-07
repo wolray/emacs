@@ -2,6 +2,13 @@
   `(let ((i (cl-position ,var ,values)))
      (setq ,var (elt ,values (if (and i (< (1+ i) (length ,values))) (1+ i) 0)))))
 
+(defun c-beginning-of-line ()
+  (interactive)
+  (if (or (bolp) (> (current-column) (f-beginning-of-line 1)))
+      (f-beginning-of-line)
+    (beginning-of-line))
+  (hyper-mode 1))
+
 (defun c-byte-compile ()
   (interactive)
   (let ((file (buffer-name)))
@@ -30,18 +37,6 @@
     (f-delete-trailing-whitespace)
     (kill-ring-save (point-min) (point-max))
     (message "Current buffer saved")))
-
-(defun c-cycle-line-left ()
-  (interactive)
-  (cond ((bolp) (end-of-line))
-	((<= (current-column) (f-beginning-of-line 1)) (beginning-of-line))
-	(t (f-beginning-of-line))))
-
-(defun c-cycle-line-right ()
-  (interactive)
-  (cond ((eolp) (beginning-of-line))
-	((>= (current-column) (f-beginning-of-line 1)) (end-of-line))
-	(t (f-beginning-of-line))))
 
 (defun c-cycle-paren-shape ()
   (interactive)
@@ -177,18 +172,6 @@
   (unless (minibufferp)
     (setq defining-kbd-macro nil)
     (kmacro-start-macro arg)))
-
-(defun c-marker-set-or-echo-overlay ()
-  (interactive)
-  (unless (minibufferp)
-    (let ((pt (point))
-	  (ov (f-marker-get-overlay)))
-      (if ov (progn (setq visual-mode-cursor (setq cursor-type 'box))
-		    (goto-char (overlay-start ov))
-		    (delete-overlay ov))
-        (setq visual-mode-cursor (setq cursor-type 'hbar))
-	(overlay-put (make-overlay pt pt) 'marker t)
-	(message "Current point saved")))))
 
 (defun c-open-folder ()
   (interactive)
@@ -344,6 +327,14 @@
       (transpose-paragraphs -1)
       (and p (save-excursion (goto-char (point-min)) (kill-line))))))
 
+(defun c-update-indent-offset-double ()
+  (interactive)
+  (f-update-indent-offset '(lambda (co) (* co 2))))
+
+(defun c-update-indent-offset-half ()
+  (interactive)
+  (f-update-indent-offset '(lambda (co) (/ co 2))))
+
 (defun c-word-capitalize ()
   (interactive)
   (if (use-region-p) (capitalize-region (region-beginning) (region-end))
@@ -382,12 +373,6 @@
 (defun f-incf (&optional first incr repeat)
   (let ((index (/ (cl-incf count 0) (or repeat 1))))
     (+ (or first 1) (* (or incr 1) index))))
-
-(defun f-marker-get-overlay ()
-  (let ((lists (overlay-lists)))
-    (seq-find
-     '(lambda (ov) (overlay-get ov 'marker))
-     (append (car lists) (cdr lists)))))
 
 (defun f-paragraph-set ()
   (setq paragraph-start "\f\\|[ \t]*$"
@@ -436,10 +421,14 @@
           (forward-line)))
       (set (cadr pair) (funcall func offset))))
 
-(defun c-update-indent-offset-double ()
+(defun last-edit-position-echo ()
   (interactive)
-  (f-update-indent-offset '(lambda (co) (* co 2))))
+  (unless (minibufferp)
+    (let ((pt last-edit-position))
+      (when pt (goto-char pt)))))
 
-(defun c-update-indent-offset-half ()
-  (interactive)
-  (f-update-indent-offset '(lambda (co) (/ co 2))))
+(defun last-edit-position-update (beg end else)
+  (unless (minibufferp)
+    (setq last-edit-position (point))))
+(defvar-local last-edit-position nil)
+(add-hook 'after-change-functions 'last-edit-position-update)

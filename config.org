@@ -1,9 +1,9 @@
 * emacs
-** \HHEK_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layout\
+** \HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layout\
 *** scancode map
 00 00 00 00  00 00 00 00
-02 00 00 00  5D E0 3A 00
-00 00 00 00
+03 00 00 00  1D 00 3A 00
+3A 00 1D 00  00 00 00 00
 * everything
 ** general
 *** results -> B110100111
@@ -16,10 +16,10 @@ exit -> (-)
 item down -> (+ "o")
 item up -> (+ "u")
 open path -> (+ "i")
-options -> "win-n"
+options -> ("win-.")
 rename -> (+ "r")
-toggle window -> (+ "win-y")
-** indexes.exclude (B011)
+toggle window -> (+ "win-,")
+** indexes.exclude (B010)
 * git
 ** branch
 branch -> show local branches
@@ -27,53 +27,6 @@ branch -a -> show all branches
 ** checkout
 checkout <branch> -> checkout to the branch
 checkout -b <branch> -> checkout to the new branch
-* idea
-** settings
-*** keymap
-**** editor actions
-delete line -> "apps k"
-down -> "apps 9"
-duplicate line or selection -> "apps i"
-left -> "apps j"
-move caret to line end -> "apps p"
-move caret to line end with selection -> "alt-p"
-move caret to line start -> "apps y"
-move caret to line start with selection -> "alt-y"
-move caret to matching brace -> "alt-m"
-move caret to next word -> "alt-o"
-move caret to previous word -> "alt-u"
-right -> "apps l"
-select line at caret -> "apps h"
-extend selection -> "alt-i"
-swap selection boundaries -> "apps apps"
-up -> "apps 8"
-**** main menu
-***** edit
-undo -> "apps n"
-redo -> "apps m"
-***** navigate
-back -> "apps ,"
-forward -> "apps ."
-***** code
-move line down -> "apps 9"
-move line up -> "apps 8"
-***** window
-****** editor tabs
-select next tab -> "alt-l"
-select previous tab -> "alt-j"
-close -> "alt-k"
-*** editor
-**** file and code templates
-***** incudes
-****** file header
-/**
- * Created by yilai.wl on ${DATE}.
- */
-**** general
-***** smart keys -> B1{-2}
-** idea64.exe.vmoptions
--Duser.lanugage=en
--Duser.region=US
 * python
 ** env
 C:\Python27\;C:\Python27\Scripts;

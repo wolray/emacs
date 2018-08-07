@@ -1,22 +1,14 @@
 ;; !package
-(defun c-package-check ()
-  (interactive)
-  (let ((packages '(color-theme-solarized
-                    magit
-                    nlinum)))
-    (dolist (pkg packages)
-      (or (package-installed-p pkg)
-          (and (y-or-n-p (format "Package \"%s\" not found. Install it? " pkg))
-               (package-install pkg))))))
 (setq package-archives
-      '(("gnu"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
-	("melpa" . "http://elpa.zilongshanren.com/melpa/")
+      `(("gnu"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
 	;; ("melpa" . "http://melpa.org/packages/")
-	;; ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
-        ))
-(add-hook 'package-menu-mode-hook
-          '(lambda ()
-             (nlinum-mode 0)))
+	("melpa" . ,(if (equal (system-name) "MI")
+                        "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/"
+                      "http://elpa.zilongshanren.com/melpa/"))))
+
+;; clang
+(add-hook 'auto-mode-alist '("\\.cuh?\\'" . c-mode))
+(add-hook 'c-mode-hook '(lambda () (setq tab-width 4)))
 
 ;; haskell
 (defun c-haskell-load-module ()
@@ -30,17 +22,12 @@
     (comint-send-input)))
 (add-hook 'haskell-mode-hook
 	  '(lambda ()
-	     (local-set-key (kbd "C-c C-c") 'c-haskell-load-module)
-             (local-set-key (kbd "C-c C-z") 'switch-to-haskell)
-             (let ((map haskell-indentation-mode-map))
-               (define-key map (kbd ",") nil)
-               (define-key map (kbd ";") nil)
-               )
              (setq symbol-overlay-definition-function
 		   '(lambda (symbol)
 		      (concat "\\(\\(let\\|type\\) \\)?"
 			      symbol
-			      "[^\n]* =[^>]")))))
+			      "[^\n]* =[^>]")))
+             ))
 
 ;; hippie-expand
 (setq hippie-expand-try-functions-list
@@ -57,17 +44,10 @@
 
 ;; magit
 (setenv "GIT_ASKPASS" "git-gui--askpass")
-(add-hook 'magit-mode-hook
-          '(lambda ()
-             (local-set-key (kbd "5") 'recenter-top-bottom)
-             (local-set-key (kbd "[") 'magit-section-backward)
-             (local-set-key (kbd "]") 'magit-section-forward)
-             (local-set-key (kbd "n") '~)
-             (local-set-key (kbd "p") '~)
-             ))
 (add-hook 'magit-status-sections-hook
 	  '(lambda ()
 	     (magit-insert-status-headers)
+	     (magit-insert-untracked-files)
 	     (magit-insert-tracked-files)
 	     (magit-insert-unstaged-changes)
 	     (magit-insert-staged-changes)
@@ -81,9 +61,8 @@
 	     (magit-insert-sequencer-sequence)
 	     (magit-insert-stashes)
 	     ;; (magit-insert-rebase-sequence)
-	     ;; (magit-insert-unpulled-from-upstream)
-	     ;; (magit-insert-unpushed-to-upstream)
-	     ;; (magit-insert-untracked-files)
+	     (magit-insert-unpulled-from-upstream)
+	     (magit-insert-unpushed-to-upstream)
 	     ))
 (add-hook 'magit-status-headers-hook
 	  '(lambda ()
@@ -95,21 +74,19 @@
 	     ;; (magit-insert-push-branch-header)
 	     ;; (magit-insert-upstream-branch-header)
 	     ))
-(with-eval-after-load 'with-editor
-  (let ((map with-editor-mode-map))
-    (define-key map (kbd "C-c k") 'with-editor-cancel)
-    ))
 
 ;; org
 (setq org-startup-indented t)
 (add-hook 'org-mode-hook
 	  '(lambda ()
 	     (setq skip-chars-regexp "*"
-                   just-tab t)))
+                   just-tab t)
+             ))
 (add-hook 'org-after-todo-statistics-hook
 	  '(lambda ()
 	     (let (org-log-done org-log-states)
-	       (org-todo (if (= n-not-done 0) "DONE" "TODO")))))
+	       (org-todo (if (= n-not-done 0) "DONE" "TODO")))
+             ))
 
 ;; python
 (defun c-python-config-pandas ()
@@ -126,11 +103,9 @@ pd.options.display.precision=4
   (python-shell-send-region (line-beginning-position) (line-end-position)))
 (add-hook 'python-mode-hook
 	  '(lambda ()
-             (local-set-key (kbd "C-c h") 'python-shell-send-region)
-             (local-set-key (kbd "C-c RET") 'c-python-shell-send-line)
-             (local-set-key (kbd "C-c r") 'run-python)
 	     (setq python-shell-interpreter "ipython")
-             (add-to-list 'python-shell-completion-native-disabled-interpreters "ipython")))
+             (add-to-list 'python-shell-completion-native-disabled-interpreters "ipython")
+             ))
 
 ;; racket
 (setq racket-racket-program "racket")
@@ -147,13 +122,10 @@ pd.options.display.precision=4
 ;; sql
 (defun sql-replace ()
   (interactive)
-  (let ((keywords '("and" "as" "bigint" "by" "case" "count" "create" "distinct" "double" "else" "end" "end" "exists" "from" "if" "insert" "join" "left" "length" "lifecycle" "not" "not" "null" "on" "or" "outer" "overwrite" "partition" "partitioned" "right" "select" "string" "table" "when" "where")))
+  (let ((keywords '("and" "as" "bigint" "by" "case" "count" "create" "distinct" "double" "drop" "else" "end" "end" "exists" "from" "if" "insert" "join" "left" "length" "lifecycle" "not" "not" "null" "on" "or" "outer" "overwrite" "partition" "partitioned" "right" "select" "string" "table" "when" "where")))
     (dolist (word keywords)
       (save-excursion
         (goto-char (point-min))
         (while (re-search-forward (concat "\\_<" (regexp-quote word) "\\_>") nil t)
           (replace-match (upcase word)))))))
-(add-hook 'sql-mode-hook
-	  '(lambda ()
-	     (local-set-key (kbd "C-c n") 'sql-replace)
-             (setq tab-width 4)))
+(add-hook 'sql-mode-hook '(lambda () (setq tab-width 4)))

@@ -257,6 +257,8 @@
   (define-key map (kbd "t") 'symbol-overlay-count)
   (define-key map (kbd "w") 'symbol-overlay-save-symbol)
   (define-key map (kbd "x") 'symbol-overlay-echo-mark)
+  (define-key map (kbd "U") 'symbol-overlay-jump-first)
+  (define-key map (kbd "O") 'symbol-overlay-jump-last)
   (setq symbol-overlay-map map))
 
 (with-eval-after-load 'bs

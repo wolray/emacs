@@ -115,7 +115,7 @@
   (interactive)
   (insert ? ))
 
-(defun c-isearch-done ()
+(defun my-isearch-done ()
   (interactive)
   (isearch-done))
 
@@ -130,7 +130,7 @@
 	(isearch-yank-string text))
     (call-interactively 'isearch-forward)))
 
-(defun c-isearch-yank ()
+(defun my-isearch-yank ()
   (interactive)
   (isearch-yank-string (current-kill 0)))
 

@@ -245,8 +245,8 @@
   (define-key map (kbd "r") 'backup)
   )
 
-(require 'code-style)
-(require 'yacua)
+;;(require 'code-style)
+;;(require 'yacua)
 
 (require 'symbol-overlay)
 (let ((map (make-sparse-keymap)))

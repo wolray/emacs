@@ -40,7 +40,7 @@
 
 ;; ~ init
 (load "defun" nil t)
-(load "kbd" nil t)
+(load "kbd3" nil t)
 (load "mode" nil t)
 (defun open-init (&optional overwrite)
   (find-file-other-window (concat (getenv "home") "\\.emacs.d\\init.el"))

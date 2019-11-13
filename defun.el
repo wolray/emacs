@@ -1,13 +1,13 @@
-(defmacro cycle-values (var values)
+(defmacro m-cycle-values (var values)
   `(let ((i (cl-position ,var ,values)))
      (setq ,var (elt ,values (if (and i (< (1+ i) (length ,values))) (1+ i) 0)))))
 
-(defun c-beginning-of-line ()
-  (interactive)
+(defun c-beginning-of-line (arg)
+  (interactive "^p")
   (if (or (bolp) (> (current-column) (f-beginning-of-line 1)))
       (f-beginning-of-line)
-    (beginning-of-line))
-  (hyper-mode 1))
+    (beginning-of-line)))
+(fset 'move-beginning-of-line 'c-beginning-of-line)
 
 (defun c-byte-compile ()
   (interactive)
@@ -55,7 +55,7 @@
 (defun c-cycle-search-whitespace-regexp ()
   (interactive)
   (unless (minibufferp)
-    (cycle-values search-whitespace-regexp '("\\s-+" ".*?"))
+    (m-cycle-values search-whitespace-regexp '("\\s-+" ".*?"))
     (message "search-whitespace-regexp: \"%s\"" search-whitespace-regexp)))
 
 (defun c-delete-pair ()
@@ -70,11 +70,25 @@
   (switch-to-buffer (dired-noselect default-directory))
   (revert-buffer))
 
+(defun c-duplicate (beg end regionp)
+  (interactive
+   (if (use-region-p) (list (region-beginning) (region-end) t)
+     (list (line-beginning-position) (line-end-position) nil)))
+  (unless regionp (end-of-line) (newline))
+  (insert (buffer-substring-no-properties beg end)))
+
 (defun c-each ()
   (interactive)
   (when (minibufferp)
     (insert (if (eq last-command this-command) "[]" "\\,(f-each )"))
     (backward-char)))
+
+(defun c-git-client ()
+  (interactive)
+  (shell-command (concat "smerge "
+                         (if buffer-file-name
+                             (file-name-directory buffer-file-name)
+                           (convert-standard-filename default-directory)))))
 
 (defun c-incf ()
   (interactive)
@@ -115,11 +129,7 @@
   (interactive)
   (insert ? ))
 
-(defun my-isearch-done ()
-  (interactive)
-  (isearch-done))
-
-(defun c-isearch-forward ()
+(defun c-isearch ()
   (interactive)
   (if (use-region-p)
       (let* ((beg (region-beginning))
@@ -129,10 +139,6 @@
 	(isearch-forward nil t)
 	(isearch-yank-string text))
     (call-interactively 'isearch-forward)))
-
-(defun my-isearch-yank ()
-  (interactive)
-  (isearch-yank-string (current-kill 0)))
 
 (defun c-kill-buffer-other-window ()
   (interactive)
@@ -148,30 +154,35 @@
       (kill-whole-line)
       (move-to-column co))))
 
-(defun c-kill-ring-save (beg end)
+(defun c-kill-ring-save (beg end regionp)
   (interactive
-   (if (use-region-p) (list (region-beginning) (region-end))
-     (list (f-beginning-of-line 0) (line-end-position))))
+   (if (use-region-p) (list (region-beginning) (region-end) t)
+     (list (f-beginning-of-line 0) (line-end-position) nil)))
   (kill-ring-save beg end)
-  (or (minibufferp) (message "Current line saved")))
+  (unless (or (minibufferp) regionp) (message "Current line saved")))
 
 (defun c-kill-sexp ()
   (interactive)
   (let ((pt (point))) (C-M-f) (kill-region pt (point))))
 
-(defun c-kmacro-end-or-call-macro (arg)
+(defun c-kmacro-apply-macro (arg)
   (interactive "P")
   (unless (minibufferp)
-    (cond (defining-kbd-macro (kmacro-end-macro arg))
-	  ((use-region-p)
-	   (apply-macro-to-region-lines (region-beginning) (region-end)))
-	  (t (kmacro-call-macro arg t)))))
+    (if (use-region-p)
+        (apply-macro-to-region-lines (region-beginning) (region-end))
+      (kmacro-call-macro arg t))))
 
-(defun c-kmacro-start-macro (arg)
+(defun c-kmacro-record-macro (arg)
   (interactive "P")
   (unless (minibufferp)
-    (setq defining-kbd-macro nil)
-    (kmacro-start-macro arg)))
+    (if defining-kbd-macro (kmacro-end-macro arg) (kmacro-start-macro arg))))
+
+(defun c-matching-paren-jump (&optional arg)
+  (interactive "^p")
+  (cond ((looking-at "\\s(") (forward-list arg))
+        ((looking-back "\\s)" 1) (backward-list arg))
+        ((looking-at "\\s)") (forward-char) (backward-list arg))
+        ((looking-back "\\s(" 1) (backward-char) (forward-list arg))))
 
 (defun c-open-folder ()
   (interactive)
@@ -180,6 +191,16 @@
    (if buffer-file-name
        (concat "/e,/select," (convert-standard-filename buffer-file-name))
      (convert-standard-filename default-directory))))
+
+(defun c-open-line-above ()
+  (interactive)
+  (beginning-of-line)
+  (split-line))
+
+(defun c-open-line-below (&optional arg interactive)
+  (interactive "*P\np")
+  (end-of-line)
+  (newline arg interactive))
 
 (defun c-phone-test ()
   (interactive)
@@ -263,11 +284,6 @@
           just-tab)
       (TAB)
     (call-interactively 'hippie-expand)))
-(defun c-toggle-tab ()
-  (interactive)
-  (setq just-tab (not just-tab))
-  (message "just-tab: %s" just-tab))
-(defvar-local just-tab nil)
 
 (defun c-toggle-comment (beg end)
   (interactive
@@ -277,7 +293,7 @@
 
 (defun c-toggle-frame ()
   (interactive)
-  (cycle-values frame-alpha '(100 70))
+  (m-cycle-values frame-alpha '(100 70))
   (set-frame-parameter (selected-frame) 'alpha frame-alpha))
 (defvar frame-alpha 100)
 
@@ -333,6 +349,14 @@
 (defun c-update-indent-offset-half ()
   (interactive)
   (f-update-indent-offset '(lambda (co) (/ co 2))))
+
+(defun c-window-next ()
+  (interactive)
+  (other-window 1))
+
+(defun c-window-prev ()
+  (interactive)
+  (other-window -1))
 
 (defun c-word-capitalize ()
   (interactive)
@@ -426,15 +450,3 @@
           (insert (make-string (funcall func co) ? ))
           (forward-line)))
       (set (cadr pair) (funcall func offset))))
-
-(defun last-edit-position-echo ()
-  (interactive)
-  (unless (minibufferp)
-    (let ((pt last-edit-position))
-      (when pt (goto-char pt)))))
-
-(defun last-edit-position-update (beg end else)
-  (unless (minibufferp)
-    (setq last-edit-position (point))))
-(defvar-local last-edit-position nil)
-(add-hook 'after-change-functions 'last-edit-position-update)

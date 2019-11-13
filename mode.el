@@ -2,13 +2,19 @@
 (setq package-archives
       `(("gnu"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
 	;; ("melpa" . "http://melpa.org/packages/")
-	("melpa" . ,(if (equal (system-name) "MI")
-                        "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/"
-                      "http://elpa.zilongshanren.com/melpa/"))))
+	("melpa" . "http://elpa.zilongshanren.com/melpa/")
+        ))
 
 ;; clang
 (add-hook 'auto-mode-alist '("\\.cuh?\\'" . c-mode))
 (add-hook 'c-mode-hook '(lambda () (setq tab-width 4)))
+
+;; git-gutter
+(require 'git-gutter)
+(defun f-git-gutter-open (&rest r)
+  (unless git-gutter-mode (git-gutter-mode 1)))
+(advice-add 'git-gutter:next-hunk :before 'f-git-gutter-open)
+(advice-add 'git-gutter:previous-hunk :before 'f-git-gutter-open)
 
 ;; haskell
 (defun c-haskell-load-module ()
@@ -42,38 +48,16 @@
 	try-complete-lisp-symbol-partially
 	try-complete-lisp-symbol))
 
-;; magit
-(setenv "GIT_ASKPASS" "git-gui--askpass")
-(add-hook 'magit-status-sections-hook
-	  '(lambda ()
-	     (magit-insert-status-headers)
-	     (magit-insert-untracked-files)
-	     (magit-insert-tracked-files)
-	     (magit-insert-unstaged-changes)
-	     (magit-insert-staged-changes)
-	     (magit-insert-unpulled-from-pushremote)
-	     (magit-insert-unpushed-to-pushremote)
-	     (magit-insert-am-sequence)
-	     (magit-insert-bisect-log)
-	     (magit-insert-bisect-output)
-	     (magit-insert-bisect-rest)
-	     (magit-insert-merge-log)
-	     (magit-insert-sequencer-sequence)
-	     (magit-insert-stashes)
-	     ;; (magit-insert-rebase-sequence)
-	     (magit-insert-unpulled-from-upstream)
-	     (magit-insert-unpushed-to-upstream)
-	     ))
-(add-hook 'magit-status-headers-hook
-	  '(lambda ()
-	     (magit-insert-head-branch-header)
-	     (magit-insert-diff-filter-header)
-	     (magit-insert-error-header)
-	     (magit-insert-repo-header)
-	     (magit-insert-tags-header)
-	     ;; (magit-insert-push-branch-header)
-	     ;; (magit-insert-upstream-branch-header)
-	     ))
+;; mc
+(require 'multiple-cursors)
+(add-hook 'multiple-cursors-mode-hook
+          '(lambda (&rest r)
+             (unless multiple-cursors-mode
+               (setq-default cursor-type 'bar))))
+(advice-add 'mc/create-fake-cursor-at-point :before
+            '(lambda (&rest r)
+               (unless (eq cursor-type 'box)
+                 (setq-default cursor-type 'box))))
 
 ;; org
 (setq org-startup-indented t)

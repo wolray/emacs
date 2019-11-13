@@ -20,16 +20,3 @@ options -> ("win-.")
 rename -> (+ "r")
 toggle window -> (+ "win-,")
 ** indexes.exclude (B010)
-* git
-** branch
-branch -> show local branches
-branch -a -> show all branches
-** checkout
-checkout <branch> -> checkout to the branch
-checkout -b <branch> -> checkout to the new branch
-* python
-** env
-C:\Python27\;C:\Python27\Scripts;
-C:\Program Files\Python36;C:\Program Files\Python36\Scripts;
-** pycharm.settings.editor.general
-*** smart keys -> B1{-2}

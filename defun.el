@@ -104,31 +104,6 @@
       (indent-region (region-beginning) (region-end)))
     (and (bolp) (f-skip-chars))))
 
-(defun c-insert-arrow-1 ()
-  (interactive)
-  (let (p)
-    (save-excursion
-      (backward-sexp)
-      (cond ((looking-at-p "<-")
-	     (insert "->") (delete-char 2))
-	    ((looking-at-p "->")
-	     (insert "<-") (delete-char 2))
-	    (t (setq p t))))
-    (when p (insert "->"))))
-
-(defun c-insert-arrow-2 ()
-  (interactive)
-  (insert "=>"))
-
-(defun c-insert-at-eol ()
-  (interactive)
-  (end-of-line)
-  (hyper-mode 0))
-
-(defun c-insert-space ()
-  (interactive)
-  (insert ? ))
-
 (defun c-isearch ()
   (interactive)
   (if (use-region-p)
@@ -139,6 +114,10 @@
 	(isearch-forward nil t)
 	(isearch-yank-string text))
     (call-interactively 'isearch-forward)))
+
+(defun c-isearch-done ()
+  (interactive)
+  (isearch-done))
 
 (defun c-kill-buffer-other-window ()
   (interactive)
@@ -183,6 +162,18 @@
         ((looking-back "\\s)" 1) (backward-list arg))
         ((looking-at "\\s)") (forward-char) (backward-list arg))
         ((looking-back "\\s(" 1) (backward-char) (forward-list arg))))
+
+(defun c-navigate-backward ()
+  (interactive)
+  (f-push-mark-maybe)
+  (f-navigate-process))
+
+(defun c-navigate-forward ()
+  (interactive)
+  (f-push-mark-maybe)
+  (setq global-mark-ring (nreverse global-mark-ring))
+  (f-navigate-process)
+  (setq global-mark-ring (nreverse global-mark-ring)))
 
 (defun c-open-folder ()
   (interactive)
@@ -280,9 +271,8 @@
   (if (or (minibufferp)
 	  buffer-read-only
 	  (region-active-p)
-	  (not (looking-at-p "\\_>"))
-          just-tab)
-      (TAB)
+	  (not (looking-at-p "\\_>")))
+      (call-interactively (key-binding (kbd "TAB")))
     (call-interactively 'hippie-expand)))
 
 (defun c-toggle-comment (beg end)
@@ -397,6 +387,15 @@
   (let ((index (/ (cl-incf count 0) (or repeat 1))))
     (+ (or first 1) (* (or incr 1) index))))
 
+(defun f-marker-is-point-p (marker)
+  (and (eq (marker-buffer marker) (current-buffer))
+       (= (marker-position marker) (point))))
+
+(defun f-navigate-process ()
+  (when (f-marker-is-point-p (car global-mark-ring))
+    (call-interactively 'pop-global-mark))
+  (call-interactively 'pop-global-mark))
+
 (defun f-paragraph-set ()
   (setq paragraph-start "\f\\|[ \t]*$"
 	paragraph-separate "[ \t\f]*$"))
@@ -404,6 +403,12 @@
 (defun f-prepare-transpose ()
   (setq this-command 'transpose)
   (or (eq last-command this-command) (f-delete-trailing-whitespace)))
+
+(defun f-push-mark-maybe ()
+  (if (not global-mark-ring) (error "global-mark-ring empty")
+    (unless (or (f-marker-is-point-p (car global-mark-ring))
+                (f-marker-is-point-p (car (last global-mark-ring))))
+      (push-mark))))
 
 (defun f-query-replace-region (beg end)
   (let* ((txt (buffer-substring-no-properties beg end))
@@ -421,10 +426,10 @@
 (defun f-switch-to-buffer (dir)
   (unless (minibufferp)
     (let ((bn (buffer-name))
-	  (func (if (> dir 0) 'switch-to-next-buffer 'switch-to-prev-buffer))
+	  (name (if (> dir 0) 'switch-to-next-buffer 'switch-to-prev-buffer))
           (active-buffers (mapcar 'window-buffer (window-list)))
           buffer p)
-      (funcall func)
+      (funcall name)
       (while (not p)
         (setq buffer (current-buffer))
         (if (or buffer-file-name
@@ -434,9 +439,9 @@
                 (string= bn (buffer-name)))
             (setq p t)
           (kill-buffer)
-          (funcall func))))))
+          (funcall name))))))
 
-(defun f-update-indent-offset (func)
+(defun f-update-indent-offset (name)
   (let ((pair (assoc major-mode '((python-mode python-indent-offset))))
         co offset)
     (unless pair (user-error "Major mode incorrect"))
@@ -447,6 +452,6 @@
           (setq co (current-column))
           (and (> co 0) (or (not offset) (< co offset)) (setq offset co))
           (delete-char (- co))
-          (insert (make-string (funcall func co) ? ))
+          (insert (make-string (funcall name co) ? ))
           (forward-line)))
-      (set (cadr pair) (funcall func offset))))
+      (set (cadr pair) (funcall name offset))))

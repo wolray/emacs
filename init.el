@@ -1,0 +1,5 @@
+(package-initialize)
+(setq default-directory "~/.emacs.d/")
+(add-to-list 'load-path (concat default-directory "config"))
+(add-to-list 'load-path (concat default-directory "symbol-overlay"))
+(load "load" nil t)

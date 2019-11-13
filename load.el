@@ -5,7 +5,7 @@
 (setq frame-title-format "")
 (setq inhibit-startup-message t)
 (tool-bar-mode 0)
-(load-theme 'adwaita t)
+(load-theme 'deeper-blue t)
 
 ;; font
 ((lambda (en cn)
@@ -40,20 +40,5 @@
 
 ;; ~ init
 (load "defun" nil t)
-(load "kbd3" nil t)
+(load "kbd" nil t)
 (load "mode" nil t)
-(defun open-init (&optional overwrite)
-  (find-file-other-window (concat (getenv "home") "\\.emacs.d\\init.el"))
-  (when overwrite
-    (delete-region (point-min) (point-max))
-    (insert (mapconcat 'identity
-                       `("(package-initialize)"
-                         ,(format "(setq default-directory \"%s:/\")" (if (equal (system-name) "MI") "c" "d"))
-                         "(add-to-list 'load-path (concat default-directory \"emacs/init\"))"
-                         "(add-to-list 'load-path (concat default-directory \"emacs/symbol-overlay\"))"
-                         "(add-to-list 'load-path (concat default-directory \"emacs/code-style\"))"
-                         "(add-to-list 'load-path (concat default-directory \"emacs/yacua\"))"
-                         "(load \"load\" nil t)")
-                       "\n"))))
-;; (open-init)
-;; (open-init t)
